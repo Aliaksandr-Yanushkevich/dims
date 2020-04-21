@@ -1,13 +1,12 @@
 The link to principal idea of design - [design](https://symu.co/freebies/templates-4/merkury-dashboard-psd-template/). **You do not have to follow it, just use it as a guide**
 
-*In **/docs** you can find all other guides regarding project structure, pan and etc.*
+*In **/docs** you can find all other guides regarding project structure, plan and etc.*
 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## [Git workflow](https://github.com/Dev-incubator/DIMS.UI-6/wiki/Git-workflow) 
+
 
 ## Available Scripts
-
-In the project directory, you can run:
 
 ### `yarn start`
 
