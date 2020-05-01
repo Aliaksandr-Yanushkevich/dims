@@ -1,0 +1,19 @@
+@import './components/Styleguide/Stileguide.scss';
+
+.app_wrapper {
+  display: grid;
+  max-width: 1440px;
+  margin: 0 auto;
+
+  grid-template-areas:
+    'h h'
+    'n c';
+
+  grid-template-rows: 60px 1fr;
+  grid-template-columns: 2fr 10fr;
+}
+
+.app_wrapper_content {
+  grid-area: c;
+  background-color: $secondaryColor;
+}

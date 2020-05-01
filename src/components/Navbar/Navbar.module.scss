@@ -1,0 +1,7 @@
+@import '../Styleguide/Stileguide.scss';
+
+.navbar {
+  grid-area: n;
+  background-color: $secondaryColor;
+  font-family: $font;
+}
