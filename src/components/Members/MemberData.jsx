@@ -7,11 +7,7 @@ const MemberData = ({ i, firstName, lastName, direction, education, startDate, a
       <td>{lastName}</td>
       <td>{direction}</td>
       <td>{education}</td>
-      <td>
-        {startDate.getDate() < 10 ? '0' + (startDate.getDate() + 1) : startDate.getDate() + 1}.
-        {startDate.getMonth() < 9 ? '0' + (startDate.getMonth() + 1) : startDate.getMonth() + 1}.
-        {startDate.getFullYear()}
-      </td>
+      <td>{startDate}</td>
       <td>{age}</td>
       <td>
         <button>Progress</button>
