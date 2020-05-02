@@ -30,10 +30,11 @@ const createMembers = () => {
       .map((el, index) => {
         return {
           taskId: index + 1,
-          name: faker.hacker.abbreviation(),
+          taskName: faker.hacker.abbreviation(),
           description: faker.hacker.phrase(),
           startDate: faker.date.between('2020-01-01', '2020-06-01'),
           deadLineDate: faker.date.between('2020-06-02', '2020-12-31'),
+          status: '',
         };
       });
 

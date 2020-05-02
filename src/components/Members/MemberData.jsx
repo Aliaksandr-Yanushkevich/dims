@@ -17,8 +17,10 @@ const MemberData = ({ i, firstName, lastName, direction, education, startDate, a
             Progress
           </button>
         </NavLink>
-        <NavLink to='/tasks'>
-          <button data-id={userId}>Tasks</button>
+        <NavLink to='/member_tasks'>
+          <button data-id={userId} onClick={setCurrentUser}>
+            Tasks
+          </button>
         </NavLink>
         <button data-id={userId}>Edit</button>
         <button data-id={userId}>Delete</button>

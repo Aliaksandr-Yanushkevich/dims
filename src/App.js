@@ -73,7 +73,7 @@ class App extends Component {
               path='/member_progress:userId?'
               render={() => <MemberProgress userId={this.state.currentUserId} />}
             />
-            <Route path='/member_tasks:userId?' render={() => <MemberTasks />} />
+            <Route path='/member_tasks:userId?' render={() => <MemberTasks userId={this.state.currentUserId} />} />
             <Route path='/tasks' render={() => <Tasks />} />
             <Route path='/tasks_tracks' render={() => <TasksTracks />} />
           </div>
