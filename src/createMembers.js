@@ -19,6 +19,24 @@ const createMembers = () => {
     let direction;
     let randEducation = Math.random();
     let randDirection = Math.random();
+
+    const tasks = Array(
+      faker.random.number({
+        min: 1,
+        max: 5,
+      }),
+    )
+      .fill()
+      .map((el, index) => {
+        return {
+          taskId: index + 1,
+          name: faker.hacker.abbreviation(),
+          description: faker.hacker.phrase(),
+          startDate: faker.date.between('2020-01-01', '2020-06-01'),
+          deadLineDate: faker.date.between('2020-06-02', '2020-12-31'),
+        };
+      });
+
     const randomDate = faker.date.between('2020-01-01', '2020-05-01');
     const startDate = `${randomDate.getDate() < 10 ? '0' + randomDate.getDate() : randomDate.getDate()}.${
       randomDate.getMonth() < 9 ? '0' + (randomDate.getMonth() + 1) : randomDate.getMonth() + 1
@@ -55,6 +73,7 @@ const createMembers = () => {
         min: 20,
         max: 40,
       }),
+      tasks: tasks,
     });
   }
   return randomMembers;
@@ -72,6 +91,7 @@ createMembers().forEach((el) => {
       education: el.education,
       startDate: el.startDate,
       age: el.age,
+      tasks: el.tasks,
     })
     .then(function(docRef) {
       console.log('Document written with ID: ', docRef.id);

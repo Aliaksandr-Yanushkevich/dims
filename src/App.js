@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Header from './components/Header/Header';
 import Members from './components/Members/Members';
-import MemberProgress from './components/MembersProgress/MembersProgress';
+import MemberProgress from './components/MemberProgress/MemberProgress';
 import MemberTasks from './components/MemberTasks/MembersTasks';
 import Tasks from './components/Tasks/Tasks';
 import TasksTracks from './components/TasksTracks/TasksTracks';
@@ -18,51 +18,46 @@ class App extends Component {
     this.db = this.app.firestore();
 
     this.state = {
-      members: [
-        {
-          indexNumber: 1,
-          firstName: 'Aliaksandr',
-          lastName: 'Yanushkevich',
-          age: 28,
-          direction: 'Javascript',
-          education: 'PSU',
-          startDate: '28.04.2020',
-        },
-        {
-          indexNumber: 2,
-          firstName: 'Ryhor',
-          lastName: 'Sidoryn',
-          age: 30,
-          direction: 'Javascript',
-          education: 'BNTU',
-          startDate: '03.03.2020',
-        },
-      ],
+      members: null,
+      currentUserId: null,
     };
   }
 
+  setCurrentUser = (e) => {
+    this.setState({
+      currentUserId: e.currentTarget.dataset.id,
+    });
+  };
+
   componentDidMount() {
+    let dbMembers = [];
     this.db
       .collection('dims')
+      .orderBy('indexNumber')
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((el) => {
-          this.setState({
-            members: [
-              ...this.state.members,
-              {
-                firstName: el.data().firstName,
-                lastName: el.data().lastName,
-                age: el.data().age,
-                education: el.data().education,
-                direction: el.data().direction,
-                startDate: el.data().startDate,
-                indexNumber: el.data().indexNumber,
-              },
-            ],
-          });
+          dbMembers = [
+            ...dbMembers,
+            {
+              indexNumber: el.data().indexNumber,
+              firstName: el.data().firstName,
+              lastName: el.data().lastName,
+              age: el.data().age,
+              direction: el.data().direction,
+              education: el.data().education,
+              startDate: el.data().startDate,
+              userId: el.ref.path.substring(el.ref.path.indexOf('/') + 1),
+            },
+          ];
         });
-      });
+        return dbMembers;
+      })
+      .then((dbMembers) =>
+        this.setState({
+          members: dbMembers,
+        }),
+      );
   }
   render() {
     return (
@@ -70,9 +65,15 @@ class App extends Component {
         <div className={style.app_wrapper}>
           <Header />
           <div className={style.app_wrapper_content}>
-            <Route path='/members' render={() => <Members membersArr={this.state.members} />} />
-            <Route path='/member_progress' render={() => <MemberProgress />} />
-            <Route path='/member_tasks' render={() => <MemberTasks />} />
+            <Route
+              path='/members'
+              render={() => <Members membersArr={this.state.members} setCurrentUser={this.setCurrentUser} />}
+            />
+            <Route
+              path='/member_progress:userId?'
+              render={() => <MemberProgress userId={this.state.currentUserId} />}
+            />
+            <Route path='/member_tasks:userId?' render={() => <MemberTasks />} />
             <Route path='/tasks' render={() => <Tasks />} />
             <Route path='/tasks_tracks' render={() => <TasksTracks />} />
           </div>
