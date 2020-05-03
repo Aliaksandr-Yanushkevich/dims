@@ -2,13 +2,10 @@ $primaryColor: #0080a4;
 $secondaryColor: #f2f2f2;
 $font: 'Roboto', Sans-serif;
 $textColor: #383436;
-$activeColor: #964c63;
-$border: 1px solid #dcc2cb;
-$activeTextWeight: 700;
 
 h1,
 h2 {
-  color: $textColor;
+  color: $primaryColor;
   font-family: $font;
   text-align: center;
 }
@@ -26,12 +23,20 @@ button {
 }
 
 .dangerousButton {
-  // background-color: #ffdce5;
-  color: #ff0800;
-  border: 1px solid #ff0800;
+  color: #d04b31;
+  border: 1px solid #d04b31;
   &:hover {
-    background-color: #ff0800;
-    color: #ffdce5;
+    background-color: #d04b31;
+    color: $secondaryColor;
+  }
+}
+
+.successButton {
+  color: #227447;
+  border: 1px solid #227447;
+  &:hover {
+    background-color: #227447;
+    color: $secondaryColor;
   }
 }
 
@@ -60,6 +65,7 @@ td {
 th {
   background-color: $primaryColor;
   color: #ffffff;
+  text-transform: capitalize;
 }
 
 td {

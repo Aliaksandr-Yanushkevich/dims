@@ -34,11 +34,12 @@ class MemberProgres extends Component {
   render() {
     if (!this.state.tasks) return <Preloader />;
     const tasksProgressArr = this.state.tasks.map((el) => (
-      <MemberProgressData taskId={el.taskId} name={el.name} description={el.description} />
+      <MemberProgressData taskId={el.taskId} taskName={el.taskName} description={el.description} />
     ));
     return (
       <>
-        <h2>{`${this.state.firstName} ${this.state.lastName} progress`}</h2>
+        <h1>Member Progress Grid</h1>
+        <h2>{`${this.state.firstName} ${this.state.lastName} progress:`}</h2>
         <table>
           <tbody>
             <TableHeader titleArr={['#', 'task', 'note', 'date']} />

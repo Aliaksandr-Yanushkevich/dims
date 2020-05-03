@@ -45,9 +45,14 @@ class MemberTasks extends Component {
     ));
     return (
       <>
+        <h1>Member&apos;s Task Manage Grid</h1>
         <h2>{`Hi, dear ${this.state.firstName} ${this.state.lastName}! This is your current tasks:`}</h2>
-        <TableHeader titleArr={['#', 'name', 'start', 'deadline', 'status', '', 'available only for admin']} />
-        {tasksArr}
+        <table>
+          <tbody>
+            <TableHeader titleArr={['#', 'name', 'start', 'deadline', 'status', '', 'available only for admin']} />
+            {tasksArr}
+          </tbody>
+        </table>
       </>
     );
   }

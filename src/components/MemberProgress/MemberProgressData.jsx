@@ -1,10 +1,10 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-const MemberProgressData = ({ taskId, name, description }) => {
+
+const MemberProgressData = ({ taskId, taskName, description }) => {
   return (
     <tr key={taskId}>
       <td>{taskId}</td>
-      <td>{name}</td>
+      <td>{taskName}</td>
       <td>{description}</td>
       <td>Here should be track date</td>
     </tr>

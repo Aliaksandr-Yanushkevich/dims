@@ -1,16 +1,13 @@
-.header {
-  grid-area: h;
-  background-color: #964c63;
+@import '../Styleguide/Stileguide.scss';
+
+.buttonWrapper {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
-.header img {
-  height: 50px;
-}
-
-.headerWrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: row;
-  padding: 0 20px;
+.buttonWrapper button {
+  width: 100%;
+  max-width: 100px;
 }

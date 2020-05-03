@@ -1,25 +1,25 @@
-@import '../Styleguide/Stileguide.scss';
+@import '../../Styleguide/Stileguide.scss';
 
 .header {
   grid-area: h;
   background-color: $primaryColor;
   font-family: $font;
-}
-
-.header img {
-  height: 50px;
-}
-
-.header a {
-  text-decoration: none;
-  color: #ffffff;
-  padding-top: 5px;
-}
-
-.headerWrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
   padding: 0 20px;
+}
+
+.header img {
+  height: 50px;
+  padding-top: 5px;
+}
+
+.header a {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.headerWrapper {
 }

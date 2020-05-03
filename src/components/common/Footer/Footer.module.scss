@@ -1,0 +1,31 @@
+@import '../../Styleguide/Stileguide.scss';
+
+.footer {
+  grid-area: f;
+  background-color: $primaryColor;
+  font-family: $font;
+  align-items: center;
+  display: flex;
+  height: 60px;
+  color: #ffffff;
+  padding: 0 20px;
+  justify-content: space-between;
+}
+
+.footer a {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.icon {
+  margin-left: 15px;
+  &:hover {
+    color: #f0bb0c;
+  }
+}
+
+.author {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

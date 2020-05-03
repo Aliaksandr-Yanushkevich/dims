@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import Header from './components/Header/Header';
+import Header from './components/common/Header/Header';
 import Members from './components/Members/Members';
 import MemberProgress from './components/MemberProgress/MemberProgress';
 import MemberTasks from './components/MemberTasks/MembersTasks';
 import Tasks from './components/Tasks/Tasks';
 import TasksTracks from './components/TasksTracks/TasksTracks';
-import Footer from './components/Footer/Footer';
+import Footer from './components/common/Footer/Footer';
 import { BrowserRouter, Route } from 'react-router-dom';
 import style from './App.module.scss';
 import firebase from 'firebase';

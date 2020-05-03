@@ -1,5 +1,6 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import style from './MembersTasks.module.scss';
+
 const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate }) => {
   return (
     <tr key={taskId}>
@@ -14,13 +15,15 @@ const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate }) => {
         {deadLineDate.getMonth() < 9 ? `0${deadLineDate.getMonth() + 1}` : deadLineDate.getMonth() + 1}.
         {deadLineDate.getFullYear()}
       </td>
-      <td></td>
+      <td>Here should be task status</td>
       <td>
         <button>Track</button>
       </td>
       <td>
-        <button>Success</button>
-        <button>Fail</button>
+        <div className={style.buttonWrapper}>
+          <button className={style.successButton}>Success</button>
+          <button className={style.dangerousButton}>Fail</button>
+        </div>
       </td>
     </tr>
   );
