@@ -1,8 +1,6 @@
 import React from 'react';
-// import { NavLink } from 'react-router-dom';
-// import style from './Tasks.module.scss';
 
-const Tasks = (props) => {
+const Tasks = () => {
   return <div>Tasks</div>;
 };
 

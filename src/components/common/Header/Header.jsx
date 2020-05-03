@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import style from './Header.module.scss';
 import logo from '../logo-white.png';
 
@@ -23,6 +24,16 @@ const Header = ({ isAuth, login, logout }) => {
       </div>
     </header>
   );
+};
+
+Header.propTypes = {
+  isAuth: PropTypes.bool,
+  login: PropTypes.string,
+  logout: PropTypes.func,
+};
+Header.defaultProps = {
+  isAuth: false,
+  login: '',
 };
 
 export default Header;

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import TableHeader from '../common/TableHeader/TableHeader';
 import firebase from 'firebase';
+import PropTypes from 'prop-types';
+import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
 import MemberProgressData from './MemberProgressData';
-// import { NavLink } from 'react-router-dom';
-// import style from './MembersProgress.module.scss';
 
 class MemberProgres extends Component {
   constructor() {
@@ -16,10 +15,11 @@ class MemberProgres extends Component {
   }
 
   componentDidMount() {
-    if (this.props.userId) {
+    const { userId } = this.props;
+    if (userId) {
       this.db
         .collection('dims')
-        .doc(this.props.userId)
+        .doc(userId)
         .get()
         .then((querySnapshot) => {
           this.setState({
@@ -32,14 +32,15 @@ class MemberProgres extends Component {
   }
 
   render() {
-    if (!this.state.tasks) return <Preloader />;
-    const tasksProgressArr = this.state.tasks.map((el) => (
+    const { tasks, firstName, lastName } = this.state;
+    if (!tasks) return <Preloader />;
+    const tasksProgressArr = tasks.map((el) => (
       <MemberProgressData taskId={el.taskId} taskName={el.taskName} description={el.description} />
     ));
     return (
       <>
         <h1>Member Progress Grid</h1>
-        <h2>{`${this.state.firstName} ${this.state.lastName} progress:`}</h2>
+        <h2>{`${firstName} ${lastName} progress:`}</h2>
         <table>
           <tbody>
             <TableHeader titleArr={['#', 'task', 'note', 'date']} />
@@ -50,5 +51,8 @@ class MemberProgres extends Component {
     );
   }
 }
+
+MemberProgres.propTypes = { userId: PropTypes.string };
+MemberProgres.defaultProps = { userId: 'abz' };
 
 export default MemberProgres;

@@ -5,20 +5,20 @@ $textColor: #383436;
 
 h1,
 h2 {
-  color: $primaryColor;
   font-family: $font;
   text-align: center;
+  color: $primaryColor;
 }
 
 button {
-  background-color: $secondaryColor;
+  font-weight: 800;
+  padding: 1px 16px;
   color: $primaryColor;
   border: 1px solid $primaryColor;
-  padding: 1px 16px;
-  font-weight: 800;
+  background-color: $secondaryColor;
   &:hover {
-    background-color: $primaryColor;
     color: $secondaryColor;
+    background-color: $primaryColor;
   }
 }
 
@@ -26,8 +26,8 @@ button {
   color: #d04b31;
   border: 1px solid #d04b31;
   &:hover {
-    background-color: #d04b31;
     color: $secondaryColor;
+    background-color: #d04b31;
   }
 }
 
@@ -35,18 +35,18 @@ button {
   color: #227447;
   border: 1px solid #227447;
   &:hover {
-    background-color: #227447;
     color: $secondaryColor;
+    background-color: #227447;
   }
 }
 
 table {
-  border-collapse: separate;
-  border-spacing: 2px;
-  margin: 0 auto;
   font-family: $font;
-  color: $textColor;
   font-weight: 400;
+  margin: 0 auto;
+  border-spacing: 2px;
+  border-collapse: separate;
+  color: $textColor;
 }
 
 tbody {
@@ -57,15 +57,15 @@ tbody {
 
 th,
 td {
-  border: 1px solid #9bc2e6;
   padding: 8px;
   text-align: center;
+  border: 1px solid #9bc2e6;
 }
 
 th {
-  background-color: $primaryColor;
-  color: #ffffff;
   text-transform: capitalize;
+  color: #fff;
+  background-color: $primaryColor;
 }
 
 td {
@@ -79,4 +79,11 @@ tbody tr:nth-child(odd) {
 
 tbody tr:nth-child(even) {
   background-color: #b4daf2; /* фон четных строк */
+}
+
+a {
+  text-decoration: none;
+  &:hover {
+    color: #f0bb0c;
+  }
 }

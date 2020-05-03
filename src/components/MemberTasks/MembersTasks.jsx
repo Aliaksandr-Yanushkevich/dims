@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import TableHeader from '../common/TableHeader/TableHeader';
 import firebase from 'firebase';
+import PropTypes from 'prop-types';
+import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
 import MemberCurrentTasks from './MemberCurrentTasks';
-// import { NavLink } from 'react-router-dom';
-// import style from './MembersProgress.module.scss';
 
 class MemberTasks extends Component {
   constructor() {
@@ -18,10 +17,11 @@ class MemberTasks extends Component {
   }
 
   componentDidMount() {
-    if (this.props.userId) {
+    const { userId } = this.props;
+    if (userId) {
       this.db
         .collection('dims')
-        .doc(this.props.userId)
+        .doc(userId)
         .get()
         .then((querySnapshot) => {
           this.setState({
@@ -34,8 +34,9 @@ class MemberTasks extends Component {
   }
 
   render() {
-    if (!this.state.tasks) return <Preloader />;
-    const tasksArr = this.state.tasks.map((el) => (
+    const { tasks, firstName, lastName } = this.state;
+    if (!tasks) return <Preloader />;
+    const tasksArr = tasks.map((el) => (
       <MemberCurrentTasks
         taskId={el.taskId}
         taskName={el.taskName}
@@ -46,7 +47,7 @@ class MemberTasks extends Component {
     return (
       <>
         <h1>Member&apos;s Task Manage Grid</h1>
-        <h2>{`Hi, dear ${this.state.firstName} ${this.state.lastName}! This is your current tasks:`}</h2>
+        <h2>{`Hi, dear ${firstName} ${lastName}! This is your current tasks:`}</h2>
         <table>
           <tbody>
             <TableHeader titleArr={['#', 'name', 'start', 'deadline', 'status', '', 'available only for admin']} />
@@ -57,5 +58,8 @@ class MemberTasks extends Component {
     );
   }
 }
+
+MemberTasks.propTypes = { userId: PropTypes.string };
+MemberTasks.defaultProps = { userId: 'abz' };
 
 export default MemberTasks;

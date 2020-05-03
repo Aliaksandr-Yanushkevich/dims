@@ -1,8 +1,6 @@
 import React from 'react';
-// import { NavLink } from 'react-router-dom';
-// import style from './TasksTracks.module.scss';
 
-const TasksTracks = (props) => {
+const TasksTracks = () => {
   return <div>TasksTracks</div>;
 };
 

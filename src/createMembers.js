@@ -14,11 +14,11 @@ firebase.initializeApp({
 });
 const createMembers = () => {
   const randomMembers = [];
-  for (let i = 1; i < 101; i++) {
+  for (let i = 1; i < 21; i += 1) {
     let education;
     let direction;
-    let randEducation = Math.random();
-    let randDirection = Math.random();
+    const randEducation = Math.random();
+    const randDirection = Math.random();
 
     const tasks = Array(
       faker.random.number({
@@ -38,10 +38,7 @@ const createMembers = () => {
         };
       });
 
-    const randomDate = faker.date.between('2020-01-01', '2020-05-01');
-    const startDate = `${randomDate.getDate() < 10 ? '0' + randomDate.getDate() : randomDate.getDate()}.${
-      randomDate.getMonth() < 9 ? '0' + (randomDate.getMonth() + 1) : randomDate.getMonth() + 1
-    }.${randomDate.getFullYear()}`;
+    const startDate = faker.date.between('2020-01-01', '2020-05-01');
 
     if (randEducation > 0 && randEducation < 0.25) {
       education = 'PSU';
@@ -64,17 +61,17 @@ const createMembers = () => {
     }
 
     randomMembers.push({
-      indexNumber: i,
+      userId: i,
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
-      direction: direction,
-      education: education,
-      startDate: startDate,
+      direction,
+      education,
+      startDate,
       age: faker.random.number({
         min: 20,
         max: 40,
       }),
-      tasks: tasks,
+      tasks,
     });
   }
   return randomMembers;
@@ -85,7 +82,7 @@ createMembers().forEach((el) => {
     .firestore()
     .collection('dims')
     .add({
-      indexNumber: el.indexNumber,
+      userId: el.userId,
       firstName: el.firstName,
       lastName: el.lastName,
       direction: el.direction,
@@ -94,10 +91,10 @@ createMembers().forEach((el) => {
       age: el.age,
       tasks: el.tasks,
     })
-    .then(function(docRef) {
+    .then((docRef) => {
       console.log('Document written with ID: ', docRef.id);
     })
-    .catch(function(error) {
+    .catch((error) => {
       console.error('Error adding document: ', error);
     });
 });

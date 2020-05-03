@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-// import { NavLink } from 'react-router-dom';
-// import style from './Members.module.scss';
+import React from 'react';
+import PropTypes from 'prop-types';
 import TableHeader from '../common/TableHeader/TableHeader';
 import MemberData from './MemberData';
 import Preloader from '../common/Preloader/Preloader';
-const Members = (props) => {
+
+const Members = ({ membersArr, setCurrentUser }) => {
   {
-    if (!props.membersArr) return <Preloader />;
+    if (!membersArr) return <Preloader />;
   }
-  const memberRows = props.membersArr.map((el) => (
+  const memberRows = membersArr.map((el) => (
     <MemberData
-      i={el.indexNumber}
+      index={el.index}
       firstName={el.firstName}
       lastName={el.lastName}
       age={el.age}
@@ -18,20 +18,42 @@ const Members = (props) => {
       education={el.education}
       startDate={el.startDate}
       userId={el.userId}
-      setCurrentUser={props.setCurrentUser}
+      setCurrentUser={setCurrentUser}
     />
   ));
   return (
     <>
       <h1>Members Manage Grid</h1>
       <table>
-        <tbody>
-          <TableHeader titleArr={['#', 'full name', 'direction', 'education', 'start', 'age', '']} />
-          {memberRows}
-        </tbody>
+        <thead>
+          <tr>
+            <TableHeader titleArr={['#', 'full name', 'direction', 'education', 'start', 'age', '']} />
+          </tr>
+        </thead>
+        <tbody>{memberRows}</tbody>
       </table>
     </>
   );
+};
+
+Members.propTypes = {
+  membersArr: PropTypes.arrayOf(PropTypes.object),
+  setCurrentUser: PropTypes.func,
+};
+
+Members.defaultProps = {
+  membersArr: [
+    {
+      index: 1,
+      firstName: 'Ivan',
+      lastName: 'Ivanov',
+      age: 22,
+      direction: 'Java',
+      education: 'BSUIR',
+      startDate: new Date('December 17, 1995 03:24:00'),
+      userId: 'XcAp',
+    },
+  ],
 };
 
 export default Members;

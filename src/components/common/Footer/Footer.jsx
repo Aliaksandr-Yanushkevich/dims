@@ -12,7 +12,7 @@ const NavBar = () => {
           <FontAwesomeIcon icon={faGithub} size='2x' className={style.icon} />
         </a>
       </div>
-      <p>Dev Incubator 2020</p>
+      <a href='http://devincubator.by/'>Dev Incubator 2020</a>
     </footer>
   );
 };

@@ -12,6 +12,7 @@
     "faker": "^4.1.0",
     "firebase": "^7.14.2",
     "node-sass": "^4.14.0",
+    "prop-types": "^15.7.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-router-dom": "^5.1.2",
@@ -22,7 +23,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "format": "prettier --write \"src/**/*.+(js|jsx|json|css|md)\"",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "scssComb": "csscomb src/"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -40,6 +42,7 @@
     ]
   },
   "devDependencies": {
+    "csscomb": "^4.3.0",
     "eslint-config-airbnb": "18.1.0",
     "eslint-config-prettier": "6.10.1",
     "eslint-plugin-jsx-a11y": "6.2.3",
