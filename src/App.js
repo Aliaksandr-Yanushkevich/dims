@@ -26,6 +26,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    document.title = 'DIMS';
     let dbMembers = [];
     this.db
       .collection('dims')
