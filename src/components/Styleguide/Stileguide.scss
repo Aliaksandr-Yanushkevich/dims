@@ -1,45 +1,76 @@
-$primaryColor: #964c63;
+$primaryColor: #0080a4;
 $secondaryColor: #f2f2f2;
-$boxColor: #ffffff;
 $font: 'Roboto', Sans-serif;
-$titleColor: #002439;
-$textColor: #7a7aa5;
+$textColor: #383436;
 $activeColor: #964c63;
 $border: 1px solid #dcc2cb;
 $activeTextWeight: 700;
 
-h1 {
-  color: #000000;
-  font-weight: 800;
-}
-
+h1,
 h2 {
-  color: $titleColor;
+  color: $textColor;
+  font-family: $font;
+  text-align: center;
 }
 
-.button {
-  background-color: $primaryColor;
-  color: $secondaryColor;
-  border: none;
-  border-radius: 5px;
-  padding: 8px 16px;
+button {
+  background-color: $secondaryColor;
+  color: $primaryColor;
+  border: 1px solid $primaryColor;
+  padding: 1px 16px;
   font-weight: 800;
-  &:disabled {
-    background-color: #dcc2cb;
+  &:hover {
+    background-color: $primaryColor;
+    color: $secondaryColor;
   }
 }
 
-ul {
-  list-style-type: none;
+.dangerousButton {
+  // background-color: #ffdce5;
+  color: #ff0800;
+  border: 1px solid #ff0800;
+  &:hover {
+    background-color: #ff0800;
+    color: #ffdce5;
+  }
 }
 
-li a {
-  text-decoration: none;
-  font-size: 1.2rem;
+table {
+  border-collapse: separate;
+  border-spacing: 2px;
+  margin: 0 auto;
+  font-family: $font;
   color: $textColor;
+  font-weight: 400;
 }
 
-li a.active {
-  color: #964c63;
-  font-weight: $activeTextWeight;
+tbody {
+  display: table-row-group;
+  vertical-align: middle;
+  border-color: inherit;
+}
+
+th,
+td {
+  border: 1px solid #9bc2e6;
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  background-color: $primaryColor;
+  color: #ffffff;
+}
+
+td {
+  display: table-cell;
+  vertical-align: inherit;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #ddebf7; /* фон нечетных строк */
+}
+
+tbody tr:nth-child(even) {
+  background-color: #b4daf2; /* фон четных строк */
 }

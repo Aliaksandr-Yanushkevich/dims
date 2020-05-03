@@ -23,8 +23,13 @@ const Members = (props) => {
   ));
   return (
     <>
-      <TableHeader titleArr={['#', 'full name', 'direction', 'education', 'start', 'age', '']} />
-      {memberRows}
+      <h1>Members Manage Grid</h1>
+      <table>
+        <tbody>
+          <TableHeader titleArr={['#', 'full name', 'direction', 'education', 'start', 'age', '']} />
+          {memberRows}
+        </tbody>
+      </table>
     </>
   );
 };

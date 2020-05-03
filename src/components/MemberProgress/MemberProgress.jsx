@@ -39,8 +39,12 @@ class MemberProgres extends Component {
     return (
       <>
         <h2>{`${this.state.firstName} ${this.state.lastName} progress`}</h2>
-        <TableHeader titleArr={['#', 'task', 'note', 'date']} />
-        {tasksProgressArr}
+        <table>
+          <tbody>
+            <TableHeader titleArr={['#', 'task', 'note', 'date']} />
+            {tasksProgressArr}
+          </tbody>
+        </table>
       </>
     );
   }
