@@ -5,7 +5,7 @@ import MemberProgress from './components/MemberProgress/MemberProgress';
 import MemberTasks from './components/MemberTasks/MembersTasks';
 import Tasks from './components/Tasks/Tasks';
 import TasksTracks from './components/TasksTracks/TasksTracks';
-import NavBar from './components/Navbar/Navbar';
+import Footer from './components/Footer/Footer';
 import { BrowserRouter, Route } from 'react-router-dom';
 import style from './App.module.scss';
 import firebase from 'firebase';
@@ -77,7 +77,7 @@ class App extends Component {
             <Route path='/tasks' render={() => <Tasks />} />
             <Route path='/tasks_tracks' render={() => <TasksTracks />} />
           </div>
-          <NavBar />
+          <Footer />
         </div>
       </BrowserRouter>
     );

@@ -1,13 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import style from './Header.module.scss';
-import logo from './logo.png';
+import logo from '../common/logo.png';
 
 const Header = (props) => {
   return (
     <header className={style.header}>
       <div className={style.headerWrapper}>
-        <NavLink to='/'>
+        <NavLink to='/members'>
           <img src={logo} alt='logo' />
         </NavLink>
         <div className={style.loginBlock}>
