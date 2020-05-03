@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import firebase from 'firebase';
 import Header from './components/common/Header/Header';
 import Members from './components/Members/Members';
@@ -69,6 +69,7 @@ class App extends Component {
         <div className={style.app_wrapper}>
           <Header />
           <div className={style.app_wrapper_content}>
+            <Redirect from='/' to='/members' />
             <Route
               path='/members'
               render={() => <Members membersArr={members} setCurrentUser={this.setCurrentUser} />}
