@@ -1,10 +1,10 @@
-@import '../Styleguide/Stileguide.scss';
+@import '../../styleguide/styleguide.scss';
 
 .buttonWrapper {
   display: grid;
   grid-template-rows: 1fr;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 0.5rem;
 }
 
 .buttonWrapper button {

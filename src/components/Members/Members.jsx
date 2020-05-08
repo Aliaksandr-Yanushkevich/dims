@@ -3,22 +3,23 @@ import PropTypes from 'prop-types';
 import TableHeader from '../common/TableHeader/TableHeader';
 import MemberData from './MemberData';
 import Preloader from '../common/Preloader/Preloader';
+import { membersTitle } from '../../constants';
 
-const Members = ({ membersArr, setCurrentUser }) => {
-  {
-    if (!membersArr) return <Preloader />;
-  }
-  const memberRows = membersArr.map((el) => (
+const Members = ({ membersArray, setCurrentUser, createUsers }) => {
+  if (!membersArray) return <Preloader />;
+  const memberRows = membersArray.map((member, index) => (
     <MemberData
-      index={el.index}
-      firstName={el.firstName}
-      lastName={el.lastName}
-      age={el.age}
-      direction={el.direction}
-      education={el.education}
-      startDate={el.startDate}
-      userId={el.userId}
+      key={index.toString()}
+      index={index + 1}
+      firstName={member.firstName}
+      lastName={member.lastName}
+      age={member.age}
+      direction={member.direction}
+      education={member.education}
+      startDate={member.startDate}
+      userId={member.userId}
       setCurrentUser={setCurrentUser}
+      createUsers={createUsers}
     />
   ));
   return (
@@ -27,7 +28,7 @@ const Members = ({ membersArr, setCurrentUser }) => {
       <table>
         <thead>
           <tr>
-            <TableHeader titleArr={['#', 'full name', 'direction', 'education', 'start', 'age', '']} />
+            <TableHeader titleArray={membersTitle} />
           </tr>
         </thead>
         <tbody>{memberRows}</tbody>
@@ -37,12 +38,24 @@ const Members = ({ membersArr, setCurrentUser }) => {
 };
 
 Members.propTypes = {
-  membersArr: PropTypes.arrayOf(PropTypes.object),
+  membersArray: PropTypes.arrayOf(
+    PropTypes.shape({
+      index: PropTypes.number,
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+      age: PropTypes.number,
+      direction: PropTypes.string,
+      education: PropTypes.string,
+      startDate: PropTypes.instanceOf(Date),
+      userId: PropTypes.string,
+    }),
+  ),
   setCurrentUser: PropTypes.func,
+  createUsers: PropTypes.func,
 };
 
 Members.defaultProps = {
-  membersArr: [
+  membersArray: [
     {
       index: 1,
       firstName: 'Ivan',
@@ -51,7 +64,7 @@ Members.defaultProps = {
       direction: 'Java',
       education: 'BSUIR',
       startDate: new Date('December 17, 1995 03:24:00'),
-      userId: 'XcAp',
+      userId: 'fLFWTByHgY6EZlalpay2',
     },
   ],
 };

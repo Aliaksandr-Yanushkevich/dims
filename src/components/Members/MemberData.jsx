@@ -1,42 +1,33 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import style from './Members.module.scss';
+import dateToString from '../common/dateToString';
+import styles from './Members.module.scss';
+import Button from '../Button/Button';
 
 const MemberData = ({ index, firstName, lastName, direction, education, startDate, age, userId, setCurrentUser }) => {
   return (
     <tr key={index}>
       <td>{index}</td>
-      <td>
-        {firstName}
-        {lastName}
-      </td>
+      <td>{`${firstName} ${lastName}`}</td>
       <td>{direction}</td>
       <td>{education}</td>
-      <td>
-        {`${startDate.getDate() < 10 ? `0${startDate.getDate()}` : startDate.getDate()}.${
-          startDate.getMonth() < 9 ? `0${startDate.getMonth() + 1}` : startDate.getMonth() + 1
-        }.${startDate.getFullYear()}`}
-      </td>
+      <td>{dateToString(startDate)}</td>
       <td>{age}</td>
       <td>
-        <div className={style.buttonWrapper}>
+        <div className={styles.buttonWrapper}>
           <NavLink to='/member_progress'>
-            <button type='button' data-id={userId} onClick={setCurrentUser}>
-              Progress
-            </button>
+            <Button buttonText='Progress' dataId={userId} onClick={setCurrentUser} />
           </NavLink>
           <NavLink to='/member_tasks'>
-            <button type='button' data-id={userId} onClick={setCurrentUser}>
-              Tasks
-            </button>
+            <Button buttonText='Tasks' dataId={userId} onClick={setCurrentUser} />
           </NavLink>
-          <button type='button' data-id={userId}>
-            Edit
-          </button>
-          <button type='button' className={style.dangerousButton} data-id={userId}>
-            Delete
-          </button>
+          <NavLink to='/member_edit'>
+            <Button buttonText='Edit' dataId={userId} />
+          </NavLink>
+          <NavLink to='/member_delete'>
+            <Button buttonText='Delete' dataId={userId} onClick={setCurrentUser} className={styles.dangerousButton} />
+          </NavLink>
         </div>
       </td>
     </tr>
@@ -51,7 +42,7 @@ MemberData.propTypes = {
   education: PropTypes.string,
   startDate: PropTypes.instanceOf(Date),
   age: PropTypes.number,
-  userId: PropTypes.number,
+  userId: PropTypes.string,
   setCurrentUser: PropTypes.func,
 };
 MemberData.defaultProps = {
@@ -62,7 +53,7 @@ MemberData.defaultProps = {
   education: 'PSU',
   startDate: new Date('December 17, 1995 03:24:00'),
   age: 28,
-  userId: 1,
+  userId: '4iKBUOYjXypfQT9Uv9JA',
 };
 
 export default MemberData;

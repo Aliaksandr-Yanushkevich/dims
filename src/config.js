@@ -1,12 +1,12 @@
-const DB_CONFIG = {
-  apiKey: 'AIzaSyDV4IDfONrReT7uzjBifh3x_aGX0XCwlvY',
-  authDomain: 'dims-cffff.firebaseapp.com',
-  databaseURL: 'https://dims-cffff.firebaseio.com',
-  projectId: 'dims-cffff',
-  storageBucket: 'dims-cffff.appspot.com',
-  messagingSenderId: '582615367771',
-  appId: '1:582615367771:web:361ecb0042b66239c9bf7e',
-  measurementId: 'G-HC1Q9WCWBJ',
+const config = {
+  apiKey: process.env.REACT_APP_FIREBASE_APIKEY,
+  authDomain: `${process.env.REACT_APP_FIREBASE_PROJECTID}.firebaseapp.com`,
+  databaseURL: `https://${process.env.REACT_APP_FIREBASE_PROJECTID}.firebaseio.com`,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECTID,
+  storageBucket: `${process.env.REACT_APP_FIREBASE_PROJECTID}.appspot.com`,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_SENDERID,
+  appId: process.env.REACT_APP_FIREBASE_APPID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
-export default DB_CONFIG;
+export default config;

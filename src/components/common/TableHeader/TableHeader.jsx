@@ -1,8 +1,8 @@
 import React from 'react';
 
-const TableHeader = ({ titleArr }) => {
-  return titleArr.map((el, index) => {
-    return <th key={index}>{el}</th>;
+const TableHeader = ({ titleArray }) => {
+  return titleArray.map((title, index) => {
+    return <th key={index.toString()}>{title}</th>;
   });
 };
 

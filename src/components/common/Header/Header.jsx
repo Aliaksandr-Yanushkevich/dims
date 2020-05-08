@@ -1,16 +1,16 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import style from './Header.module.scss';
+import styles from './Header.module.scss';
 import logo from '../logo-white.png';
 
 const Header = ({ isAuth, login, logout }) => {
   return (
-    <header className={style.header}>
+    <header className={styles.header}>
       <NavLink to='/members'>
         <img src={logo} alt='logo' />
       </NavLink>
-      <div className={style.loginBlock}>
+      <div className={styles.loginBlock}>
         {isAuth ? (
           <div>
             {login}

@@ -1,6 +1,6 @@
-@import './components/Styleguide/Stileguide.scss';
+@import './styleguide/styleguide.scss';
 
-.app_wrapper {
+.wrapper {
   display: grid;
   max-width: 1440px;
   margin: 0 auto;
@@ -8,12 +8,12 @@
     'h'
     'c'
     'f';
-  grid-template-rows: 60px 1fr 60px;
+  grid-template-rows: 4rem 1fr 4rem;
   grid-template-columns: 1fr;
 }
 
-.app_wrapper_content {
-  padding: 20px;
+.contentWrapper {
+  padding: 1.5rem;
   background-color: $secondaryColor;
 
   grid-area: c;
