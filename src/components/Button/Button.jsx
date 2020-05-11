@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Button = ({ buttonText, dataId, className, onClick }) => (
-  <button type='button' data-id={dataId} className={className} onClick={onClick}>
+const Button = ({ id, buttonText, dataId, className, onClick }) => (
+  <button id={id} type='button' data-id={dataId} className={className} onClick={onClick}>
     {buttonText}
   </button>
 );
 
 Button.propTypes = {
+  id: PropTypes.string,
   buttonText: PropTypes.string,
   className: PropTypes.string,
   dataId: PropTypes.string,

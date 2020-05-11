@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import Header from './components/common/Header/Header';
 import Members from './components/Members/Members';
+import MemberPage from './components/MemberPage/MemberPage';
 import MemberProgress from './components/MemberProgress/MemberProgress';
 import MemberTasks from './components/MemberTasks/MembersTasks';
 import Tasks from './components/Tasks/Tasks';
@@ -38,21 +39,6 @@ class App extends Component {
     });
   };
 
-  createUsers = (amount) => {
-    firebaseApi.createFakeMembers(amount).then(() => {
-      firebaseApi
-        .getMembers()
-        .then((members) =>
-          this.setState({
-            members,
-          }),
-        )
-        .catch(() => {
-          throw new Error('Error receiving data');
-        });
-    });
-  };
-
   render() {
     document.title = 'DIMS';
     const { members, currentUserId } = this.state;
@@ -64,14 +50,13 @@ class App extends Component {
             <Redirect from='/' to='/members' />
             <Route
               path='/members'
-              render={() => (
-                <Members membersArray={members} setCurrentUser={this.setCurrentUser} createUsers={this.createUsers} />
-              )}
+              render={() => <Members membersArray={members} setCurrentUser={this.setCurrentUser} />}
             />
             <Route path='/member_progress:userId?' component={() => <MemberProgress userId={currentUserId} />} />
             <Route path='/member_tasks:userId?' component={() => <MemberTasks userId={currentUserId} />} />
             <Route path='/tasks' component={() => <Tasks />} />
             <Route path='/tasks_tracks' component={() => <TasksTracks />} />
+            <Route path='/member_page' component={() => <MemberPage userId={currentUserId} />} />
           </div>
           <Footer />
         </div>

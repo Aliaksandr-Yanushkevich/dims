@@ -5,7 +5,18 @@ import dateToString from '../common/dateToString';
 import styles from './Members.module.scss';
 import Button from '../Button/Button';
 
-const MemberData = ({ index, firstName, lastName, direction, education, startDate, age, userId, setCurrentUser }) => {
+const MemberData = ({
+  index,
+  firstName,
+  lastName,
+  direction,
+  education,
+  startDate,
+  age,
+  userId,
+  setCurrentUser,
+  deleteMember,
+}) => {
   return (
     <tr key={index}>
       <td>{index}</td>
@@ -22,11 +33,16 @@ const MemberData = ({ index, firstName, lastName, direction, education, startDat
           <NavLink to='/member_tasks'>
             <Button buttonText='Tasks' dataId={userId} onClick={setCurrentUser} />
           </NavLink>
-          <NavLink to='/member_edit'>
-            <Button buttonText='Edit' dataId={userId} />
+          <NavLink to='/member_page'>
+            <Button buttonText='Edit' dataId={userId} onClick={setCurrentUser} />
           </NavLink>
           <NavLink to='/member_delete'>
-            <Button buttonText='Delete' dataId={userId} onClick={setCurrentUser} className={styles.dangerousButton} />
+            <Button
+              buttonText='Delete'
+              dataId={userId}
+              onClick={() => deleteMember(userId)}
+              className={styles.dangerousButton}
+            />
           </NavLink>
         </div>
       </td>
@@ -44,6 +60,8 @@ MemberData.propTypes = {
   age: PropTypes.number,
   userId: PropTypes.string,
   setCurrentUser: PropTypes.func,
+  editMember: PropTypes.func,
+  deleteMember: PropTypes.func,
 };
 MemberData.defaultProps = {
   index: 1,

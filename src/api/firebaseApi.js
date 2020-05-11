@@ -1,10 +1,12 @@
 import firebase from './firebase';
 import createRandomMembers from '../createRandomMembers';
+import dateToStringForInput from '../components/common/dateToStringForInput';
 
 const firestore = firebase.firestore();
+const collection = 'dims';
 const getData = () => {
   return firestore
-    .collection('dims')
+    .collection(collection)
     .orderBy('firstName')
     .get();
 };
@@ -31,13 +33,27 @@ const firebaseApi = {
       return members;
     });
   },
+  getMemberData(userId) {
+    return firestore
+      .collection(collection)
+      .doc(userId)
+      .get()
+      .then((querySnapshot) => ({
+        firstName: querySnapshot.data().firstName,
+        lastName: querySnapshot.data().lastName,
+        age: querySnapshot.data().age,
+        direction: querySnapshot.data().direction,
+        education: querySnapshot.data().education,
+        startDate: dateToStringForInput(querySnapshot.data().startDate.toDate()),
+        tasks: querySnapshot.data().tasks,
+      }));
+  },
   createFakeMembers(amount) {
     return new Promise((resolve) => {
       const members = createRandomMembers(amount);
       members.forEach((member) => {
-        firebase
-          .firestore()
-          .collection('dims')
+        firestore
+          .collection(collection)
           .add({
             firstName: member.firstName,
             lastName: member.lastName,
@@ -59,7 +75,7 @@ const firebaseApi = {
   },
   getUserTasks(userId) {
     return firestore
-      .collection('dims')
+      .collection(collection)
       .doc(userId)
       .get()
       .then((querySnapshot) => ({
@@ -67,6 +83,41 @@ const firebaseApi = {
         lastName: querySnapshot.data().lastName,
         tasks: querySnapshot.data().tasks,
       }));
+  },
+  createMember(memberData) {
+    const { firstName, lastName, age, direction, education, startDate } = memberData;
+    return firestore
+      .collection('dims')
+      .add({
+        firstName,
+        lastName,
+        age,
+        direction,
+        education,
+        startDate: new Date(startDate),
+        task: [],
+      })
+      .then((docRef) => {
+        console.log('Document written with ID: ', docRef.id);
+      })
+      .catch((error) => {
+        console.error('Error adding document: ', error);
+      });
+  },
+  updateMember(userId, updatedData) {
+    return firestore
+      .collection(collection)
+      .doc(userId)
+      .update(updatedData);
+  },
+  deleteMember(userId) {
+    return firestore
+      .collection(collection)
+      .doc(userId)
+      .delete()
+      .then(() => {
+        console.log('Member deleted successfully');
+      });
   },
 };
 

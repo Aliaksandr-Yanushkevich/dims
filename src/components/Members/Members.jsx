@@ -1,41 +1,63 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { NavLink } from 'react-router-dom';
+import firebaseApi from '../../api/firebaseApi';
 import TableHeader from '../common/TableHeader/TableHeader';
 import MemberData from './MemberData';
 import Preloader from '../common/Preloader/Preloader';
 import { membersTitle } from '../../constants';
+import Button from '../Button/Button';
+import styles from './Members.module.scss';
 
-const Members = ({ membersArray, setCurrentUser, createUsers }) => {
-  if (!membersArray) return <Preloader />;
-  const memberRows = membersArray.map((member, index) => (
-    <MemberData
-      key={index.toString()}
-      index={index + 1}
-      firstName={member.firstName}
-      lastName={member.lastName}
-      age={member.age}
-      direction={member.direction}
-      education={member.education}
-      startDate={member.startDate}
-      userId={member.userId}
-      setCurrentUser={setCurrentUser}
-      createUsers={createUsers}
-    />
-  ));
-  return (
-    <>
-      <h1>Members Manage Grid</h1>
-      <table>
-        <thead>
-          <tr>
-            <TableHeader titleArray={membersTitle} />
-          </tr>
-        </thead>
-        <tbody>{memberRows}</tbody>
-      </table>
-    </>
-  );
-};
+class Members extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  deleteMember = (userId) => {
+    firebaseApi.deleteMember(userId).catch(() => {
+      throw new Error('Error removing member');
+    });
+  };
+
+  render() {
+    const { membersArray, setCurrentUser } = this.props;
+    if (!membersArray) return <Preloader />;
+    const memberRows = membersArray.map((member, index) => (
+      <MemberData
+        key={index.toString()}
+        index={index + 1}
+        firstName={member.firstName}
+        lastName={member.lastName}
+        age={member.age}
+        direction={member.direction}
+        education={member.education}
+        startDate={member.startDate}
+        userId={member.userId}
+        setCurrentUser={setCurrentUser}
+        deleteMember={this.deleteMember}
+      />
+    ));
+    return (
+      <>
+        <h1>Members Manage Grid</h1>
+        <div className={styles.tableWrapper}>
+          <NavLink to='/member_page'>
+            <Button id={styles.register} dataId='newMember' buttonText='Register' onClick={setCurrentUser} />
+          </NavLink>
+          <table>
+            <thead>
+              <tr>
+                <TableHeader titleArray={membersTitle} />
+              </tr>
+            </thead>
+            <tbody>{memberRows}</tbody>
+          </table>
+        </div>
+      </>
+    );
+  }
+}
 
 Members.propTypes = {
   membersArray: PropTypes.arrayOf(
@@ -51,7 +73,7 @@ Members.propTypes = {
     }),
   ),
   setCurrentUser: PropTypes.func,
-  createUsers: PropTypes.func,
+  deleteMember: PropTypes.func,
 };
 
 Members.defaultProps = {
