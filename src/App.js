@@ -10,6 +10,7 @@ import TasksTracks from './components/TasksTracks/TasksTracks';
 import Footer from './components/common/Footer/Footer';
 import firebaseApi from './api/firebaseApi';
 import styles from './App.module.scss';
+import TaskPage from './components/TaskPage/TaskPage';
 
 class App extends Component {
   constructor() {
@@ -17,6 +18,7 @@ class App extends Component {
     this.state = {
       members: null,
       currentUserId: null,
+      currentTaskId: null,
     };
   }
 
@@ -39,9 +41,15 @@ class App extends Component {
     });
   };
 
+  setCurrentTask = (e) => {
+    this.setState({
+      currentTaskId: e.currentTarget.dataset.taskid,
+    });
+  };
+
   render() {
     document.title = 'DIMS';
-    const { members, currentUserId } = this.state;
+    const { members, currentUserId, currentTaskId } = this.state;
     return (
       <BrowserRouter>
         <div className={styles.wrapper}>
@@ -52,11 +60,20 @@ class App extends Component {
               path='/members'
               render={() => <Members membersArray={members} setCurrentUser={this.setCurrentUser} />}
             />
-            <Route path='/member_progress:userId?' component={() => <MemberProgress userId={currentUserId} />} />
-            <Route path='/member_tasks:userId?' component={() => <MemberTasks userId={currentUserId} />} />
-            <Route path='/tasks' component={() => <Tasks />} />
+            <Route
+              path='/member_progress:userId?'
+              component={() => (
+                <MemberProgress userId={currentUserId} taskId={currentTaskId} setCurrentTask={this.setCurrentTask} />
+              )}
+            />
+            <Route
+              path='/member_tasks:userId?'
+              component={() => <MemberTasks userId={currentUserId} taskId={currentTaskId} />}
+            />
+            <Route path='/tasks' component={() => <Tasks taskId={currentTaskId} />} />
             <Route path='/tasks_tracks' component={() => <TasksTracks />} />
-            <Route path='/member_page' component={() => <MemberPage userId={currentUserId} />} />
+            <Route path='/member_page' component={() => <MemberPage userId={currentUserId} taskId={currentTaskId} />} />
+            <Route path='/task_page' component={() => <TaskPage userId={currentUserId} taskId={currentTaskId} />} />
           </div>
           <Footer />
         </div>

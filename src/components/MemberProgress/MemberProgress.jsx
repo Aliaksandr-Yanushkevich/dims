@@ -41,7 +41,12 @@ class MemberProgres extends Component {
     }
 
     const tasksArray = tasks.map((task) => (
-      <MemberProgressData taskId={task.taskId} taskName={task.taskName} taskDescription={task.description} />
+      <MemberProgressData
+        taskId={task.taskId}
+        taskName={task.taskName}
+        taskDescription={task.description}
+        setCurrentTask={this.props.setCurrentTask}
+      />
     ));
     return (
       <>

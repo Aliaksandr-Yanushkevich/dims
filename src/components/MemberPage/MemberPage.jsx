@@ -100,7 +100,7 @@ class MemberPage extends React.Component {
         <form action=''>
           <h1>Register Member</h1>
           <p>
-            <label for='firstname'>First Name: </label>
+            <label htmlFor='firstname'>First Name: </label>
             <input
               id='firstName'
               type='text'
@@ -111,7 +111,7 @@ class MemberPage extends React.Component {
             />
           </p>
           <p>
-            <label for='lastName'>Last Name: </label>
+            <label htmlFor='lastName'>Last Name: </label>
             <input
               id='lastName'
               type='text'
@@ -122,11 +122,11 @@ class MemberPage extends React.Component {
             />
           </p>
           <p>
-            <label for='age'>Age: </label>
+            <label htmlFor='age'>Age: </label>
             <input id='age' type='text' placeholder='Age' required onChange={this.onChange} value={age} />
           </p>
           <p>
-            <label for='education'>Education: </label>
+            <label htmlFor='education'>Education: </label>
             <input
               id='education'
               type='text'
@@ -137,7 +137,7 @@ class MemberPage extends React.Component {
             />
           </p>
           <p>
-            <label for='direction'>Direction: </label>
+            <label htmlFor='direction'>Direction: </label>
             <select
               id='direction'
               name='direction'
@@ -152,7 +152,7 @@ class MemberPage extends React.Component {
             </select>
           </p>
           <p>
-            <label for='startDate'>Start Date: </label>
+            <label htmlFor='startDate'>Start Date: </label>
             <input id='startDate' type='date' required onChange={this.onChange} value={startDate} />
           </p>
         </form>

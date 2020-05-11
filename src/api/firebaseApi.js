@@ -10,6 +10,9 @@ const getData = () => {
     .orderBy('firstName')
     .get();
 };
+const updateData = (userId) => {
+  return firestore.collection(collection).doc(userId);
+};
 
 const firebaseApi = {
   getMembers() {
@@ -33,6 +36,23 @@ const firebaseApi = {
       return members;
     });
   },
+  getNames() {
+    let memberNames = [];
+    return getData().then((members) => {
+      members.forEach((member) => {
+        memberNames = [
+          ...memberNames,
+          {
+            firstName: member.data().firstName,
+            lastName: member.data().lastName,
+            userId: member.ref.path.substring(member.ref.path.indexOf('/') + 1),
+          },
+        ];
+      });
+      return memberNames;
+    });
+  },
+
   getMemberData(userId) {
     return firestore
       .collection(collection)
@@ -104,11 +124,11 @@ const firebaseApi = {
         console.error('Error adding document: ', error);
       });
   },
-  updateMember(userId, updatedData) {
-    return firestore
-      .collection(collection)
-      .doc(userId)
-      .update(updatedData);
+  updateMember(userId, updatedMemberData) {
+    return updateData(userId).update(updatedMemberData);
+  },
+  updateTasks(userId, tasks) {
+    return updateData(userId).update(tasks);
   },
   deleteMember(userId) {
     return firestore

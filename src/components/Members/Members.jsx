@@ -45,6 +45,7 @@ class Members extends React.Component {
           <NavLink to='/member_page'>
             <Button id={styles.register} dataId='newMember' buttonText='Register' onClick={setCurrentUser} />
           </NavLink>
+          {/* <button type='button' onClick={() => firebaseApi.createFakeMembers(20)}>Create members</button> */}
           <table>
             <thead>
               <tr>

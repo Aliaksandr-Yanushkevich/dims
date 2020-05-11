@@ -30,7 +30,7 @@ const createRandomMembers = (amount) => {
       .fill()
       .map((task, index) => {
         return {
-          taskId: index + 1,
+          taskId: index,
           taskName: faker.hacker.abbreviation(),
           description: faker.hacker.phrase(),
           startDate: faker.date.between('2020-01-01', '2020-06-01'),
