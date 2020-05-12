@@ -6,7 +6,8 @@ import MemberPage from './components/MemberPage/MemberPage';
 import MemberProgress from './components/MemberProgress/MemberProgress';
 import MemberTasks from './components/MemberTasks/MembersTasks';
 import Tasks from './components/Tasks/Tasks';
-import TasksTracks from './components/TasksTracks/TasksTracks';
+import TaskTrack from './components/TaskTrack/TaskTrack';
+import TaskTrackManagement from './components/TaskTrackManagement/TaskTrackManagement';
 import Footer from './components/common/Footer/Footer';
 import firebaseApi from './api/firebaseApi';
 import styles from './App.module.scss';
@@ -18,8 +19,8 @@ class App extends Component {
     super();
     this.state = {
       members: null,
-      currentUserId: null,
-      currentTaskId: null,
+      currentUserId: 'YQxTrugRvVGmwfVtvpPb',
+      currentTaskId: 0,
     };
   }
 
@@ -44,7 +45,7 @@ class App extends Component {
 
   setCurrentTask = (e) => {
     this.setState({
-      currentTaskId: e.currentTarget.dataset.taskid,
+      currentTaskId: +e.currentTarget.dataset.taskid,
     });
   };
 
@@ -69,16 +70,40 @@ class App extends Component {
             />
             <Route
               path='/member_tasks:userId?'
-              component={() => <MemberTasks userId={currentUserId} taskId={currentTaskId} />}
+              component={() => (
+                <MemberTasks userId={currentUserId} taskId={currentTaskId} setCurrentTask={this.setCurrentTask} />
+              )}
             />
             <Route path='/tasks' component={() => <Tasks taskId={currentTaskId} />} />
-            <Route path='/tasks_tracks' component={() => <TasksTracks />} />
+            {/* <Route path='/tasks_tracks' component={() => <TasksTracks />} /> */}
             <Route path='/member_page' component={() => <MemberPage userId={currentUserId} taskId={currentTaskId} />} />
             <Route path='/task_page' component={() => <TaskPage userId={currentUserId} taskId={currentTaskId} />} />
             <Route
               path='/task_management'
               component={() => (
                 <TaskManagement
+                  userId={currentUserId}
+                  taskId={currentTaskId}
+                  setCurrentTask={this.setCurrentTask}
+                  setCurrentUser={this.setCurrentUser}
+                />
+              )}
+            />
+            <Route
+              path='/task_track_management'
+              component={() => (
+                <TaskTrackManagement
+                  userId={currentUserId}
+                  taskId={currentTaskId}
+                  setCurrentTask={this.setCurrentTask}
+                  setCurrentUser={this.setCurrentUser}
+                />
+              )}
+            />
+            <Route
+              path='/task_track'
+              component={() => (
+                <TaskTrack
                   userId={currentUserId}
                   taskId={currentTaskId}
                   setCurrentTask={this.setCurrentTask}

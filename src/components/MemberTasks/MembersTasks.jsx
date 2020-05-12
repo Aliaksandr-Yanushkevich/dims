@@ -31,6 +31,7 @@ class MemberTasks extends Component {
 
   render() {
     const { tasks, firstName, lastName } = this.state;
+    const { setCurrentTask } = this.props;
     if (!tasks) return <Preloader />;
     const tasksArr = tasks.map((task) => (
       <MemberCurrentTasks
@@ -38,6 +39,7 @@ class MemberTasks extends Component {
         taskName={task.taskName}
         startDate={task.startDate.toDate()}
         deadLineDate={task.deadLineDate.toDate()}
+        setCurrentTask={setCurrentTask}
       />
     ));
     return (

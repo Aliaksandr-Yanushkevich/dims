@@ -18,6 +18,9 @@ const Header = ({ isAuth, login, logout }) => {
         <NavLink to='/task_management'>
           <Button buttonText='Manage tasks' />
         </NavLink>
+        <NavLink to='/task_track_management'>
+          <Button buttonText='Task tracks' />
+        </NavLink>
       </div>
       <div className={styles.loginBlock}>
         {isAuth ? (

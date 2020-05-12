@@ -8,11 +8,11 @@
   padding: 1.5rem;
 }
 
-.formItem {
+.dateItem {
   display: flex;
   justify-content: space-between;
   flex-direction: row;
-  margin-top: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .buttonWrapper {
@@ -25,12 +25,4 @@
 
 .buttonWrapper button {
   width: 100%;
-}
-
-input {
-  width: 10rem;
-}
-
-select {
-  width: calc(10rem + 5px);
 }

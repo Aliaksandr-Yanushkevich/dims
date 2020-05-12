@@ -8,6 +8,7 @@ import TaskData from './TaskData';
 import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
 import dateToString from '../common/dateToString';
+import Button from '../Button/Button';
 
 class taskManagement extends React.Component {
   constructor(props) {
@@ -49,15 +50,19 @@ class taskManagement extends React.Component {
     return (
       <>
         <h1>Task management</h1>
-
-        <table>
-          <thead>
-            <tr>
-              <TableHeader titleArray={taskManagementTitle} />
-            </tr>
-          </thead>
-          <tbody>{taskRows}</tbody>
-        </table>
+        <div className={styles.tableWrapper}>
+          <NavLink to='/task_page'>
+            <Button id={styles.createTask} buttonText='Create task' />
+          </NavLink>
+          <table>
+            <thead>
+              <tr>
+                <TableHeader titleArray={taskManagementTitle} />
+              </tr>
+            </thead>
+            <tbody>{taskRows}</tbody>
+          </table>
+        </div>
       </>
     );
   }

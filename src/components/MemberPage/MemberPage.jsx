@@ -19,14 +19,16 @@ class MemberPage extends React.Component {
         direction: 'Javascript',
         startDate: null,
       },
+      isFetching: false,
     };
   }
 
   componentDidMount() {
     const { userId } = this.props;
     if (userId && userId !== 'newMember') {
+      this.setState({ isFetching: true });
       firebaseApi.getMemberData(userId).then((memberData) => {
-        this.setState({ oldData: memberData, newData: memberData });
+        this.setState({ oldData: memberData, newData: memberData, isFetching: false });
       });
     }
   }
@@ -92,14 +94,16 @@ class MemberPage extends React.Component {
 
   render() {
     const { userId } = this.props;
-    const { newData } = this.state;
+    const { newData, isFetching } = this.state;
     const { firstName, lastName, age, education, direction, startDate } = newData;
-
+    if (isFetching) {
+      return <Preloader />;
+    }
     return (
-      <>
+      <div className={styles.wrapper}>
+        {userId === 'newMember' ? <h1>Register Member</h1> : <h1>Edit Member</h1>}
         <form action=''>
-          <h1>Register Member</h1>
-          <p>
+          <div className={styles.formItem}>
             <label htmlFor='firstname'>First Name: </label>
             <input
               id='firstName'
@@ -109,8 +113,8 @@ class MemberPage extends React.Component {
               onChange={this.onChange}
               value={firstName}
             />
-          </p>
-          <p>
+          </div>
+          <div className={styles.formItem}>
             <label htmlFor='lastName'>Last Name: </label>
             <input
               id='lastName'
@@ -120,12 +124,12 @@ class MemberPage extends React.Component {
               onChange={this.onChange}
               value={lastName}
             />
-          </p>
-          <p>
+          </div>
+          <div className={styles.formItem}>
             <label htmlFor='age'>Age: </label>
             <input id='age' type='text' placeholder='Age' required onChange={this.onChange} value={age} />
-          </p>
-          <p>
+          </div>
+          <div className={styles.formItem}>
             <label htmlFor='education'>Education: </label>
             <input
               id='education'
@@ -135,8 +139,8 @@ class MemberPage extends React.Component {
               onChange={this.onChange}
               value={education}
             />
-          </p>
-          <p>
+          </div>
+          <div className={styles.formItem}>
             <label htmlFor='direction'>Direction: </label>
             <select
               id='direction'
@@ -150,30 +154,32 @@ class MemberPage extends React.Component {
               <option value='Salesforce'>Salesforce</option>
               <option value='.Net'>.Net</option>
             </select>
-          </p>
-          <p>
+          </div>
+          <div className={styles.formItem}>
             <label htmlFor='startDate'>Start Date: </label>
             <input id='startDate' type='date' required onChange={this.onChange} value={startDate} />
-          </p>
+          </div>
         </form>
-        {userId !== 'newMember' ? (
-          <Button
-            className={styles.successButton}
-            buttonText='Save'
-            onClick={() => this.updateMember(userId, this.calculateDataDifference())}
-          />
-        ) : (
-          <Button
-            className={styles.successButton}
-            buttonText='Create'
-            onClick={() => this.createMember(this.state.newData)}
-          />
-        )}
+        <div className={styles.buttonWrapper}>
+          {userId !== 'newMember' ? (
+            <Button
+              className={styles.successButton}
+              buttonText='Save'
+              onClick={() => this.updateMember(userId, this.calculateDataDifference())}
+            />
+          ) : (
+            <Button
+              className={styles.successButton}
+              buttonText='Create'
+              onClick={() => this.createMember(this.state.newData)}
+            />
+          )}
 
-        <NavLink to='/members'>
-          <Button buttonText='Back to grid' />
-        </NavLink>
-      </>
+          <NavLink to='/members'>
+            <Button buttonText='Back to grid' />
+          </NavLink>
+        </div>
+      </div>
     );
   }
 }

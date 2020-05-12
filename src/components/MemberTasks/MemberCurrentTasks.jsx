@@ -5,7 +5,7 @@ import dateToString from '../common/dateToString';
 import styles from './MembersTasks.module.scss';
 import Button from '../Button/Button';
 
-const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate }) => {
+const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate, setCurrentTask }) => {
   return (
     <tr key={taskId}>
       <td>{taskId}</td>
@@ -14,8 +14,8 @@ const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate }) => {
       <td>{dateToString(deadLineDate)}</td>
       <td>Here should be task status</td>
       <td>
-        <NavLink to='/member_track'>
-          <Button buttonText='Track' />
+        <NavLink to='/task_track'>
+          <Button buttonText='Track' taskId={taskId} onClick={setCurrentTask} />
         </NavLink>
       </td>
       <td>

@@ -4,27 +4,17 @@ import firebaseApi from '../../api/firebaseApi';
 import dateToStringForInput from '../common/dateToStringForInput';
 import MemberName from './MemberName';
 import Button from '../Button/Button';
-// import { membersTasksTitle } from '../../constants';
 import styles from './TaskPage.module.scss';
 
 class TasksPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      taskId: 0,
-      firstName: null,
-      lastName: null,
-      tasks: [
-        {
-          deadLineDate: null,
-          description: null,
-          startDate: null,
-          status: null,
-          taskId: null,
-          taskName: null,
-        },
-      ],
-      names: [],
+      names: null,
+      taskName: null,
+      description: null,
+      startDate: null,
+      deadLineDate: null,
     };
   }
 
@@ -32,11 +22,14 @@ class TasksPage extends React.Component {
     const { userId, taskId } = this.props;
     console.log(this.props);
     firebaseApi.getUserTasks(userId).then((result) => {
+      const { taskName, description, startDate, deadLineDate } = result.tasks[taskId];
+      const startDateConverted = dateToStringForInput(startDate.toDate());
+      const deadLineDateConverted = dateToStringForInput(deadLineDate.toDate());
       this.setState({
-        firstName: result.firstName,
-        lastName: result.lastName,
-        tasks: result.tasks,
-        taskId: +taskId,
+        taskName,
+        description,
+        startDate: startDateConverted,
+        deadLineDate: deadLineDateConverted,
       });
     });
     firebaseApi.getNames().then((names) => this.setState({ names }));
@@ -45,32 +38,17 @@ class TasksPage extends React.Component {
   onChange = (e) => {
     const { id, value } = e.currentTarget;
     switch (id) {
+      case 'taskName':
+        this.setState({ taskName: value });
+        break;
       case 'description':
-        this.setState({
-          newData: {
-            ...this.state.newData,
-            tasks: [
-              ...this.state.newData.tasks,
-              { ...this.state.newData.tasks[this.props.taskId], description: value },
-            ],
-          },
-        });
-        break;
-      case 'lastName':
-        this.setState({ newData: { ...this.state.newData, lastName: value } });
-        break;
-      case 'age':
-        this.setState({ newData: { ...this.state.newData, age: value } });
-        break;
-      case 'education':
-        this.setState({ newData: { ...this.state.newData, education: value } });
-        break;
-      case 'direction':
-        console.log(value);
-        this.setState({ newData: { ...this.state.newData, direction: value } });
+        this.setState({ description: value });
         break;
       case 'startDate':
-        this.setState({ newData: { ...this.state.newData, startDate: value } });
+        this.setState({ startDate: value });
+        break;
+      case 'deadLineDate':
+        this.setState({ deadLineDate: value });
         break;
       default:
         break;
@@ -78,8 +56,7 @@ class TasksPage extends React.Component {
   };
 
   render() {
-    // const {taskId} = this.state.taskId
-    const { deadLineDate, description, startDate, taskName } = this.state.tasks[this.state.taskId];
+    const { deadLineDate, description, startDate, taskName } = this.state;
     const { names } = this.state;
     const { taskId } = this.props;
     const memberNames = names
@@ -88,11 +65,11 @@ class TasksPage extends React.Component {
         })
       : null;
     return (
-      <>
+      <div className={styles.wrapper}>
         <h1>Task - {taskName}</h1>
-        <label htmlFor=''></label>
-        <input type='text' value={taskName} />
         <label htmlFor='description'>Description </label>
+        {/* <input id='taskName' type='text' value={taskName} onChange={this.onChange} /> */}
+
         <textarea
           name='description'
           id='description'
@@ -100,43 +77,37 @@ class TasksPage extends React.Component {
           rows='10'
           value={description}
           onChange={this.onChange}
-        ></textarea>
-        <label htmlFor='startDate'>Start</label>
-        <input
-          id='startDate'
-          type='date'
-          required
-          onChange={this.onChange}
-          value={startDate ? dateToStringForInput(startDate.toDate()) : startDate}
         />
-        <label htmlFor='startDate'>Deadline</label>
-        <input
-          id='deadLineDate'
-          type='date'
-          required
-          onChange={this.onChange}
-          value={deadLineDate ? dateToStringForInput(deadLineDate.toDate()) : deadLineDate}
-        />
+        <div className={styles.dateItem}>
+          <label htmlFor='startDate'>Start</label>
+          <input id='startDate' type='date' required onChange={this.onChange} value={startDate} />
+        </div>
+        <div className={styles.dateItem}>
+          <label htmlFor='deadLineDate'>Deadline</label>
+          <input id='deadLineDate' type='date' required onChange={this.onChange} value={deadLineDate} />
+        </div>
         <div className={styles.members}>
           <div className={styles.membersTitle}>Members</div>
           <div className={styles.membersItems}>
             <ul>{memberNames}</ul>
           </div>
         </div>
-        {taskId !== 'newTask' ? (
-          <Button
-            className={styles.successButton}
-            buttonText='Save'
-            onClick={() => console.log('task updated/sent!')}
-          />
-        ) : (
-          <Button className={styles.successButton} buttonText='Create' onClick={() => console.log('task created!')} />
-        )}
+        <div className={styles.buttonWrapper}>
+          {taskId !== 'newTask' ? (
+            <Button
+              className={styles.successButton}
+              buttonText='Save'
+              onClick={() => console.log('task updated/sent!')}
+            />
+          ) : (
+            <Button className={styles.successButton} buttonText='Create' onClick={() => console.log('task created!')} />
+          )}
 
-        <NavLink to='/members'>
-          <Button buttonText='Back to grid' />
-        </NavLink>
-      </>
+          <NavLink to='/members'>
+            <Button buttonText='Back to grid' />
+          </NavLink>
+        </div>
+      </div>
     );
   }
 }
