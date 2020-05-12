@@ -13,6 +13,7 @@ import firebaseApi from './api/firebaseApi';
 import styles from './App.module.scss';
 import TaskPage from './components/TaskPage/TaskPage';
 import TaskManagement from './components/TaskManagement/TaskManagement';
+import Login from './components/Login/Login';
 
 class App extends Component {
   constructor() {
@@ -111,6 +112,7 @@ class App extends Component {
                 />
               )}
             />
+            <Route path='/login' component={() => <Login />} />
           </div>
           <Footer />
         </div>
