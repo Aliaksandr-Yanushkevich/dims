@@ -1,6 +1,7 @@
 import firebase from './firebase';
 import createRandomMembers from '../createRandomMembers';
 import dateToStringForInput from '../components/common/dateToStringForInput';
+import addUserIdToEveryTask from './adduserIdToEverytask';
 
 const firestore = firebase.firestore();
 const collection = 'dims';
@@ -130,6 +131,34 @@ const firebaseApi = {
   updateTasks(userId, tasks) {
     return updateData(userId).update(tasks);
   },
+  getTaskList() {
+    const taskList = [];
+    let tasksWithId = [];
+    return getData().then((membersData) => {
+      membersData.forEach((member) => {
+        // taskList = [...taskList, ...member.data().tasks]; // создаёт одномерный массив заданий
+        taskList.push({
+          userId: member.ref.path.substring(member.ref.path.indexOf('/') + 1),
+          tasks: member.data().tasks,
+        });
+      });
+      const temp = taskList.map((task) => addUserIdToEveryTask(task));
+      temp.forEach((item) => (tasksWithId = [...tasksWithId, ...item]));
+      tasksWithId.forEach((task) => {
+        task.startDate = task.startDate.toDate();
+        task.deadLineDate = task.deadLineDate.toDate();
+      });
+      return tasksWithId;
+      // return taskList.map((task) => ({
+      //   taskName: task.taskName,
+      //   startDate: task.startDate,
+      //   deadLineDate: task.deadLineDate,
+      //   taskId: task.taskId,
+      //   userId: member.ref.path.substring(member.ref.path.indexOf('/') + 1),
+      // }));
+    });
+  },
+
   deleteMember(userId) {
     return firestore
       .collection(collection)

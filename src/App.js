@@ -11,6 +11,7 @@ import Footer from './components/common/Footer/Footer';
 import firebaseApi from './api/firebaseApi';
 import styles from './App.module.scss';
 import TaskPage from './components/TaskPage/TaskPage';
+import TaskManagement from './components/TaskManagement/TaskManagement';
 
 class App extends Component {
   constructor() {
@@ -74,6 +75,17 @@ class App extends Component {
             <Route path='/tasks_tracks' component={() => <TasksTracks />} />
             <Route path='/member_page' component={() => <MemberPage userId={currentUserId} taskId={currentTaskId} />} />
             <Route path='/task_page' component={() => <TaskPage userId={currentUserId} taskId={currentTaskId} />} />
+            <Route
+              path='/task_management'
+              component={() => (
+                <TaskManagement
+                  userId={currentUserId}
+                  taskId={currentTaskId}
+                  setCurrentTask={this.setCurrentTask}
+                  setCurrentUser={this.setCurrentUser}
+                />
+              )}
+            />
           </div>
           <Footer />
         </div>
