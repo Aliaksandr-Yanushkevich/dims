@@ -5,6 +5,7 @@ import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
 import Button from '../Button/Button';
 import styles from './MemberPage.module.scss';
+import FormField from '../../utils/validators/FormField';
 
 class MemberPage extends React.Component {
   constructor(props) {
@@ -12,14 +13,18 @@ class MemberPage extends React.Component {
     this.state = {
       oldData: null,
       newData: {
-        firstName: null,
-        lastName: null,
-        age: null,
-        education: null,
+        firstName: '',
+        lastName: '',
+        age: '',
+        education: '',
         direction: 'Javascript',
-        startDate: null,
+        startDate: '',
       },
       isFetching: false,
+      firstNameIsValid: false,
+      lastNameIsValid: false,
+      ageIsValid: false,
+      educationIsValid: false,
     };
   }
 
@@ -39,6 +44,26 @@ class MemberPage extends React.Component {
     });
   };
 
+  validateForm = (id, message) => {
+    const valid = message ? false : true;
+    switch (id) {
+      case 'firstName':
+        this.setState({ firstNameIsValid: valid });
+        break;
+      case 'lastName':
+        this.setState({ lastNameIsValid: valid });
+        break;
+      case 'age':
+        this.setState({ ageIsValid: valid });
+        break;
+      case 'education':
+        this.setState({ educationIsValid: valid });
+        break;
+      default:
+        break;
+    }
+  };
+
   updateMember = (userId, updatedData) => {
     if (updatedData && Object.keys(updatedData).length > 0) {
       firebaseApi
@@ -51,7 +76,7 @@ class MemberPage extends React.Component {
   };
 
   calculateDataDifference = () => {
-    //  comparing two objects and return different
+    //  compare two objects and return different
     const { oldData, newData } = this.state;
     const serverData = [...Object.entries(oldData)];
     const updatedData = [...Object.entries(newData)];
@@ -94,7 +119,7 @@ class MemberPage extends React.Component {
 
   render() {
     const { userId } = this.props;
-    const { newData, isFetching } = this.state;
+    const { newData, isFetching, firstNameIsValid, lastNameIsValid, ageIsValid, educationIsValid } = this.state;
     const { firstName, lastName, age, education, direction, startDate } = newData;
     if (isFetching) {
       return <Preloader />;
@@ -103,44 +128,54 @@ class MemberPage extends React.Component {
       <div className={styles.wrapper}>
         {userId === 'newMember' ? <h1>Register Member</h1> : <h1>Edit Member</h1>}
         <form action=''>
-          <div className={styles.formItem}>
-            <label htmlFor='firstname'>First Name: </label>
-            <input
-              id='firstName'
-              type='text'
-              placeholder='Firt Name'
-              required
-              onChange={this.onChange}
-              value={firstName}
-            />
-          </div>
-          <div className={styles.formItem}>
-            <label htmlFor='lastName'>Last Name: </label>
-            <input
-              id='lastName'
-              type='text'
-              placeholder='Last Name'
-              required
-              onChange={this.onChange}
-              value={lastName}
-            />
-          </div>
-          <div className={styles.formItem}>
-            <label htmlFor='age'>Age: </label>
-            <input id='age' type='text' placeholder='Age' required onChange={this.onChange} value={age} />
-          </div>
-          <div className={styles.formItem}>
-            <label htmlFor='education'>Education: </label>
-            <input
-              id='education'
-              type='text'
-              placeholder='University Name'
-              required
-              onChange={this.onChange}
-              value={education}
-            />
-          </div>
-          <div className={styles.formItem}>
+          <FormField
+            id='firstName'
+            required
+            minLength={2}
+            maxLength={40}
+            inputType='text'
+            label='First Name:'
+            onChange={this.onChange}
+            value={firstName}
+            placeholder='First Name'
+            validateForm={this.validateForm}
+          />
+          <FormField
+            id='lastName'
+            required
+            minLength={2}
+            maxLength={40}
+            inputType='text'
+            label='Last Name:'
+            onChange={this.onChange}
+            value={lastName}
+            placeholder='Last Name'
+            validateForm={this.validateForm}
+          />
+          <FormField
+            id='age'
+            required
+            min={0}
+            max={150}
+            inputType='number'
+            label='Age:'
+            onChange={this.onChange}
+            value={age}
+            placeholder='Age'
+            validateForm={this.validateForm}
+          />
+          <FormField
+            id='education'
+            required
+            inputType='text'
+            label='Education:'
+            onChange={this.onChange}
+            value={education}
+            placeholder='University Name'
+            validateForm={this.validateForm}
+            maxLength={40}
+          />
+          <div className={styles.item}>
             <label htmlFor='direction'>Direction: </label>
             <select
               id='direction'
@@ -155,10 +190,15 @@ class MemberPage extends React.Component {
               <option value='.Net'>.Net</option>
             </select>
           </div>
-          <div className={styles.formItem}>
-            <label htmlFor='startDate'>Start Date: </label>
-            <input id='startDate' type='date' required onChange={this.onChange} value={startDate} />
-          </div>
+          <FormField
+            id='startDate'
+            required
+            inputType='date'
+            label='Start Date:'
+            onChange={this.onChange}
+            value={startDate}
+            validateForm={this.validateForm}
+          />
         </form>
         <div className={styles.buttonWrapper}>
           {userId !== 'newMember' ? (
@@ -166,12 +206,14 @@ class MemberPage extends React.Component {
               className={styles.successButton}
               buttonText='Save'
               onClick={() => this.updateMember(userId, this.calculateDataDifference())}
+              disabled={!(firstNameIsValid && lastNameIsValid && ageIsValid && educationIsValid)}
             />
           ) : (
             <Button
               className={styles.successButton}
               buttonText='Create'
               onClick={() => this.createMember(this.state.newData)}
+              disabled={!(firstNameIsValid && lastNameIsValid && ageIsValid && educationIsValid)}
             />
           )}
 
