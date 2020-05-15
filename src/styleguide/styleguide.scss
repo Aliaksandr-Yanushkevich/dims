@@ -2,6 +2,7 @@ $primaryColor: #0080a4;
 $secondaryColor: #f2f2f2;
 $font: 'Roboto', Sans-serif;
 $textColor: #383436;
+$dangerousColor: #d04b31;
 
 h1,
 h2 {
@@ -20,14 +21,19 @@ button {
     color: $secondaryColor;
     background-color: $primaryColor;
   }
+  &:disabled {
+    border: 1px solid #9d9d9d;
+    color: #9d9d9d;
+    background-color: #fff;
+  }
 }
 
 .dangerousButton {
-  color: #d04b31;
-  border: 1px solid #d04b31;
+  color: $dangerousColor;
+  border: 1px solid $dangerousColor;
   &:hover {
     color: $secondaryColor;
-    background-color: #d04b31;
+    background-color: $dangerousColor;
   }
 }
 

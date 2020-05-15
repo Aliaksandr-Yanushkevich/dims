@@ -1,8 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Button = ({ id, buttonText, dataId, taskId, className, onClick }) => (
-  <button id={id} type='button' data-id={dataId} data-taskid={taskId} className={className} onClick={onClick}>
+const Button = ({ id, buttonText, dataId, taskId, className, onClick, disabled }) => (
+  <button
+    id={id}
+    type='button'
+    data-id={dataId}
+    data-taskid={taskId}
+    className={className}
+    onClick={onClick}
+    disabled={disabled}
+  >
     {buttonText}
   </button>
 );
