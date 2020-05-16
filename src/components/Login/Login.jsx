@@ -52,7 +52,6 @@ class Login extends React.Component {
       <div className={styles.wrapper}>
         <h1>Login</h1>
         <form action=''>
-          {/* <input id='login' type='text' value={login} onChange={this.onChange} /> */}
           <FormField
             required
             inputType='text'
@@ -62,9 +61,6 @@ class Login extends React.Component {
             onChange={this.onChange}
             validateForm={this.validateForm}
           />
-          {/* <div className={styles.item}>
-          <label htmlFor='password'>Password</label>
-          <input id='password' type='password' value={password} onChange={this.onChange} /> */}
           <FormField
             required
             minLength={4}
@@ -76,7 +72,6 @@ class Login extends React.Component {
             onChange={this.onChange}
             validateForm={this.validateForm}
           />
-          {/* </div> */}
           <div className={styles.item}>
             <div className={styles.remember}>
               <input id='remember' type='checkbox' checked={remember} onChange={this.onChange} />

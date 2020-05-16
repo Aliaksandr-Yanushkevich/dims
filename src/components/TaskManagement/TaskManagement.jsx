@@ -52,7 +52,7 @@ class taskManagement extends React.Component {
         <h1>Task management</h1>
         <div className={styles.tableWrapper}>
           <NavLink to='/task_page'>
-            <Button id={styles.createTask} buttonText='Create task' />
+            <Button id={styles.createTask} dataId='newTask' buttonText='Create task' />
           </NavLink>
           <table>
             <thead>

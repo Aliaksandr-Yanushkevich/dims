@@ -4,6 +4,7 @@ import Button from '../Button/Button';
 import dateToStringForInput from '../common/dateToStringForInput';
 import firebaseApi from '../../api/firebaseApi';
 import styles from './TaskTrack.module.scss';
+import FormField from '../../utils/validators/FormField';
 
 class TaskTrack extends React.Component {
   constructor(props) {
@@ -11,6 +12,7 @@ class TaskTrack extends React.Component {
     this.state = {
       taskName: null,
       note: '',
+      noteIsValid: false,
     };
   }
 
@@ -24,8 +26,19 @@ class TaskTrack extends React.Component {
     this.setState({ note: value });
   };
 
+  validateForm = (id, message) => {
+    const valid = message ? false : true;
+    switch (id) {
+      case 'note':
+        this.setState({ noteIsValid: valid });
+        break;
+      default:
+        break;
+    }
+  };
+
   render() {
-    const { taskName, note } = this.state;
+    const { taskName, note, noteIsValid } = this.state;
     const { userId } = this.props;
     return (
       <div className={styles.wrapper}>
@@ -35,7 +48,7 @@ class TaskTrack extends React.Component {
           <label htmlFor='date'>Date</label>
           <input id='date' type='date' value={dateToStringForInput(new Date())} disabled />
         </div>
-        <label htmlFor='date'>Note</label>
+        {/* <label htmlFor='date'>Note</label>
         <textarea
           name='note'
           id='note'
@@ -44,9 +57,25 @@ class TaskTrack extends React.Component {
           value={note}
           placeholder='Type your note here'
           onChange={this.onChange}
+        /> */}
+        <FormField
+          id='note'
+          name='note'
+          value={note}
+          placeholder='Type your note here'
+          onChange={this.onChange}
+          required
+          maxLength={140}
+          inputType='textarea'
+          validateForm={this.validateForm}
         />
         <div className={styles.buttonWrapper}>
-          <Button className={styles.successButton} buttonText='Save' onClick={() => console.log('note saved!')} />
+          <Button
+            className={styles.successButton}
+            buttonText='Save'
+            onClick={() => console.log('note saved!')}
+            disabled={!noteIsValid}
+          />
           <NavLink to='/members'>
             <Button buttonText='Back to grid' />
           </NavLink>

@@ -21,7 +21,7 @@ class App extends Component {
     this.state = {
       members: null,
       currentUserId: 'YQxTrugRvVGmwfVtvpPb',
-      currentTaskId: 0,
+      currentTaskId: 'newTask',
     };
   }
 

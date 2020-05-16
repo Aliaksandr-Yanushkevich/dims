@@ -199,28 +199,28 @@ class MemberPage extends React.Component {
             value={startDate}
             validateForm={this.validateForm}
           />
-        </form>
-        <div className={styles.buttonWrapper}>
-          {userId !== 'newMember' ? (
-            <Button
-              className={styles.successButton}
-              buttonText='Save'
-              onClick={() => this.updateMember(userId, this.calculateDataDifference())}
-              disabled={!(firstNameIsValid && lastNameIsValid && ageIsValid && educationIsValid)}
-            />
-          ) : (
-            <Button
-              className={styles.successButton}
-              buttonText='Create'
-              onClick={() => this.createMember(this.state.newData)}
-              disabled={!(firstNameIsValid && lastNameIsValid && ageIsValid && educationIsValid)}
-            />
-          )}
+          <div className={styles.buttonWrapper}>
+            {userId !== 'newMember' ? (
+              <Button
+                className={styles.successButton}
+                buttonText='Save'
+                onClick={() => this.updateMember(userId, this.calculateDataDifference())}
+                disabled={!(firstNameIsValid && lastNameIsValid && ageIsValid && educationIsValid)}
+              />
+            ) : (
+              <Button
+                className={styles.successButton}
+                buttonText='Create'
+                onClick={() => this.createMember(this.state.newData)}
+                disabled={!(firstNameIsValid && lastNameIsValid && ageIsValid && educationIsValid)}
+              />
+            )}
 
-          <NavLink to='/members'>
-            <Button buttonText='Back to grid' />
-          </NavLink>
-        </div>
+            <NavLink to='/members'>
+              <Button buttonText='Back to grid' />
+            </NavLink>
+          </div>
+        </form>
       </div>
     );
   }

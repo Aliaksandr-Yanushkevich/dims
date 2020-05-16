@@ -11,14 +11,13 @@ class FormField extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.validate();
+  }
+
   onFocus = () => {
     this.setState({ touched: true });
   };
-
-  // onChange = (e) => {
-  //   const value = e.currentTarget.value;
-  //   this.setState({ value });
-  // };
 
   validate = () => {
     const { touched } = this.state;
@@ -42,7 +41,7 @@ class FormField extends React.Component {
 
       if (id === 'firstName' || id === 'lastName') {
         // regexp for validating latin letters
-        const message = 'Name should consist of latin letters only';
+        const message = 'First name and last name  should consist of latin letters only';
         if (!/^[a-zA-Z]+$/.test(value)) {
           validateForm(id, message);
           this.setState({ message });
@@ -76,14 +75,50 @@ class FormField extends React.Component {
         this.setState({ message });
         return;
       }
+      validateForm(id, null);
+      this.setState({ message: null });
     }
-    validateForm(id, null);
-    this.setState({ message: null });
   };
 
   render() {
-    const { id, required, minLength, maxLength, inputType, label, onChange, value, placeholder, min, max } = this.props;
+    const {
+      id,
+      name,
+      required,
+      minLength,
+      maxLength,
+      inputType,
+      label,
+      onChange,
+      value,
+      placeholder,
+      min,
+      max,
+    } = this.props;
     const { touched, message } = this.state;
+    if (inputType === 'textarea') {
+      return (
+        <>
+          <div className={styles.textareaItem}>
+            <label htmlFor={id}>{label}</label>
+            <textarea
+              name={name}
+              id={id}
+              cols='30'
+              rows='10'
+              value={value}
+              onChange={onChange}
+              onFocus={this.onFocus}
+              onBlur={this.validate}
+              required
+              className={message && touched ? styles.error : null}
+              placeholder={placeholder}
+            />
+          </div>
+          <p className={styles.message}>{message}</p>
+        </>
+      );
+    }
     return (
       <>
         <div className={styles.item}>
