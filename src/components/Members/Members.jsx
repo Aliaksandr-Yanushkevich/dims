@@ -8,11 +8,25 @@ import Preloader from '../common/Preloader/Preloader';
 import { membersTitle } from '../../constants';
 import Button from '../Button/Button';
 import styles from './Members.module.scss';
+import MemberPage from '../MemberPage/MemberPage';
 
 class Members extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      memberPageIsVisible: false,
+    };
   }
+
+  createMember = (e) => {
+    const { setCurrentUser } = this.props;
+    setCurrentUser(e);
+    this.setState({ memberPageIsVisible: true });
+  };
+
+  hideMemberPage = () => {
+    this.setState({ memberPageIsVisible: false });
+  };
 
   deleteMember = (userId) => {
     firebaseApi.deleteMember(userId).catch(() => {
@@ -20,8 +34,14 @@ class Members extends React.Component {
     });
   };
 
+  // editMember = (e) => {
+  //   const { setCurrentUser } = this.props;
+  //   setCurrentUser(e);
+  //   this.setState({ memberPageIsVisible: true });
+  // }
+
   render() {
-    const { membersArray, setCurrentUser } = this.props;
+    const { userId, membersArray, setCurrentUser } = this.props;
     if (!membersArray) return <Preloader />;
     const memberRows = membersArray.map((member, index) => (
       <MemberData
@@ -36,16 +56,15 @@ class Members extends React.Component {
         userId={member.userId}
         setCurrentUser={setCurrentUser}
         deleteMember={this.deleteMember}
+        createMember={this.createMember}
       />
     ));
     return (
       <>
+        {this.state.memberPageIsVisible ? <MemberPage userId={userId} hideMemberPage={this.hideMemberPage} /> : null}
         <h1>Members Manage Grid</h1>
         <div className={styles.tableWrapper}>
-          <NavLink to='/member_page'>
-            <Button id={styles.register} dataId='newMember' buttonText='Register' onClick={setCurrentUser} />
-          </NavLink>
-          {/* <button type='button' onClick={() => firebaseApi.createFakeMembers(20)}>Create members</button> */}
+          <Button id={styles.register} dataId='newMember' buttonText='Register' onClick={this.createMember} />
           <table>
             <thead>
               <tr>

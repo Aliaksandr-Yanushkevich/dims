@@ -16,6 +16,7 @@ const MemberData = ({
   userId,
   setCurrentUser,
   deleteMember,
+  createMember,
 }) => {
   return (
     <tr key={index}>
@@ -33,9 +34,7 @@ const MemberData = ({
           <NavLink to='/member_tasks'>
             <Button buttonText='Tasks' dataId={userId} onClick={setCurrentUser} />
           </NavLink>
-          <NavLink to='/member_page'>
-            <Button buttonText='Edit' dataId={userId} onClick={setCurrentUser} />
-          </NavLink>
+          <Button buttonText='Edit' dataId={userId} onClick={createMember} />
           <NavLink to='/member_delete'>
             <Button
               buttonText='Delete'

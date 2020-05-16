@@ -3,18 +3,27 @@ import { NavLink } from 'react-router-dom';
 import Button from '../Button/Button';
 import styles from './TaskTrackManagement.module.scss';
 
-const TasksTracksManagementRow = ({ index, taskName, userId, taskId, setCurrentUser, setCurrentTask }) => {
+const TasksTracksManagementRow = ({
+  index,
+  taskName,
+  userId,
+  taskId,
+  setCurrentUser,
+  setCurrentTask,
+  showTaskTrack,
+}) => {
   return (
     <tr key={index}>
       <td>{index}</td>
       <td>
         <NavLink
-          to='/task_track'
+          to='/task_track_management'
           data-id={userId}
           data-taskid={taskId}
           onClick={(e) => {
             setCurrentUser(e);
             setCurrentTask(e);
+            showTaskTrack(true);
           }}
         >
           {taskName}
@@ -24,17 +33,17 @@ const TasksTracksManagementRow = ({ index, taskName, userId, taskId, setCurrentU
       <td>Note date</td>
       <td>
         <div className={styles.buttonWrapper}>
-          <NavLink to='/task_track'>
-            <Button
-              buttonText='Edit'
-              dataId={userId}
-              taskId={taskId}
-              onClick={(e) => {
-                setCurrentUser(e);
-                setCurrentTask(e);
-              }}
-            />
-          </NavLink>
+          <Button
+            buttonText='Edit'
+            dataId={userId}
+            taskId={taskId}
+            onClick={(e) => {
+              setCurrentUser(e);
+              setCurrentTask(e);
+              showTaskTrack(true);
+            }}
+          />
+
           <NavLink to='/task_track_management'>
             <Button buttonText='Delete' className={styles.dangerousButton} dataId={userId} />
           </NavLink>

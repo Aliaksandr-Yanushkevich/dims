@@ -5,10 +5,20 @@ import dateToString from '../common/dateToString';
 import styles from './TaskManagement.module.scss';
 import Button from '../Button/Button';
 
-const TaskData = ({ index, taskName, startDate, deadline, userId, taskId, setCurrentUser, setCurrentTask }) => {
+const TaskData = ({
+  index,
+  taskName,
+  startDate,
+  deadline,
+  userId,
+  taskId,
+  setCurrentUser,
+  setCurrentTask,
+  showTask,
+}) => {
   return (
     <tr key={index}>
-      <td>{index}</td>
+      <td>{index + 1}</td>
       <td>
         <NavLink
           to='/task_page'
@@ -26,17 +36,17 @@ const TaskData = ({ index, taskName, startDate, deadline, userId, taskId, setCur
       <td>{deadline}</td>
       <td>
         <div className={styles.buttonWrapper}>
-          <NavLink to='/task_page'>
-            <Button
-              buttonText='Edit'
-              dataId={userId}
-              taskId={taskId}
-              onClick={(e) => {
-                setCurrentUser(e);
-                setCurrentTask(e);
-              }}
-            />
-          </NavLink>
+          <Button
+            buttonText='Edit'
+            dataId={userId}
+            taskId={taskId}
+            onClick={(e) => {
+              setCurrentUser(e);
+              setCurrentTask(e);
+              showTask(true);
+            }}
+          />
+
           <NavLink to='/task_management'>
             <Button buttonText='Delete' className={styles.dangerousButton} dataId={userId} />
           </NavLink>

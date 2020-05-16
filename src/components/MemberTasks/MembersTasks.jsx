@@ -5,6 +5,7 @@ import Preloader from '../common/Preloader/Preloader';
 import MemberCurrentTasks from './MemberCurrentTasks';
 import { membersTasksTitle } from '../../constants';
 import firebaseApi from '../../api/firebaseApi';
+import TaskTrack from '../TaskTrack/TaskTrack';
 
 class MemberTasks extends Component {
   constructor() {
@@ -31,7 +32,7 @@ class MemberTasks extends Component {
 
   render() {
     const { tasks, firstName, lastName } = this.state;
-    const { setCurrentTask } = this.props;
+    const { userId, taskId, setCurrentTask, taskTrackPageIsVisible, showTaskTrack } = this.props;
     if (!tasks) return <Preloader />;
     const tasksArr = tasks.map((task) => (
       <MemberCurrentTasks
@@ -40,10 +41,20 @@ class MemberTasks extends Component {
         startDate={task.startDate.toDate()}
         deadLineDate={task.deadLineDate.toDate()}
         setCurrentTask={setCurrentTask}
+        showTaskTrack={showTaskTrack}
       />
     ));
     return (
       <>
+        {taskTrackPageIsVisible ? (
+          <TaskTrack
+            userId={userId}
+            taskId={taskId}
+            setCurrentTask={this.setCurrentTask}
+            setCurrentUser={this.setCurrentUser}
+            showTaskTrack={showTaskTrack}
+          />
+        ) : null}
         <h1>Member&apos;s Task Manage Grid</h1>
         <h2>{`Hi, dear ${firstName} ${lastName}! This is your current tasks:`}</h2>
         <table>

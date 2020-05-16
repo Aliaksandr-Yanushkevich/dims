@@ -7,7 +7,7 @@ import Button from '../Button/Button';
 import styles from './TaskPage.module.scss';
 import FormField from '../../utils/validators/FormField';
 
-class TasksPage extends React.Component {
+class TaskPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -94,7 +94,7 @@ class TasksPage extends React.Component {
       deadLineDateIsValid,
     } = this.state;
     const { names } = this.state;
-    const { taskId } = this.props;
+    const { taskId, showTask } = this.props;
     const memberNames = names
       ? names.map((name) => {
           return <MemberName firstName={name.firstName} lastName={name.lastName} userId={name.userId} />;
@@ -113,7 +113,7 @@ class TasksPage extends React.Component {
             value={taskName}
             placeholder='Task name'
             validateForm={this.validateForm}
-            maxLength={40}
+            maxLength={140}
           />
           <FormField
             id='description'
@@ -166,10 +166,7 @@ class TasksPage extends React.Component {
                 disabled={!(taskNameIsValid && descriptionIsValid && startDateIsValid && deadLineDateIsValid)}
               />
             )}
-
-            <NavLink to='/members'>
-              <Button buttonText='Back to grid' />
-            </NavLink>
+            <Button buttonText='Back to grid' onClick={() => showTask(false)} />
           </div>
         </form>
       </div>
@@ -177,4 +174,4 @@ class TasksPage extends React.Component {
   }
 }
 
-export default TasksPage;
+export default TaskPage;

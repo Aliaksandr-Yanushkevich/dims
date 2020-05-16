@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 import styles from './TaskManagement.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
+import TasksPage from '../TaskPage/TaskPage';
 import { taskManagementTitle } from '../../constants';
 import TaskData from './TaskData';
 import firebaseApi from '../../api/firebaseApi';
@@ -22,9 +23,15 @@ class taskManagement extends React.Component {
     firebaseApi.getTaskList().then((tasks) => this.setState({ tasks }));
   }
 
+  createTask = (e) => {
+    const { setCurrentTask, showTask } = this.props;
+    setCurrentTask(e);
+    showTask(true);
+  };
+
   render() {
     const { tasks } = this.state;
-    const { setCurrentUser, setCurrentTask } = this.props;
+    const { setCurrentUser, setCurrentTask, userId, taskId, taskPageIsVisible, showTask } = this.props;
     if (!tasks) {
       return <Preloader />;
     }
@@ -42,6 +49,7 @@ class taskManagement extends React.Component {
               userId={task.userId}
               setCurrentUser={setCurrentUser}
               setCurrentTask={setCurrentTask}
+              showTask={showTask}
             />
           );
         })
@@ -51,9 +59,8 @@ class taskManagement extends React.Component {
       <>
         <h1>Task management</h1>
         <div className={styles.tableWrapper}>
-          <NavLink to='/task_page'>
-            <Button id={styles.createTask} dataId='newTask' buttonText='Create task' />
-          </NavLink>
+          {taskPageIsVisible ? <TasksPage userId={userId} taskId={taskId} showTask={showTask} /> : null}
+          <Button id={styles.createTask} taskId='newTask' buttonText='Create task' onClick={this.createTask} />
           <table>
             <thead>
               <tr>

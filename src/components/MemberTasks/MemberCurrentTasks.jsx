@@ -5,7 +5,7 @@ import dateToString from '../common/dateToString';
 import styles from './MembersTasks.module.scss';
 import Button from '../Button/Button';
 
-const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate, setCurrentTask }) => {
+const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate, setCurrentTask, showTaskTrack }) => {
   return (
     <tr key={taskId}>
       <td>{taskId}</td>
@@ -14,9 +14,14 @@ const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate, setCurr
       <td>{dateToString(deadLineDate)}</td>
       <td>Here should be task status</td>
       <td>
-        <NavLink to='/task_track'>
-          <Button buttonText='Track' taskId={taskId} onClick={setCurrentTask} />
-        </NavLink>
+        <Button
+          buttonText='Track'
+          taskId={taskId}
+          onClick={(e) => {
+            setCurrentTask(e);
+            showTaskTrack(true);
+          }}
+        />
       </td>
       <td>
         <div className={styles.buttonWrapper}>

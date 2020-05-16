@@ -2,11 +2,18 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const MemberProgressData = ({ taskId, taskName, taskDescription, setCurrentTask }) => (
+const MemberProgressData = ({ taskId, taskName, taskDescription, setCurrentTask, showTask }) => (
   <tr key={taskId}>
     <td>{taskId + 1}</td>
     <td>
-      <NavLink to='/task_page' data-taskid={taskId} onClick={setCurrentTask}>
+      <NavLink
+        to='/member_progress:userId?'
+        data-taskid={taskId}
+        onClick={(e) => {
+          setCurrentTask(e);
+          showTask(true);
+        }}
+      >
         {taskName}
       </NavLink>
     </td>

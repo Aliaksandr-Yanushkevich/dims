@@ -39,7 +39,7 @@ class TaskTrack extends React.Component {
 
   render() {
     const { taskName, note, noteIsValid } = this.state;
-    const { userId } = this.props;
+    const { showTaskTrack } = this.props;
     return (
       <div className={styles.wrapper}>
         <h1>Task Track - {taskName}</h1>
@@ -76,9 +76,7 @@ class TaskTrack extends React.Component {
             onClick={() => console.log('note saved!')}
             disabled={!noteIsValid}
           />
-          <NavLink to='/members'>
-            <Button buttonText='Back to grid' />
-          </NavLink>
+          <Button buttonText='Back to grid' onClick={() => showTaskTrack(false)} />
         </div>
       </div>
     );

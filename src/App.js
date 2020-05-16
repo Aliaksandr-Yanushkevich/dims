@@ -20,8 +20,10 @@ class App extends Component {
     super();
     this.state = {
       members: null,
-      currentUserId: 'YQxTrugRvVGmwfVtvpPb',
+      currentUserId: 'newMember',
       currentTaskId: 'newTask',
+      taskPageIsVisible: false,
+      taskTrackPageIsVisible: false,
     };
   }
 
@@ -45,14 +47,24 @@ class App extends Component {
   };
 
   setCurrentTask = (e) => {
+    const taskId =
+      e.currentTarget.dataset.taskid !== 'newTask' ? +e.currentTarget.dataset.taskid : e.currentTarget.dataset.taskid;
     this.setState({
-      currentTaskId: +e.currentTarget.dataset.taskid,
+      currentTaskId: taskId,
     });
+  };
+
+  showTask = (value) => {
+    this.setState({ taskPageIsVisible: value });
+  };
+
+  showTaskTrack = (value) => {
+    this.setState({ taskTrackPageIsVisible: value });
   };
 
   render() {
     document.title = 'DIMS';
-    const { members, currentUserId, currentTaskId } = this.state;
+    const { members, currentUserId, currentTaskId, taskPageIsVisible, taskTrackPageIsVisible } = this.state;
     return (
       <BrowserRouter>
         <div className={styles.wrapper}>
@@ -61,24 +73,37 @@ class App extends Component {
             <Redirect from='/' to='/members' />
             <Route
               path='/members'
-              render={() => <Members membersArray={members} setCurrentUser={this.setCurrentUser} />}
+              render={() => (
+                <Members userId={currentUserId} membersArray={members} setCurrentUser={this.setCurrentUser} />
+              )}
             />
             <Route
               path='/member_progress:userId?'
               component={() => (
-                <MemberProgress userId={currentUserId} taskId={currentTaskId} setCurrentTask={this.setCurrentTask} />
+                <MemberProgress
+                  userId={currentUserId}
+                  taskId={currentTaskId}
+                  setCurrentTask={this.setCurrentTask}
+                  showTask={this.showTask}
+                  taskPageIsVisible={taskPageIsVisible}
+                />
               )}
             />
             <Route
               path='/member_tasks:userId?'
               component={() => (
-                <MemberTasks userId={currentUserId} taskId={currentTaskId} setCurrentTask={this.setCurrentTask} />
+                <MemberTasks
+                  userId={currentUserId}
+                  taskId={currentTaskId}
+                  setCurrentTask={this.setCurrentTask}
+                  taskTrackPageIsVisible={taskTrackPageIsVisible}
+                  showTaskTrack={this.showTaskTrack}
+                />
               )}
             />
             <Route path='/tasks' component={() => <Tasks taskId={currentTaskId} />} />
-            {/* <Route path='/tasks_tracks' component={() => <TasksTracks />} /> */}
-            <Route path='/member_page' component={() => <MemberPage userId={currentUserId} taskId={currentTaskId} />} />
-            <Route path='/task_page' component={() => <TaskPage userId={currentUserId} taskId={currentTaskId} />} />
+            {/* <Route path='/member_page' component={() => <MemberPage userId={currentUserId} taskId={currentTaskId} />} /> */}
+            {/* <Route path='/task_page' component={() => <TaskPage userId={currentUserId} taskId={currentTaskId} />} /> */}
             <Route
               path='/task_management'
               component={() => (
@@ -87,6 +112,8 @@ class App extends Component {
                   taskId={currentTaskId}
                   setCurrentTask={this.setCurrentTask}
                   setCurrentUser={this.setCurrentUser}
+                  taskPageIsVisible={taskPageIsVisible}
+                  showTask={this.showTask}
                 />
               )}
             />
@@ -98,10 +125,12 @@ class App extends Component {
                   taskId={currentTaskId}
                   setCurrentTask={this.setCurrentTask}
                   setCurrentUser={this.setCurrentUser}
+                  taskTrackPageIsVisible={taskTrackPageIsVisible}
+                  showTaskTrack={this.showTaskTrack}
                 />
               )}
             />
-            <Route
+            {/* <Route
               path='/task_track'
               component={() => (
                 <TaskTrack
@@ -111,7 +140,7 @@ class App extends Component {
                   setCurrentUser={this.setCurrentUser}
                 />
               )}
-            />
+            /> */}
             <Route path='/login' component={() => <Login />} />
           </div>
           <Footer />

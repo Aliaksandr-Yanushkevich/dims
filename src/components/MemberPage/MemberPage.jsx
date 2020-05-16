@@ -118,7 +118,7 @@ class MemberPage extends React.Component {
   };
 
   render() {
-    const { userId } = this.props;
+    const { userId, hideMemberPage } = this.props;
     const { newData, isFetching, firstNameIsValid, lastNameIsValid, ageIsValid, educationIsValid } = this.state;
     const { firstName, lastName, age, education, direction, startDate } = newData;
     if (isFetching) {
@@ -173,7 +173,7 @@ class MemberPage extends React.Component {
             value={education}
             placeholder='University Name'
             validateForm={this.validateForm}
-            maxLength={40}
+            maxLength={140}
           />
           <div className={styles.item}>
             <label htmlFor='direction'>Direction: </label>
@@ -215,10 +215,7 @@ class MemberPage extends React.Component {
                 disabled={!(firstNameIsValid && lastNameIsValid && ageIsValid && educationIsValid)}
               />
             )}
-
-            <NavLink to='/members'>
-              <Button buttonText='Back to grid' />
-            </NavLink>
+            <Button buttonText='Back to grid' onClick={hideMemberPage} />
           </div>
         </form>
       </div>

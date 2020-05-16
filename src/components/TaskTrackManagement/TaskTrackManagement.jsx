@@ -4,6 +4,7 @@ import { tasksTrackTitle } from '../../constants';
 import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
 import TasksTracksManagementRow from './TaskTrackManagementRow';
+import TaskTrack from '../TaskTrack/TaskTrack';
 
 class TasksTracks extends React.Component {
   constructor(props) {
@@ -15,12 +16,19 @@ class TasksTracks extends React.Component {
 
   componentDidMount() {
     const { userId } = this.props;
-    firebaseApi.getUserTasks(userId).then((response) => this.setState({ tasks: response.tasks }));
+    if (userId !== 'newMember') {
+      firebaseApi
+        .getUserTasks(userId)
+        .then((response) => this.setState({ tasks: response.tasks }))
+        .catch(() => {
+          throw new Error('Error receiving data');
+        });
+    }
   }
 
   render() {
     const { tasks } = this.state;
-    const { userId, setCurrentUser, setCurrentTask } = this.props;
+    const { userId, taskId, setCurrentUser, setCurrentTask, taskTrackPageIsVisible, showTaskTrack } = this.props;
     const tableRows = tasks
       ? tasks.map((task, index) => {
           return (
@@ -31,6 +39,7 @@ class TasksTracks extends React.Component {
               taskId={task.taskId}
               setCurrentUser={setCurrentUser}
               setCurrentTask={setCurrentTask}
+              showTaskTrack={showTaskTrack}
             />
           );
         })
@@ -40,6 +49,15 @@ class TasksTracks extends React.Component {
     }
     return (
       <>
+        {taskTrackPageIsVisible ? (
+          <TaskTrack
+            userId={userId}
+            taskId={taskId}
+            setCurrentTask={this.setCurrentTask}
+            setCurrentUser={this.setCurrentUser}
+            showTaskTrack={showTaskTrack}
+          />
+        ) : null}
         <h1>Task Track Management</h1>
         <table>
           <thead>
