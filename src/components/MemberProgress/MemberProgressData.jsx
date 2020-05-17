@@ -16,9 +16,9 @@ MemberProgressData.propTypes = {
   taskDescription: PropTypes.string,
 };
 MemberProgressData.defaultProps = {
-  taskId: '1',
-  taskName: 'FTP',
-  taskDescription: 'The SDD hard drive is down, navigate the optical pixel so we can generate the JSON monitor!',
+  taskId: '',
+  taskName: '',
+  taskDescription: '',
 };
 
 export default MemberProgressData;

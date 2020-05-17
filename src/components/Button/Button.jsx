@@ -15,9 +15,9 @@ Button.propTypes = {
 };
 
 Button.defaultProps = {
-  buttonText: 'Task',
-  className: 'successButton',
-  dataId: '4iKBUOYjXypfQT9Uv9JA',
+  buttonText: '',
+  className: '',
+  dataId: '',
 };
 
 export default Button;

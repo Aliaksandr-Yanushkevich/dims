@@ -11,15 +11,13 @@ import firebaseApi from './api/firebaseApi';
 import styles from './App.module.scss';
 
 class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      members: null,
-      currentUserId: null,
-    };
-  }
+  state = {
+    members: null,
+    currentUserId: null,
+  };
 
   componentDidMount() {
+    document.title = 'DIMS';
     firebaseApi
       .getMembers()
       .then((members) =>
@@ -27,34 +25,32 @@ class App extends Component {
           members,
         }),
       )
-      .catch(() => {
-        throw new Error('Error receiving data');
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
       });
   }
 
   setCurrentUser = (e) => {
+    e.persist();
     this.setState({
-      currentUserId: e.currentTarget.dataset.id,
+      currentUserId: e.target.dataset.id,
     });
   };
 
   createUsers = (amount) => {
-    firebaseApi.createFakeMembers(amount).then(() => {
-      firebaseApi
-        .getMembers()
-        .then((members) =>
-          this.setState({
-            members,
-          }),
-        )
-        .catch(() => {
-          throw new Error('Error receiving data');
-        });
-    });
+    firebaseApi
+      .createFakeMembers(amount)
+      .then((members) =>
+        this.setState({
+          members,
+        }),
+      )
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
+      });
   };
 
   render() {
-    document.title = 'DIMS';
     const { members, currentUserId } = this.state;
     return (
       <BrowserRouter>
@@ -62,16 +58,21 @@ class App extends Component {
           <Header />
           <div className={styles.contentWrapper}>
             <Redirect from='/' to='/members' />
-            <Route
-              path='/members'
-              render={() => (
-                <Members membersArray={members} setCurrentUser={this.setCurrentUser} createUsers={this.createUsers} />
-              )}
-            />
-            <Route path='/member_progress:userId?' component={() => <MemberProgress userId={currentUserId} />} />
-            <Route path='/member_tasks:userId?' component={() => <MemberTasks userId={currentUserId} />} />
-            <Route path='/tasks' component={() => <Tasks />} />
-            <Route path='/tasks_tracks' component={() => <TasksTracks />} />
+            <Route path='/members'>
+              <Members membersArray={members} setCurrentUser={this.setCurrentUser} createUsers={this.createUsers} />
+            </Route>
+            <Route path='/member_progress:userId?'>
+              <MemberProgress userId={currentUserId} />
+            </Route>
+            <Route path='/member_tasks:userId?'>
+              <MemberTasks userId={currentUserId} />
+            </Route>
+            <Route path='/tasks'>
+              <Tasks />
+            </Route>
+            <Route path='/tasks_tracks'>
+              <TasksTracks />
+            </Route>
           </div>
           <Footer />
         </div>

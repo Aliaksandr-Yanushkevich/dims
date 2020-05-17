@@ -7,14 +7,11 @@ import { memberProgressTitle } from '../../constants';
 import firebaseApi from '../../api/firebaseApi';
 
 class MemberProgres extends Component {
-  constructor() {
-    super();
-    this.state = {
-      tasks: null,
-      firstName: null,
-      lastName: null,
-    };
-  }
+  state = {
+    tasks: null,
+    firstName: null,
+    lastName: null,
+  };
 
   componentDidMount() {
     const { userId } = this.props;
@@ -28,8 +25,8 @@ class MemberProgres extends Component {
             lastName,
           }),
         )
-        .catch(() => {
-          throw new Error('Error receiving data');
+        .catch((error) => {
+          console.error(`Error receiving data: ${error}`);
         });
     }
   }

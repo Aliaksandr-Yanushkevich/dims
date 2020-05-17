@@ -1,21 +1,36 @@
 import dateToString from './dateToString';
 
 test('17.12.1995 should be returnded', () => {
-  expect(dateToString(new Date('December 17, 1995 03:24:00'))).toBe('17.12.1995');
+  const input = new Date('December 17, 1995 03:24:00');
+  const actual = dateToString(input);
+  const expected = '17.12.1995';
+  expect(actual).toBe(expected);
 });
 
 test('date should instance of class Date', () => {
-  expect(() => dateToString(123)).toThrowError(new Error('date should instance of class Date'));
+  const input = 123;
+  const actual = () => dateToString(input);
+  const expected = new Error('date should instance of class Date');
+  expect(actual).toThrowError(expected);
 });
 
 test('date should instance of class Date', () => {
-  expect(() => dateToString('abc')).toThrowError(new Error('date should instance of class Date'));
+  const input = 'abc';
+  const actual = () => dateToString(input);
+  const expected = new Error('date should instance of class Date');
+  expect(actual).toThrowError(expected);
 });
 
 test('date should instance of class Date', () => {
-  expect(() => dateToString([1, 2, 3])).toThrowError(new Error('date should instance of class Date'));
+  const input = [1, 2, 3];
+  const actual = () => dateToString(input);
+  const expected = new Error('date should instance of class Date');
+  expect(actual).toThrowError(expected);
 });
 
 test('date should instance of class Date', () => {
-  expect(() => dateToString(true)).toThrowError(new Error('date should instance of class Date'));
+  const input = true;
+  const actual = () => dateToString(input);
+  const expected = new Error('date should instance of class Date');
+  expect(actual).toThrowError(expected);
 });

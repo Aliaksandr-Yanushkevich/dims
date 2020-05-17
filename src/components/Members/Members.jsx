@@ -9,7 +9,7 @@ const Members = ({ membersArray, setCurrentUser, createUsers }) => {
   if (!membersArray) return <Preloader />;
   const memberRows = membersArray.map((member, index) => (
     <MemberData
-      key={index.toString()}
+      key={`${member.firstName}${member.lastName}${member.age}`}
       index={index + 1}
       firstName={member.firstName}
       lastName={member.lastName}
@@ -50,8 +50,8 @@ Members.propTypes = {
       userId: PropTypes.string,
     }),
   ),
-  setCurrentUser: PropTypes.func,
-  createUsers: PropTypes.func,
+  setCurrentUser: PropTypes.func.isRequired,
+  createUsers: PropTypes.func.isRequired,
 };
 
 Members.defaultProps = {
