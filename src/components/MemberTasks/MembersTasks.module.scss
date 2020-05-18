@@ -1,0 +1,13 @@
+@import '../../styleguide/styleguide.scss';
+
+.buttonWrapper {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.buttonWrapper button {
+  width: 100%;
+  max-width: 100px;
+}

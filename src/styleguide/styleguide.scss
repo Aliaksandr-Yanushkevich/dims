@@ -1,0 +1,89 @@
+$primaryColor: #0080a4;
+$secondaryColor: #f2f2f2;
+$font: 'Roboto', Sans-serif;
+$textColor: #383436;
+
+h1,
+h2 {
+  font-family: $font;
+  text-align: center;
+  color: $primaryColor;
+}
+
+button {
+  font-weight: 800;
+  padding: 1px 16px;
+  color: $primaryColor;
+  border: 1px solid $primaryColor;
+  background-color: $secondaryColor;
+  &:hover {
+    color: $secondaryColor;
+    background-color: $primaryColor;
+  }
+}
+
+.dangerousButton {
+  color: #d04b31;
+  border: 1px solid #d04b31;
+  &:hover {
+    color: $secondaryColor;
+    background-color: #d04b31;
+  }
+}
+
+.successButton {
+  color: #227447;
+  border: 1px solid #227447;
+  &:hover {
+    color: $secondaryColor;
+    background-color: #227447;
+  }
+}
+
+table {
+  font-family: $font;
+  font-weight: 400;
+  margin: 0 auto;
+  border-spacing: 2px;
+  border-collapse: separate;
+  color: $textColor;
+}
+
+tbody {
+  display: table-row-group;
+  vertical-align: middle;
+  border-color: inherit;
+}
+
+th,
+td {
+  padding: 8px;
+  text-align: center;
+  border: 1px solid #9bc2e6;
+}
+
+th {
+  text-transform: capitalize;
+  color: #fff;
+  background-color: $primaryColor;
+}
+
+td {
+  display: table-cell;
+  vertical-align: inherit;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #ddebf7; /* фон нечетных строк */
+}
+
+tbody tr:nth-child(even) {
+  background-color: #b4daf2; /* фон четных строк */
+}
+
+a {
+  text-decoration: none;
+  &:hover {
+    color: #f0bb0c;
+  }
+}
