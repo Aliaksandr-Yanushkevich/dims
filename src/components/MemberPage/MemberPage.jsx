@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
 import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
 import Button from '../Button/Button';
@@ -8,25 +7,22 @@ import styles from './MemberPage.module.scss';
 import FormField from '../../utils/validators/FormField';
 
 class MemberPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      oldData: null,
-      newData: {
-        firstName: '',
-        lastName: '',
-        age: '',
-        education: '',
-        direction: 'Javascript',
-        startDate: '',
-      },
-      isFetching: false,
-      firstNameIsValid: false,
-      lastNameIsValid: false,
-      ageIsValid: false,
-      educationIsValid: false,
-    };
-  }
+  state = {
+    oldData: null,
+    newData: {
+      firstName: '',
+      lastName: '',
+      age: '',
+      education: '',
+      direction: 'Javascript',
+      startDate: '',
+    },
+    isFetching: false,
+    firstNameIsValid: false,
+    lastNameIsValid: false,
+    ageIsValid: false,
+    educationIsValid: false,
+  };
 
   componentDidMount() {
     const { userId } = this.props;
@@ -45,19 +41,18 @@ class MemberPage extends React.Component {
   };
 
   validateForm = (id, message) => {
-    const valid = message ? false : true;
     switch (id) {
       case 'firstName':
-        this.setState({ firstNameIsValid: valid });
+        this.setState({ firstNameIsValid: !message });
         break;
       case 'lastName':
-        this.setState({ lastNameIsValid: valid });
+        this.setState({ lastNameIsValid: !message });
         break;
       case 'age':
-        this.setState({ ageIsValid: valid });
+        this.setState({ ageIsValid: !message });
         break;
       case 'education':
-        this.setState({ educationIsValid: valid });
+        this.setState({ educationIsValid: !message });
         break;
       default:
         break;
@@ -88,6 +83,7 @@ class MemberPage extends React.Component {
     if (result.length > 0) {
       return Object.assign(...result);
     }
+    return undefined;
   };
 
   onChange = (e) => {
@@ -223,8 +219,11 @@ class MemberPage extends React.Component {
   }
 }
 
-// MemberPage.propTypes = {};
+MemberPage.propTypes = {
+  userId: PropTypes.string.isRequired,
+  hideMemberPage: PropTypes.func.isRequired,
+};
 
-// MemberPage.defaultProps = {};
+MemberPage.defaultProps = {};
 
 export default MemberPage;

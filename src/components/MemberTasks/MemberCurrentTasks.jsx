@@ -38,10 +38,19 @@ const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate, setCurr
 };
 
 MemberCurrentTasks.propTypes = {
-  taskId: PropTypes.string,
+  taskId: PropTypes.number,
   taskName: PropTypes.string,
   startDate: PropTypes.instanceOf(Date),
   deadLineDate: PropTypes.instanceOf(Date),
+  setCurrentTask: PropTypes.func.isRequired,
+  showTaskTrack: PropTypes.func.isRequired,
+};
+
+MemberCurrentTasks.defaultProps = {
+  taskId: 0,
+  taskName: '',
+  startDate: new Date(),
+  deadLineDate: new Date(),
 };
 
 export default MemberCurrentTasks;

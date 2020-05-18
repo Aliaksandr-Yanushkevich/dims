@@ -1,5 +1,8 @@
 import getYear from './getYear';
 
-test('2020 should be returnded', () => {
-  expect(getYear()).toBe(new Date().getFullYear());
+test('current year should be returnded', () => {
+  const input = null;
+  const actual = getYear(input);
+  const expected = new Date().getFullYear();
+  expect(actual).toBe(expected);
 });

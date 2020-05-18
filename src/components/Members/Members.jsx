@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
 import firebaseApi from '../../api/firebaseApi';
 import TableHeader from '../common/TableHeader/TableHeader';
 import MemberData from './MemberData';
@@ -29,18 +28,13 @@ class Members extends React.Component {
   };
 
   deleteMember = (userId) => {
-    firebaseApi.deleteMember(userId).catch(() => {
-      throw new Error('Error removing member');
+    firebaseApi.deleteMember(userId).catch((error) => {
+      console.error(`Error removing member: ${error}`);
     });
   };
 
-  // editMember = (e) => {
-  //   const { setCurrentUser } = this.props;
-  //   setCurrentUser(e);
-  //   this.setState({ memberPageIsVisible: true });
-  // }
-
   render() {
+    const { memberPageIsVisible } = this.state;
     const { userId, membersArray, setCurrentUser } = this.props;
     if (!membersArray) return <Preloader />;
     const memberRows = membersArray.map((member, index) => (
@@ -61,7 +55,7 @@ class Members extends React.Component {
     ));
     return (
       <>
-        {this.state.memberPageIsVisible ? <MemberPage userId={userId} hideMemberPage={this.hideMemberPage} /> : null}
+        {memberPageIsVisible ? <MemberPage userId={userId} hideMemberPage={this.hideMemberPage} /> : null}
         <h1>Members Manage Grid</h1>
         <div className={styles.tableWrapper}>
           <Button id={styles.register} dataId='newMember' buttonText='Register' onClick={this.createMember} />
@@ -92,8 +86,8 @@ Members.propTypes = {
       userId: PropTypes.string,
     }),
   ),
-  setCurrentUser: PropTypes.func,
-  deleteMember: PropTypes.func,
+  setCurrentUser: PropTypes.func.isRequired,
+  userId: PropTypes.string.isRequired,
 };
 
 Members.defaultProps = {

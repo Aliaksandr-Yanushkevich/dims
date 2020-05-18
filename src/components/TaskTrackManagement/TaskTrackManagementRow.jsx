@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import Button from '../Button/Button';
 import styles from './TaskTrackManagement.module.scss';
@@ -13,7 +14,7 @@ const TasksTracksManagementRow = ({
   showTaskTrack,
 }) => {
   return (
-    <tr key={index}>
+    <tr key={`${index}${userId}`}>
       <td>{index}</td>
       <td>
         <NavLink
@@ -51,6 +52,20 @@ const TasksTracksManagementRow = ({
       </td>
     </tr>
   );
+};
+
+TasksTracksManagementRow.propTypes = {
+  index: PropTypes.number.isRequired,
+  taskName: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
+  taskId: PropTypes.string,
+  setCurrentUser: PropTypes.func.isRequired,
+  setCurrentTask: PropTypes.func.isRequired,
+  showTaskTrack: PropTypes.func.isRequired,
+};
+
+TasksTracksManagementRow.defaultProps = {
+  taskId: '',
 };
 
 export default TasksTracksManagementRow;

@@ -46,6 +46,7 @@ Header.propTypes = {
 Header.defaultProps = {
   isAuth: false,
   login: '',
+  logout: () => {},
 };
 
 export default Header;

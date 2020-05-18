@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const MemberName = ({ firstName, lastName, userId }) => {
   return (
@@ -7,6 +8,12 @@ const MemberName = ({ firstName, lastName, userId }) => {
       <label htmlFor={userId}>{`${firstName} ${lastName}`}</label>
     </li>
   );
+};
+
+MemberName.propTypes = {
+  firstName: PropTypes.string.isRequired,
+  lastName: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
 };
 
 export default MemberName;

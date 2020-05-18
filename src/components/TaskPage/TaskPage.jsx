@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import firebaseApi from '../../api/firebaseApi';
 import dateToStringForInput from '../common/dateToStringForInput';
 import MemberName from './MemberName';
@@ -8,20 +8,17 @@ import styles from './TaskPage.module.scss';
 import FormField from '../../utils/validators/FormField';
 
 class TaskPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      names: null,
-      taskName: '',
-      description: '',
-      startDate: '',
-      deadLineDate: '',
-      taskNameIsValid: false,
-      descriptionIsValid: false,
-      startDateIsValid: false,
-      deadLineDateIsValid: false,
-    };
-  }
+  state = {
+    names: null,
+    taskName: '',
+    description: '',
+    startDate: '',
+    deadLineDate: '',
+    taskNameIsValid: false,
+    descriptionIsValid: false,
+    startDateIsValid: false,
+    deadLineDateIsValid: false,
+  };
 
   componentDidMount() {
     const { userId, taskId } = this.props;
@@ -63,19 +60,18 @@ class TaskPage extends React.Component {
   };
 
   validateForm = (id, message) => {
-    const valid = message ? false : true;
     switch (id) {
       case 'taskName':
-        this.setState({ taskNameIsValid: valid });
+        this.setState({ taskNameIsValid: !message });
         break;
       case 'description':
-        this.setState({ descriptionIsValid: valid });
+        this.setState({ descriptionIsValid: !message });
         break;
       case 'startDate':
-        this.setState({ startDateIsValid: valid });
+        this.setState({ startDateIsValid: !message });
         break;
       case 'deadLineDate':
-        this.setState({ deadLineDateIsValid: valid });
+        this.setState({ deadLineDateIsValid: !message });
         break;
       default:
         break;
@@ -103,7 +99,7 @@ class TaskPage extends React.Component {
     return (
       <div className={styles.wrapper}>
         <form action=''>
-          {taskId === 'newTask' ? <h1>New task</h1> : <h1>Task - {taskName}</h1>}
+          {taskId === 'newTask' ? <h1>New task</h1> : <h1>{`Task - ${taskName}`}</h1>}
           <FormField
             id='taskName'
             required
@@ -173,5 +169,13 @@ class TaskPage extends React.Component {
     );
   }
 }
+
+TaskPage.propTypes = {
+  userId: PropTypes.string.isRequired,
+  taskId: PropTypes.string.isRequired,
+  showTask: PropTypes.func.isRequired,
+};
+
+TaskPage.defaultProps = {};
 
 export default TaskPage;

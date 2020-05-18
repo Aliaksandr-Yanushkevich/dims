@@ -1,6 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-
+import PropTypes from 'prop-types';
 import styles from './TaskManagement.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import TasksPage from '../TaskPage/TaskPage';
@@ -11,7 +10,7 @@ import Preloader from '../common/Preloader/Preloader';
 import dateToString from '../common/dateToString';
 import Button from '../Button/Button';
 
-class taskManagement extends React.Component {
+class TaskManagement extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -75,4 +74,18 @@ class taskManagement extends React.Component {
   }
 }
 
-export default taskManagement;
+TaskManagement.propTypes = {
+  setCurrentTask: PropTypes.func.isRequired,
+  showTask: PropTypes.func.isRequired,
+  setCurrentUser: PropTypes.func.isRequired,
+  userId: PropTypes.string,
+  taskId: PropTypes.string,
+  taskPageIsVisible: PropTypes.bool.isRequired,
+};
+
+TaskManagement.defaultProps = {
+  userId: '',
+  taskId: '',
+};
+
+export default TaskManagement;

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import TableHeader from '../common/TableHeader/TableHeader';
 import { tasksTrackTitle } from '../../constants';
 import firebaseApi from '../../api/firebaseApi';
@@ -71,5 +72,18 @@ class TasksTracks extends React.Component {
     );
   }
 }
+
+TasksTracks.propTypes = {
+  userId: PropTypes.string.isRequired,
+  taskId: PropTypes.string,
+  setCurrentUser: PropTypes.func.isRequired,
+  setCurrentTask: PropTypes.func.isRequired,
+  taskTrackPageIsVisible: PropTypes.bool.isRequired,
+  showTaskTrack: PropTypes.func.isRequired,
+};
+
+TasksTracks.defaultProps = {
+  taskId: '',
+};
 
 export default TasksTracks;

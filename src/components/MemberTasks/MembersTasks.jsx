@@ -68,7 +68,13 @@ class MemberTasks extends Component {
   }
 }
 
-MemberTasks.propTypes = { userId: PropTypes.string };
-MemberTasks.defaultProps = { userId: 'fLFWTByHgY6EZlalpay2' };
+MemberTasks.propTypes = {
+  userId: PropTypes.string,
+  taskId: PropTypes.string,
+  setCurrentTask: PropTypes.func.isRequired,
+  taskTrackPageIsVisible: PropTypes.bool.isRequired,
+  showTaskTrack: PropTypes.func.isRequired,
+};
+MemberTasks.defaultProps = { userId: '', taskId: '' };
 
 export default MemberTasks;

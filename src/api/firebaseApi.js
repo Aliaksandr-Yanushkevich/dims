@@ -136,7 +136,6 @@ const firebaseApi = {
     let tasksWithId = [];
     return getData().then((membersData) => {
       membersData.forEach((member) => {
-        // taskList = [...taskList, ...member.data().tasks]; // создаёт одномерный массив заданий
         taskList.push({
           userId: member.ref.path.substring(member.ref.path.indexOf('/') + 1),
           tasks: member.data().tasks,
@@ -149,13 +148,6 @@ const firebaseApi = {
         task.deadLineDate = task.deadLineDate.toDate();
       });
       return tasksWithId;
-      // return taskList.map((task) => ({
-      //   taskName: task.taskName,
-      //   startDate: task.startDate,
-      //   deadLineDate: task.deadLineDate,
-      //   taskId: task.taskId,
-      //   userId: member.ref.path.substring(member.ref.path.indexOf('/') + 1),
-      // }));
     });
   },
 

@@ -23,14 +23,16 @@ const MemberProgressData = ({ taskId, taskName, taskDescription, setCurrentTask,
 );
 
 MemberProgressData.propTypes = {
-  taskId: PropTypes.string,
+  taskId: PropTypes.number,
   taskName: PropTypes.string,
   taskDescription: PropTypes.string,
+  setCurrentTask: PropTypes.func.isRequired,
+  showTask: PropTypes.func.isRequired,
 };
 MemberProgressData.defaultProps = {
-  taskId: '1',
-  taskName: 'FTP',
-  taskDescription: 'The SDD hard drive is down, navigate the optical pixel so we can generate the JSON monitor!',
+  taskId: 0,
+  taskName: '',
+  taskDescription: '',
 };
 
 export default MemberProgressData;

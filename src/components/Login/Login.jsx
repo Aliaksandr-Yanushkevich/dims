@@ -4,16 +4,13 @@ import Button from '../Button/Button';
 import FormField from '../../utils/validators/FormField';
 
 class Login extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      login: '',
-      password: '',
-      remember: false,
-      loginIsValid: false,
-      passwordIsValid: false,
-    };
-  }
+  state = {
+    login: '',
+    password: '',
+    remember: false,
+    loginIsValid: false,
+    passwordIsValid: false,
+  };
 
   onChange = (e) => {
     const { id, value, checked } = e.currentTarget;
@@ -33,13 +30,12 @@ class Login extends React.Component {
   };
 
   validateForm = (id, message) => {
-    const valid = message ? false : true;
     switch (id) {
       case 'login':
-        this.setState({ loginIsValid: valid });
+        this.setState({ loginIsValid: !message });
         break;
       case 'password':
-        this.setState({ passwordIsValid: valid });
+        this.setState({ passwordIsValid: !message });
         break;
       default:
         break;
@@ -74,8 +70,10 @@ class Login extends React.Component {
           />
           <div className={styles.item}>
             <div className={styles.remember}>
-              <input id='remember' type='checkbox' checked={remember} onChange={this.onChange} />
-              <label htmlFor='remember'>Remember me</label>
+              <label htmlFor='remember'>
+                Remember me
+                <input id='remember' type='checkbox' checked={remember} onChange={this.onChange} />
+              </label>
             </div>
             <Button buttonText='Login' disabled={!(loginIsValid && passwordIsValid)} />
           </div>

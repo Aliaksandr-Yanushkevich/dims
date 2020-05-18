@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import Button from '../Button/Button';
 import dateToStringForInput from '../common/dateToStringForInput';
 import firebaseApi from '../../api/firebaseApi';
@@ -27,10 +27,9 @@ class TaskTrack extends React.Component {
   };
 
   validateForm = (id, message) => {
-    const valid = message ? false : true;
     switch (id) {
       case 'note':
-        this.setState({ noteIsValid: valid });
+        this.setState({ noteIsValid: !message });
         break;
       default:
         break;
@@ -42,22 +41,12 @@ class TaskTrack extends React.Component {
     const { showTaskTrack } = this.props;
     return (
       <div className={styles.wrapper}>
-        <h1>Task Track - {taskName}</h1>
+        <h1>{`Task Track - ${taskName}`}</h1>
 
         <div className={styles.dateItem}>
-          <label htmlFor='date'>Date</label>
+          <label htmlFor='date'>Date </label>
           <input id='date' type='date' value={dateToStringForInput(new Date())} disabled />
         </div>
-        {/* <label htmlFor='date'>Note</label>
-        <textarea
-          name='note'
-          id='note'
-          cols='30'
-          rows='10'
-          value={note}
-          placeholder='Type your note here'
-          onChange={this.onChange}
-        /> */}
         <FormField
           id='note'
           name='note'
@@ -82,5 +71,11 @@ class TaskTrack extends React.Component {
     );
   }
 }
+
+TaskTrack.propTypes = {
+  userId: PropTypes.string.isRequired,
+  taskId: PropTypes.string.isRequired,
+  showTaskTrack: PropTypes.func.isRequired,
+};
 
 export default TaskTrack;

@@ -35,14 +35,13 @@ const MemberData = ({
             <Button buttonText='Tasks' dataId={userId} onClick={setCurrentUser} />
           </NavLink>
           <Button buttonText='Edit' dataId={userId} onClick={createMember} />
-          <NavLink to='/member_delete'>
-            <Button
-              buttonText='Delete'
-              dataId={userId}
-              onClick={() => deleteMember(userId)}
-              className={styles.dangerousButton}
-            />
-          </NavLink>
+
+          <Button
+            buttonText='Delete'
+            dataId={userId}
+            onClick={() => deleteMember(userId)}
+            className={styles.dangerousButton}
+          />
         </div>
       </td>
     </tr>
@@ -58,9 +57,9 @@ MemberData.propTypes = {
   startDate: PropTypes.instanceOf(Date),
   age: PropTypes.number,
   userId: PropTypes.string,
-  setCurrentUser: PropTypes.func,
-  editMember: PropTypes.func,
-  deleteMember: PropTypes.func,
+  setCurrentUser: PropTypes.func.isRequired,
+  deleteMember: PropTypes.func.isRequired,
+  createMember: PropTypes.func.isRequired,
 };
 MemberData.defaultProps = {
   index: 1,

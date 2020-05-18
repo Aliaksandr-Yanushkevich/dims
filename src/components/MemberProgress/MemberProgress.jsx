@@ -8,14 +8,11 @@ import firebaseApi from '../../api/firebaseApi';
 import TaskPage from '../TaskPage/TaskPage';
 
 class MemberProgres extends Component {
-  constructor() {
-    super();
-    this.state = {
-      tasks: null,
-      firstName: null,
-      lastName: null,
-    };
-  }
+  state = {
+    tasks: null,
+    firstName: null,
+    lastName: null,
+  };
 
   componentDidMount() {
     const { userId } = this.props;
@@ -44,6 +41,7 @@ class MemberProgres extends Component {
 
     const tasksArray = tasks.map((task) => (
       <MemberProgressData
+        key={`${task.description}${task.taskName}`}
         taskId={task.taskId}
         taskName={task.taskName}
         taskDescription={task.description}
@@ -58,7 +56,9 @@ class MemberProgres extends Component {
         <h2>{`${firstName} ${lastName} progress:`}</h2>
         <table>
           <tbody>
-            <TableHeader titleArray={memberProgressTitle} />
+            <tr>
+              <TableHeader titleArray={memberProgressTitle} />
+            </tr>
             {tasksArray}
           </tbody>
         </table>
@@ -67,7 +67,12 @@ class MemberProgres extends Component {
   }
 }
 
-MemberProgres.propTypes = { userId: PropTypes.string };
-MemberProgres.defaultProps = { userId: '4iKBUOYjXypfQT9Uv9JA' };
+MemberProgres.propTypes = {
+  userId: PropTypes.string.isRequired,
+  taskId: PropTypes.string.isRequired,
+  showTask: PropTypes.func.isRequired,
+  setCurrentTask: PropTypes.func.isRequired,
+  taskPageIsVisible: PropTypes.bool.isRequired,
+};
 
 export default MemberProgres;

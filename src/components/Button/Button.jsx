@@ -17,16 +17,22 @@ const Button = ({ id, buttonText, dataId, taskId, className, onClick, disabled }
 
 Button.propTypes = {
   id: PropTypes.string,
+  taskId: PropTypes.string,
   buttonText: PropTypes.string,
   className: PropTypes.string,
   dataId: PropTypes.string,
   onClick: PropTypes.func,
+  disabled: PropTypes.bool,
 };
 
 Button.defaultProps = {
-  buttonText: 'Task',
-  className: 'successButton',
-  dataId: '4iKBUOYjXypfQT9Uv9JA',
+  id: '',
+  taskId: '',
+  buttonText: '',
+  className: '',
+  dataId: '',
+  onClick: () => {},
+  disabled: false,
 };
 
 export default Button;
