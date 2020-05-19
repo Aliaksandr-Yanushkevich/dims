@@ -14,7 +14,7 @@ const TasksTracksManagementRow = ({
   showTaskTrack,
 }) => {
   return (
-    <tr key={`${index}${userId}`}>
+    <tr key={userId}>
       <td>{index}</td>
       <td>
         <NavLink
@@ -35,7 +35,6 @@ const TasksTracksManagementRow = ({
       <td>
         <div className={styles.buttonWrapper}>
           <Button
-            buttonText='Edit'
             dataId={userId}
             taskId={taskId}
             onClick={(e) => {
@@ -43,10 +42,13 @@ const TasksTracksManagementRow = ({
               setCurrentTask(e);
               showTaskTrack(true);
             }}
-          />
-
+          >
+            Edit
+          </Button>
           <NavLink to='/task_track_management'>
-            <Button buttonText='Delete' className={styles.dangerousButton} dataId={userId} />
+            <Button className={styles.dangerousButton} dataId={userId}>
+              Delete
+            </Button>
           </NavLink>
         </div>
       </td>

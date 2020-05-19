@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const MemberProgressData = ({ taskId, taskName, taskDescription, setCurrentTask, showTask }) => (
-  <tr key={taskId}>
+  <tr key={`${taskId}${taskName}`}>
     <td>{taskId + 1}</td>
     <td>
       <NavLink

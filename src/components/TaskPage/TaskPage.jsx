@@ -23,20 +23,25 @@ class TaskPage extends React.Component {
   componentDidMount() {
     const { userId, taskId } = this.props;
     if (userId && taskId !== 'newTask') {
-      console.log(this.props);
-      firebaseApi.getUserTasks(userId).then((result) => {
-        const { taskName, description, startDate, deadLineDate } = result.tasks[taskId];
-        const startDateConverted = dateToStringForInput(startDate.toDate());
-        const deadLineDateConverted = dateToStringForInput(deadLineDate.toDate());
-        this.setState({
-          taskName,
-          description,
-          startDate: startDateConverted,
-          deadLineDate: deadLineDateConverted,
-        });
-      });
+      firebaseApi
+        .getUserTasks(userId)
+        .then((result) => {
+          const { taskName, description, startDate, deadLineDate } = result.tasks[taskId];
+          const startDateConverted = dateToStringForInput(startDate.toDate());
+          const deadLineDateConverted = dateToStringForInput(deadLineDate.toDate());
+          this.setState({
+            taskName,
+            description,
+            startDate: startDateConverted,
+            deadLineDate: deadLineDateConverted,
+          });
+        })
+        .catch((error) => console.error(`Error receiving data: ${error}`));
     }
-    firebaseApi.getNames().then((names) => this.setState({ names }));
+    firebaseApi
+      .getNames()
+      .then((names) => this.setState({ names }))
+      .catch((error) => console.error(`Error receiving data: ${error}`));
   }
 
   onChange = (e) => {
@@ -150,19 +155,21 @@ class TaskPage extends React.Component {
             {taskId !== 'newTask' ? (
               <Button
                 className={styles.successButton}
-                buttonText='Save'
                 onClick={() => console.log('task updated/sent!')}
                 disabled={!(taskNameIsValid && descriptionIsValid && startDateIsValid && deadLineDateIsValid)}
-              />
+              >
+                Save
+              </Button>
             ) : (
               <Button
                 className={styles.successButton}
-                buttonText='Create'
                 onClick={() => console.log('task created!')}
                 disabled={!(taskNameIsValid && descriptionIsValid && startDateIsValid && deadLineDateIsValid)}
-              />
+              >
+                Create
+              </Button>
             )}
-            <Button buttonText='Back to grid' onClick={() => showTask(false)} />
+            <Button onClick={() => showTask(false)}>Back to grid</Button>
           </div>
         </form>
       </div>

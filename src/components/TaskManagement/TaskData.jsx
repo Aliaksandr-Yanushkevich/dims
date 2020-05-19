@@ -16,7 +16,7 @@ const TaskData = ({
   showTask,
 }) => {
   return (
-    <tr key={index}>
+    <tr key={`${index}${taskName}`}>
       <td>{index + 1}</td>
       <td>
         <NavLink
@@ -36,7 +36,6 @@ const TaskData = ({
       <td>
         <div className={styles.buttonWrapper}>
           <Button
-            buttonText='Edit'
             dataId={userId}
             taskId={taskId}
             onClick={(e) => {
@@ -44,10 +43,14 @@ const TaskData = ({
               setCurrentTask(e);
               showTask(true);
             }}
-          />
+          >
+            Edit
+          </Button>
 
           <NavLink to='/task_management'>
-            <Button buttonText='Delete' className={styles.dangerousButton} dataId={userId} />
+            <Button className={styles.dangerousButton} dataId={userId}>
+              Delete
+            </Button>
           </NavLink>
         </div>
       </td>

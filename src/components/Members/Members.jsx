@@ -10,12 +10,9 @@ import styles from './Members.module.scss';
 import MemberPage from '../MemberPage/MemberPage';
 
 class Members extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      memberPageIsVisible: false,
-    };
-  }
+  state = {
+    memberPageIsVisible: false,
+  };
 
   createMember = (e) => {
     const { setCurrentUser } = this.props;
@@ -39,7 +36,7 @@ class Members extends React.Component {
     if (!membersArray) return <Preloader />;
     const memberRows = membersArray.map((member, index) => (
       <MemberData
-        key={index.toString()}
+        key={`${member.firstName}${member.lastName}`}
         index={index + 1}
         firstName={member.firstName}
         lastName={member.lastName}
@@ -58,7 +55,9 @@ class Members extends React.Component {
         {memberPageIsVisible ? <MemberPage userId={userId} hideMemberPage={this.hideMemberPage} /> : null}
         <h1>Members Manage Grid</h1>
         <div className={styles.tableWrapper}>
-          <Button id={styles.register} dataId='newMember' buttonText='Register' onClick={this.createMember} />
+          <Button id={styles.register} dataId='newMember' onClick={this.createMember}>
+            Register
+          </Button>
           <table>
             <thead>
               <tr>

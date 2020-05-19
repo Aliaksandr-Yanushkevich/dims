@@ -7,18 +7,18 @@ import styles from './TaskTrack.module.scss';
 import FormField from '../../utils/validators/FormField';
 
 class TaskTrack extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      taskName: null,
-      note: '',
-      noteIsValid: false,
-    };
-  }
+  state = {
+    taskName: null,
+    note: '',
+    noteIsValid: false,
+  };
 
   componentDidMount() {
     const { userId, taskId } = this.props;
-    firebaseApi.getUserTasks(userId).then((response) => this.setState({ taskName: response.tasks[taskId].taskName }));
+    firebaseApi
+      .getUserTasks(userId)
+      .then((response) => this.setState({ taskName: response.tasks[taskId].taskName }))
+      .catch((error) => console.error(`Error receiving data: ${error}`));
   }
 
   onChange = (e) => {
@@ -59,13 +59,10 @@ class TaskTrack extends React.Component {
           validateForm={this.validateForm}
         />
         <div className={styles.buttonWrapper}>
-          <Button
-            className={styles.successButton}
-            buttonText='Save'
-            onClick={() => console.log('note saved!')}
-            disabled={!noteIsValid}
-          />
-          <Button buttonText='Back to grid' onClick={() => showTaskTrack(false)} />
+          <Button className={styles.successButton} onClick={() => console.log('note saved!')} disabled={!noteIsValid}>
+            Save
+          </Button>
+          <Button onClick={() => showTaskTrack(false)}>Back to grid</Button>
         </div>
       </div>
     );

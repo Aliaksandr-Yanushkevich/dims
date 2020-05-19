@@ -29,8 +29,8 @@ class App extends Component {
           members,
         }),
       )
-      .catch(() => {
-        throw new Error('Error receiving data');
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
       });
   }
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import styles from './MembersProgress.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
 import MemberProgressData from './MemberProgressData';
@@ -26,8 +27,8 @@ class MemberProgres extends Component {
             lastName,
           }),
         )
-        .catch(() => {
-          throw new Error('Error receiving data');
+        .catch((error) => {
+          console.error(`Error receiving data: ${error}`);
         });
     }
   }
@@ -52,7 +53,7 @@ class MemberProgres extends Component {
     return (
       <>
         {taskPageIsVisible ? <TaskPage userId={userId} taskId={taskId} showTask={showTask} /> : null}
-        <h1>Member Progress Grid</h1>
+        <h1 className={styles.title}>Member Progress Grid</h1>
         <h2>{`${firstName} ${lastName} progress:`}</h2>
         <table>
           <tbody>

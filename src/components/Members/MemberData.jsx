@@ -19,7 +19,7 @@ const MemberData = ({
   createMember,
 }) => {
   return (
-    <tr key={index}>
+    <tr key={`${firstName}${lastName}`}>
       <td>{index}</td>
       <td>{`${firstName} ${lastName}`}</td>
       <td>{direction}</td>
@@ -29,19 +29,22 @@ const MemberData = ({
       <td>
         <div className={styles.buttonWrapper}>
           <NavLink to='/member_progress'>
-            <Button buttonText='Progress' dataId={userId} onClick={setCurrentUser} />
+            <Button dataId={userId} onClick={setCurrentUser}>
+              Progress
+            </Button>
           </NavLink>
           <NavLink to='/member_tasks'>
-            <Button buttonText='Tasks' dataId={userId} onClick={setCurrentUser} />
+            <Button dataId={userId} onClick={setCurrentUser}>
+              Tasks
+            </Button>
           </NavLink>
-          <Button buttonText='Edit' dataId={userId} onClick={createMember} />
+          <Button dataId={userId} onClick={createMember}>
+            Edit
+          </Button>
 
-          <Button
-            buttonText='Delete'
-            dataId={userId}
-            onClick={() => deleteMember(userId)}
-            className={styles.dangerousButton}
-          />
+          <Button dataId={userId} onClick={() => deleteMember(userId)} className={styles.dangerousButton}>
+            Delete
+          </Button>
         </div>
       </td>
     </tr>

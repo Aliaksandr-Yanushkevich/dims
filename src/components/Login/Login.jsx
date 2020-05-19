@@ -46,7 +46,7 @@ class Login extends React.Component {
     const { login, password, remember, loginIsValid, passwordIsValid } = this.state;
     return (
       <div className={styles.wrapper}>
-        <h1>Login</h1>
+        <h1 className='title'>Login</h1>
         <form action=''>
           <FormField
             required
@@ -75,7 +75,7 @@ class Login extends React.Component {
                 <input id='remember' type='checkbox' checked={remember} onChange={this.onChange} />
               </label>
             </div>
-            <Button buttonText='Login' disabled={!(loginIsValid && passwordIsValid)} />
+            <Button disabled={!(loginIsValid && passwordIsValid)}>Login</Button>
           </div>
         </form>
       </div>

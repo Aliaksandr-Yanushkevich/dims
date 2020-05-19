@@ -13,13 +13,13 @@ const Header = ({ isAuth, login, logout }) => {
       </NavLink>
       <div className='nav'>
         <NavLink to='/members'>
-          <Button buttonText='Manage members' />
+          <Button>Manage members</Button>
         </NavLink>
         <NavLink to='/task_management'>
-          <Button buttonText='Manage tasks' />
+          <Button>Manage tasks</Button>
         </NavLink>
         <NavLink to='/task_track_management'>
-          <Button buttonText='Task tracks' />
+          <Button>Task tracks</Button>
         </NavLink>
       </div>
       <div className={styles.loginBlock}>

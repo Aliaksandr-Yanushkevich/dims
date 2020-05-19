@@ -1,15 +1,12 @@
 import React from 'react';
 import styles from './FormField.module.scss';
+import { emailRegexp, latinLetterRegexp } from '../../constants';
 
 class FormField extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: '',
-      touched: false,
-      message: null,
-    };
-  }
+  state = {
+    touched: false,
+    message: null,
+  };
 
   componentDidMount() {
     this.validate();
@@ -32,7 +29,7 @@ class FormField extends React.Component {
       if (id === 'login') {
         // regexp for validating email
         const message = 'You have entered an invalid email address';
-        if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
+        if (emailRegexp.test(value)) {
           validateForm(id, message);
           this.setState({ message });
           return;
@@ -42,7 +39,7 @@ class FormField extends React.Component {
       if (id === 'firstName' || id === 'lastName') {
         // regexp for validating latin letters
         const message = 'First name and last name  should consist of latin letters only';
-        if (!/^[a-zA-Z]+$/.test(value)) {
+        if (!latinLetterRegexp.test(value)) {
           validateForm(id, message);
           this.setState({ message });
           return;

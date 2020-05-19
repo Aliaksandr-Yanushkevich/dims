@@ -8,25 +8,25 @@ import firebaseApi from '../../api/firebaseApi';
 import TaskTrack from '../TaskTrack/TaskTrack';
 
 class MemberTasks extends Component {
-  constructor() {
-    super();
-    this.state = {
-      tasks: null,
-      firstName: null,
-      lastName: null,
-    };
-  }
+  state = {
+    tasks: null,
+    firstName: null,
+    lastName: null,
+  };
 
   componentDidMount() {
     const { userId } = this.props;
     if (userId) {
-      firebaseApi.getUserTasks(userId).then(({ tasks, firstName, lastName }) =>
-        this.setState({
-          tasks,
-          firstName,
-          lastName,
-        }),
-      );
+      firebaseApi
+        .getUserTasks(userId)
+        .then(({ tasks, firstName, lastName }) =>
+          this.setState({
+            tasks,
+            firstName,
+            lastName,
+          }),
+        )
+        .catch((error) => console.error(`Error receiving data: ${error}`));
     }
   }
 

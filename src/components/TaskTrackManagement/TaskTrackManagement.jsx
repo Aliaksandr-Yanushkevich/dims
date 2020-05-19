@@ -8,12 +8,9 @@ import TasksTracksManagementRow from './TaskTrackManagementRow';
 import TaskTrack from '../TaskTrack/TaskTrack';
 
 class TasksTracks extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tasks: null,
-    };
-  }
+  state = {
+    tasks: null,
+  };
 
   componentDidMount() {
     const { userId } = this.props;
@@ -21,8 +18,8 @@ class TasksTracks extends React.Component {
       firebaseApi
         .getUserTasks(userId)
         .then((response) => this.setState({ tasks: response.tasks }))
-        .catch(() => {
-          throw new Error('Error receiving data');
+        .catch((error) => {
+          console.error(`Error receiving data: ${error}`);
         });
     }
   }

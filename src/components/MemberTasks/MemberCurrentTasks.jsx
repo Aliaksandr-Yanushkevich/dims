@@ -7,7 +7,7 @@ import Button from '../Button/Button';
 
 const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate, setCurrentTask, showTaskTrack }) => {
   return (
-    <tr key={taskId}>
+    <tr key={`${taskId}${taskName}`}>
       <td>{taskId}</td>
       <td>{taskName}</td>
       <td>{dateToString(startDate)}</td>
@@ -15,21 +15,22 @@ const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate, setCurr
       <td>Here should be task status</td>
       <td>
         <Button
-          buttonText='Track'
           taskId={taskId}
           onClick={(e) => {
             setCurrentTask(e);
             showTaskTrack(true);
           }}
-        />
+        >
+          Track
+        </Button>
       </td>
       <td>
         <div className={styles.buttonWrapper}>
           <NavLink to='/member_success'>
-            <Button buttonText='Success' className={styles.successButton} />
+            <Button className={styles.successButton}>Success</Button>
           </NavLink>
           <NavLink to='/member_fail'>
-            <Button buttonText='Fail' className={styles.dangerousButton} />
+            <Button className={styles.dangerousButton}>Fail</Button>
           </NavLink>
         </div>
       </td>

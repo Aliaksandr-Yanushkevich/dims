@@ -11,15 +11,15 @@ import dateToString from '../common/dateToString';
 import Button from '../Button/Button';
 
 class TaskManagement extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tasks: null,
-    };
-  }
+  state = {
+    tasks: null,
+  };
 
   componentDidMount() {
-    firebaseApi.getTaskList().then((tasks) => this.setState({ tasks }));
+    firebaseApi
+      .getTaskList()
+      .then((tasks) => this.setState({ tasks }))
+      .catch((error) => console.error(`Error receiving data: ${error}`));
   }
 
   createTask = (e) => {
@@ -59,7 +59,9 @@ class TaskManagement extends React.Component {
         <h1>Task management</h1>
         <div className={styles.tableWrapper}>
           {taskPageIsVisible ? <TasksPage userId={userId} taskId={taskId} showTask={showTask} /> : null}
-          <Button id={styles.createTask} taskId='newTask' buttonText='Create task' onClick={this.createTask} />
+          <Button id={styles.createTask} taskId='newTask' onClick={this.createTask}>
+            Create task
+          </Button>
           <table>
             <thead>
               <tr>

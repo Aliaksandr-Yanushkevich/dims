@@ -5,6 +5,8 @@ import Preloader from '../common/Preloader/Preloader';
 import Button from '../Button/Button';
 import styles from './MemberPage.module.scss';
 import FormField from '../../utils/validators/FormField';
+import Select from '../common/Select/Select';
+import { directions } from '../../constants';
 
 class MemberPage extends React.Component {
   state = {
@@ -28,15 +30,18 @@ class MemberPage extends React.Component {
     const { userId } = this.props;
     if (userId && userId !== 'newMember') {
       this.setState({ isFetching: true });
-      firebaseApi.getMemberData(userId).then((memberData) => {
-        this.setState({ oldData: memberData, newData: memberData, isFetching: false });
-      });
+      firebaseApi
+        .getMemberData(userId)
+        .then((memberData) => {
+          this.setState({ oldData: memberData, newData: memberData, isFetching: false });
+        })
+        .catch((error) => console.error(`Error receiving data: ${error}`));
     }
   }
 
   createMember = (memberData) => {
-    firebaseApi.createMember(memberData).catch(() => {
-      throw new Error('Member creation error');
+    firebaseApi.createMember(memberData).catch((error) => {
+      console.error(`Member creation error: ${error}`);
     });
   };
 
@@ -64,8 +69,8 @@ class MemberPage extends React.Component {
       firebaseApi
         .updateMember(userId, updatedData)
         .then(() => console.log('updated successfully'))
-        .catch(() => {
-          throw new Error('Member updating error');
+        .catch((error) => {
+          console.error(`Member updating error: ${error}`);
         });
     }
   };
@@ -122,7 +127,11 @@ class MemberPage extends React.Component {
     }
     return (
       <div className={styles.wrapper}>
-        {userId === 'newMember' ? <h1>Register Member</h1> : <h1>Edit Member</h1>}
+        {userId === 'newMember' ? (
+          <h1 className={styles.title}>Register Member</h1>
+        ) : (
+          <h1 className={styles.title}>Edit Member</h1>
+        )}
         <form action=''>
           <FormField
             id='firstName'
@@ -172,19 +181,7 @@ class MemberPage extends React.Component {
             maxLength={140}
           />
           <div className={styles.item}>
-            <label htmlFor='direction'>Direction: </label>
-            <select
-              id='direction'
-              name='direction'
-              placeholder='Choose direction'
-              onChange={this.onChange}
-              value={direction}
-            >
-              <option value='Javascript'>Javascript</option>
-              <option value='Java'>Java</option>
-              <option value='Salesforce'>Salesforce</option>
-              <option value='.Net'>.Net</option>
-            </select>
+            <Select id='direction' name='direction' onChange={this.onChange} value={direction} options={directions} />
           </div>
           <FormField
             id='startDate'
@@ -199,19 +196,21 @@ class MemberPage extends React.Component {
             {userId !== 'newMember' ? (
               <Button
                 className={styles.successButton}
-                buttonText='Save'
                 onClick={() => this.updateMember(userId, this.calculateDataDifference())}
                 disabled={!(firstNameIsValid && lastNameIsValid && ageIsValid && educationIsValid)}
-              />
+              >
+                Save
+              </Button>
             ) : (
               <Button
                 className={styles.successButton}
-                buttonText='Create'
                 onClick={() => this.createMember(this.state.newData)}
                 disabled={!(firstNameIsValid && lastNameIsValid && ageIsValid && educationIsValid)}
-              />
+              >
+                Create
+              </Button>
             )}
-            <Button buttonText='Back to grid' onClick={hideMemberPage} />
+            <Button onClick={hideMemberPage}>Back to grid</Button>
           </div>
         </form>
       </div>
@@ -223,7 +222,5 @@ MemberPage.propTypes = {
   userId: PropTypes.string.isRequired,
   hideMemberPage: PropTypes.func.isRequired,
 };
-
-MemberPage.defaultProps = {};
 
 export default MemberPage;
