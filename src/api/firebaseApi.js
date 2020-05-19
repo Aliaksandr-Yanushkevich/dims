@@ -92,6 +92,8 @@ const firebaseApi = {
           });
       });
       resolve();
+    }).then(() => {
+      this.getMembers();
     });
   },
   getUserTasks(userId) {

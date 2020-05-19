@@ -98,7 +98,6 @@ class App extends Component {
               />
             </Route>
             <Route path='/task_track_management'>
-              {' '}
               <TaskTrackManagement
                 userId={currentUserId}
                 taskId={currentTaskId}

@@ -5,7 +5,6 @@ import styles from './Footer.module.scss';
 import getYear from './getYear';
 
 const NavBar = () => {
-  const year = getYear();
   return (
     <footer className={styles.footer}>
       <div className={styles.author}>
@@ -14,7 +13,7 @@ const NavBar = () => {
           <FontAwesomeIcon icon={faGithub} size='2x' className={styles.icon} />
         </a>
       </div>
-      <a href={process.env.REACT_APP_INCUBATOR_LINK}>{`Dev Incubator ${year}`}</a>
+      <a href={process.env.REACT_APP_INCUBATOR_LINK}>{`Dev Incubator ${getYear()}`}</a>
     </footer>
   );
 };
