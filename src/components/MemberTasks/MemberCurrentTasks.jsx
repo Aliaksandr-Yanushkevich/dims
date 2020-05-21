@@ -5,31 +5,29 @@ import dateToString from '../common/dateToString';
 import styles from './MembersTasks.module.scss';
 import Button from '../Button/Button';
 
-const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate, setCurrentTask, showTaskTrack }) => {
+const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate, setCurrentTask, show }) => {
+  const onClick = (e) => {
+    setCurrentTask(e);
+    show('taskTrackPage', true);
+  };
   return (
     <tr key={`${taskId}${taskName}`}>
-      <td>{taskId}</td>
-      <td>{taskName}</td>
-      <td>{dateToString(startDate)}</td>
-      <td>{dateToString(deadLineDate)}</td>
-      <td>Here should be task status</td>
-      <td>
-        <Button
-          taskId={taskId}
-          onClick={(e) => {
-            setCurrentTask(e);
-            showTaskTrack(true);
-          }}
-        >
+      <td className={styles.tableData}>{taskId}</td>
+      <td className={styles.tableData}>{taskName}</td>
+      <td className={styles.tableData}>{dateToString(startDate)}</td>
+      <td className={styles.tableData}>{dateToString(deadLineDate)}</td>
+      <td className={styles.tableData}>Here should be task status</td>
+      <td className={styles.tableData}>
+        <Button taskId={taskId} onClick={onClick}>
           Track
         </Button>
       </td>
-      <td>
+      <td className={styles.tableData}>
         <div className={styles.buttonWrapper}>
-          <NavLink to='/member_success'>
+          <NavLink className={styles.link} to='/member_success'>
             <Button className={styles.successButton}>Success</Button>
           </NavLink>
-          <NavLink to='/member_fail'>
+          <NavLink className={styles.link} to='/member_fail'>
             <Button className={styles.dangerousButton}>Fail</Button>
           </NavLink>
         </div>
@@ -44,7 +42,7 @@ MemberCurrentTasks.propTypes = {
   startDate: PropTypes.instanceOf(Date),
   deadLineDate: PropTypes.instanceOf(Date),
   setCurrentTask: PropTypes.func.isRequired,
-  showTaskTrack: PropTypes.func.isRequired,
+  show: PropTypes.func.isRequired,
 };
 
 MemberCurrentTasks.defaultProps = {

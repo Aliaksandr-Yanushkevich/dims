@@ -8,17 +8,17 @@ import Button from '../../Button/Button';
 const Header = ({ isAuth, login, logout }) => {
   return (
     <header className={styles.header}>
-      <NavLink to='/members'>
+      <NavLink className={styles.link} to='/members'>
         <img src={logo} alt='logo' />
       </NavLink>
       <div className='nav'>
-        <NavLink to='/members'>
+        <NavLink className={styles.link} to='/members'>
           <Button>Manage members</Button>
         </NavLink>
-        <NavLink to='/task_management'>
+        <NavLink className={styles.link} to='/task_management'>
           <Button>Manage tasks</Button>
         </NavLink>
-        <NavLink to='/task_track_management'>
+        <NavLink className={styles.link} to='/task_track_management'>
           <Button>Task tracks</Button>
         </NavLink>
       </div>
@@ -31,7 +31,9 @@ const Header = ({ isAuth, login, logout }) => {
             </button>
           </div>
         ) : (
-          <NavLink to='/login'>Login</NavLink>
+          <NavLink className={styles.link} to='/login'>
+            Login
+          </NavLink>
         )}
       </div>
     </header>

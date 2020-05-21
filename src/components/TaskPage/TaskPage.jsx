@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import firebaseApi from '../../api/firebaseApi';
 import dateToStringForInput from '../common/dateToStringForInput';
-import MemberName from './MemberName';
 import Button from '../Button/Button';
 import styles from './TaskPage.module.scss';
-import FormField from '../../utils/validators/FormField';
+import FormField from '../FormField/FormField';
+import MemberList from './MemberList';
 
 class TaskPage extends React.Component {
   state = {
@@ -95,31 +95,31 @@ class TaskPage extends React.Component {
       deadLineDateIsValid,
     } = this.state;
     const { names } = this.state;
-    const { taskId, showTask } = this.props;
-    const memberNames = names
-      ? names.map((name) => {
-          return <MemberName firstName={name.firstName} lastName={name.lastName} userId={name.userId} />;
-        })
-      : null;
+    const { taskId, show } = this.props;
+
+    const backToGrid = () => {
+      show('taskPage');
+    };
+
     return (
       <div className={styles.wrapper}>
         <form action=''>
-          {taskId === 'newTask' ? <h1>New task</h1> : <h1>{`Task - ${taskName}`}</h1>}
+          {taskId === 'newTask' ? (
+            <h1 className={styles.title}>New task</h1>
+          ) : (
+            <h1 className={styles.title}>{`Task - ${taskName}`}</h1>
+          )}
           <FormField
             id='taskName'
-            required
-            inputType='text'
             label='Task name:'
             onChange={this.onChange}
             value={taskName}
             placeholder='Task name'
             validateForm={this.validateForm}
-            maxLength={140}
           />
           <FormField
             id='description'
             name='description'
-            required
             inputType='textarea'
             label='Description:'
             onChange={this.onChange}
@@ -129,7 +129,6 @@ class TaskPage extends React.Component {
           />
           <FormField
             id='startDate'
-            required
             inputType='date'
             label='Start:'
             onChange={this.onChange}
@@ -138,19 +137,13 @@ class TaskPage extends React.Component {
           />
           <FormField
             id='deadLineDate'
-            required
             inputType='date'
             label='Deadline:'
             onChange={this.onChange}
             value={deadLineDate}
             validateForm={this.validateForm}
           />
-          <div className={styles.members}>
-            <div className={styles.membersTitle}>Members</div>
-            <div className={styles.membersItems}>
-              <ul>{memberNames}</ul>
-            </div>
-          </div>
+          {names ? <MemberList names={names} /> : null}
           <div className={styles.buttonWrapper}>
             {taskId !== 'newTask' ? (
               <Button
@@ -169,7 +162,7 @@ class TaskPage extends React.Component {
                 Create
               </Button>
             )}
-            <Button onClick={() => showTask(false)}>Back to grid</Button>
+            <Button onClick={backToGrid}>Back to grid</Button>
           </div>
         </form>
       </div>
@@ -180,7 +173,7 @@ class TaskPage extends React.Component {
 TaskPage.propTypes = {
   userId: PropTypes.string.isRequired,
   taskId: PropTypes.string.isRequired,
-  showTask: PropTypes.func.isRequired,
+  show: PropTypes.func.isRequired,
 };
 
 TaskPage.defaultProps = {};

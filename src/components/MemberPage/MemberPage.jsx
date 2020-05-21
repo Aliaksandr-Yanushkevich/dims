@@ -4,7 +4,7 @@ import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
 import Button from '../Button/Button';
 import styles from './MemberPage.module.scss';
-import FormField from '../../utils/validators/FormField';
+import FormField from '../FormField/FormField';
 import Select from '../common/Select/Select';
 import { directions } from '../../constants';
 
@@ -46,22 +46,7 @@ class MemberPage extends React.Component {
   };
 
   validateForm = (id, message) => {
-    switch (id) {
-      case 'firstName':
-        this.setState({ firstNameIsValid: !message });
-        break;
-      case 'lastName':
-        this.setState({ lastNameIsValid: !message });
-        break;
-      case 'age':
-        this.setState({ ageIsValid: !message });
-        break;
-      case 'education':
-        this.setState({ educationIsValid: !message });
-        break;
-      default:
-        break;
-    }
+    this.setState({ [`${id}IsValid`]: !message });
   };
 
   updateMember = (userId, updatedData) => {
@@ -86,36 +71,19 @@ class MemberPage extends React.Component {
       result.push({ [dataDifference[i][0]]: dataDifference[i][1] });
     }
     if (result.length > 0) {
-      return Object.assign(...result);
+      return { ...result };
+      // return Object.assign(...result);
     }
     return undefined;
   };
 
   onChange = (e) => {
     const { id, value } = e.currentTarget;
-    switch (id) {
-      case 'firstName':
-        this.setState({ newData: { ...this.state.newData, firstName: value } });
-        break;
-      case 'lastName':
-        this.setState({ newData: { ...this.state.newData, lastName: value } });
-        break;
-      case 'age':
-        this.setState({ newData: { ...this.state.newData, age: value } });
-        break;
-      case 'education':
-        this.setState({ newData: { ...this.state.newData, education: value } });
-        break;
-      case 'direction':
-        console.log(value);
-        this.setState({ newData: { ...this.state.newData, direction: value } });
-        break;
-      case 'startDate':
-        this.setState({ newData: { ...this.state.newData, startDate: value } });
-        break;
-      default:
-        break;
-    }
+    this.setState(({ newData }) => {
+      const updatedData = { ...newData };
+      updatedData[id] = value;
+      return { newData: updatedData };
+    });
   };
 
   render() {
@@ -125,6 +93,12 @@ class MemberPage extends React.Component {
     if (isFetching) {
       return <Preloader />;
     }
+    const updateUser = () => {
+      this.updateMember(userId, this.calculateDataDifference());
+    };
+    const createUser = () => {
+      this.createMember(newData);
+    };
     return (
       <div className={styles.wrapper}>
         {userId === 'newMember' ? (
@@ -135,10 +109,6 @@ class MemberPage extends React.Component {
         <form action=''>
           <FormField
             id='firstName'
-            required
-            minLength={2}
-            maxLength={40}
-            inputType='text'
             label='First Name:'
             onChange={this.onChange}
             value={firstName}
@@ -147,10 +117,6 @@ class MemberPage extends React.Component {
           />
           <FormField
             id='lastName'
-            required
-            minLength={2}
-            maxLength={40}
-            inputType='text'
             label='Last Name:'
             onChange={this.onChange}
             value={lastName}
@@ -159,7 +125,6 @@ class MemberPage extends React.Component {
           />
           <FormField
             id='age'
-            required
             min={0}
             max={150}
             inputType='number'
@@ -171,21 +136,17 @@ class MemberPage extends React.Component {
           />
           <FormField
             id='education'
-            required
-            inputType='text'
             label='Education:'
             onChange={this.onChange}
             value={education}
             placeholder='University Name'
             validateForm={this.validateForm}
-            maxLength={140}
           />
           <div className={styles.item}>
             <Select id='direction' name='direction' onChange={this.onChange} value={direction} options={directions} />
           </div>
           <FormField
             id='startDate'
-            required
             inputType='date'
             label='Start Date:'
             onChange={this.onChange}
@@ -196,7 +157,7 @@ class MemberPage extends React.Component {
             {userId !== 'newMember' ? (
               <Button
                 className={styles.successButton}
-                onClick={() => this.updateMember(userId, this.calculateDataDifference())}
+                onClick={updateUser}
                 disabled={!(firstNameIsValid && lastNameIsValid && ageIsValid && educationIsValid)}
               >
                 Save
@@ -204,7 +165,7 @@ class MemberPage extends React.Component {
             ) : (
               <Button
                 className={styles.successButton}
-                onClick={() => this.createMember(this.state.newData)}
+                onClick={createUser}
                 disabled={!(firstNameIsValid && lastNameIsValid && ageIsValid && educationIsValid)}
               >
                 Create

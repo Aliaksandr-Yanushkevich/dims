@@ -43,19 +43,15 @@ class App extends Component {
 
   setCurrentTask = (e) => {
     e.persist();
-    const taskId =
-      e.target.dataset.taskid !== 'newTask' ? +e.currentTarget.dataset.taskid : e.currentTarget.dataset.taskid;
+    const value = e.target.dataset.taskid;
+    const taskId = value !== 'newTask' ? Number.parseInt(value, 10) : value;
     this.setState({
       currentTaskId: taskId,
     });
   };
 
-  showTask = (value) => {
-    this.setState({ taskPageIsVisible: value });
-  };
-
-  showTaskTrack = (value) => {
-    this.setState({ taskTrackPageIsVisible: value });
+  show = (page, value = false) => {
+    this.setState({ [`${page}IsVisible`]: value });
   };
 
   render() {
@@ -74,7 +70,7 @@ class App extends Component {
                 userId={currentUserId}
                 taskId={currentTaskId}
                 setCurrentTask={this.setCurrentTask}
-                showTask={this.showTask}
+                show={this.show}
                 taskPageIsVisible={taskPageIsVisible}
               />
             </Route>
@@ -84,7 +80,7 @@ class App extends Component {
                 taskId={currentTaskId}
                 setCurrentTask={this.setCurrentTask}
                 taskTrackPageIsVisible={taskTrackPageIsVisible}
-                showTaskTrack={this.showTaskTrack}
+                show={this.show}
               />
             </Route>
             <Route path='/task_management'>
@@ -94,7 +90,7 @@ class App extends Component {
                 setCurrentTask={this.setCurrentTask}
                 setCurrentUser={this.setCurrentUser}
                 taskPageIsVisible={taskPageIsVisible}
-                showTask={this.showTask}
+                show={this.show}
               />
             </Route>
             <Route path='/task_track_management'>
@@ -104,7 +100,7 @@ class App extends Component {
                 setCurrentTask={this.setCurrentTask}
                 setCurrentUser={this.setCurrentUser}
                 taskTrackPageIsVisible={taskTrackPageIsVisible}
-                showTaskTrack={this.showTaskTrack}
+                show={this.show}
               />
             </Route>
             <Route path='/login'>
@@ -118,4 +114,5 @@ class App extends Component {
   }
 }
 
+firebaseApi.createFakeMembers(20);
 export default App;

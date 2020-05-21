@@ -53,7 +53,7 @@ class Members extends React.Component {
     return (
       <>
         {memberPageIsVisible ? <MemberPage userId={userId} hideMemberPage={this.hideMemberPage} /> : null}
-        <h1>Members Manage Grid</h1>
+        <h1 className={styles.title}>Members Manage Grid</h1>
         <div className={styles.tableWrapper}>
           <Button id={styles.register} dataId='newMember' onClick={this.createMember}>
             Register

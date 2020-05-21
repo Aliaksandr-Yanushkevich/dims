@@ -1,9 +1,5 @@
 const addUserIdToEveryTask = (taskList) => {
-  const tasks = { ...taskList };
-  tasks.tasks.forEach((task) => {
-    task.userId = taskList.userId;
-  });
-  return tasks.tasks;
+  return taskList.tasks.map((task) => ({ ...task, userId: taskList.userId }));
 };
 
 export default addUserIdToEveryTask;

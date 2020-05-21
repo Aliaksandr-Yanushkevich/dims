@@ -4,8 +4,8 @@ $font: 'Roboto', Sans-serif;
 $textColor: #383436;
 $dangerousColor: #d04b31;
 
-h1,
-h2 {
+.title,
+.subtitle {
   font-family: $font;
   text-align: center;
   color: $primaryColor;
@@ -71,21 +71,21 @@ tbody {
   border-color: inherit;
 }
 
-th,
-td {
+.tableHeader,
+.tableData {
   padding: 8px;
   text-align: center;
   border: 1px solid #9bc2e6;
   max-width: 20rem;
 }
 
-th {
+.tableHeader {
   text-transform: capitalize;
   color: #fff;
   background-color: $primaryColor;
 }
 
-td {
+.tableData {
   display: table-cell;
   vertical-align: inherit;
 }
@@ -98,7 +98,7 @@ tbody tr:nth-child(even) {
   background-color: #b4daf2; /* фон четных строк */
 }
 
-a {
+.link {
   text-decoration: none;
   &:hover {
     color: #f0bb0c;

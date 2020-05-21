@@ -23,14 +23,14 @@ class TaskManagement extends React.Component {
   }
 
   createTask = (e) => {
-    const { setCurrentTask, showTask } = this.props;
+    const { setCurrentTask, show } = this.props;
     setCurrentTask(e);
-    showTask(true);
+    show('taskPage', true);
   };
 
   render() {
     const { tasks } = this.state;
-    const { setCurrentUser, setCurrentTask, userId, taskId, taskPageIsVisible, showTask } = this.props;
+    const { setCurrentUser, setCurrentTask, userId, taskId, taskPageIsVisible, show } = this.props;
     if (!tasks) {
       return <Preloader />;
     }
@@ -48,7 +48,7 @@ class TaskManagement extends React.Component {
               userId={task.userId}
               setCurrentUser={setCurrentUser}
               setCurrentTask={setCurrentTask}
-              showTask={showTask}
+              show={show}
             />
           );
         })
@@ -56,9 +56,9 @@ class TaskManagement extends React.Component {
 
     return (
       <>
-        <h1>Task management</h1>
+        <h1 className={styles.title}>Task management</h1>
         <div className={styles.tableWrapper}>
-          {taskPageIsVisible ? <TasksPage userId={userId} taskId={taskId} showTask={showTask} /> : null}
+          {taskPageIsVisible ? <TasksPage userId={userId} taskId={taskId} show={show} /> : null}
           <Button id={styles.createTask} taskId='newTask' onClick={this.createTask}>
             Create task
           </Button>
@@ -78,7 +78,7 @@ class TaskManagement extends React.Component {
 
 TaskManagement.propTypes = {
   setCurrentTask: PropTypes.func.isRequired,
-  showTask: PropTypes.func.isRequired,
+  show: PropTypes.func.isRequired,
   setCurrentUser: PropTypes.func.isRequired,
   userId: PropTypes.string,
   taskId: PropTypes.string,

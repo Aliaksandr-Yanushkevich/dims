@@ -20,20 +20,20 @@ const MemberData = ({
 }) => {
   return (
     <tr key={`${firstName}${lastName}`}>
-      <td>{index}</td>
-      <td>{`${firstName} ${lastName}`}</td>
-      <td>{direction}</td>
-      <td>{education}</td>
-      <td>{dateToString(startDate)}</td>
-      <td>{age}</td>
-      <td>
+      <td className={styles.tableData}>{index}</td>
+      <td className={styles.tableData}>{`${firstName} ${lastName}`}</td>
+      <td className={styles.tableData}>{direction}</td>
+      <td className={styles.tableData}>{education}</td>
+      <td className={styles.tableData}>{dateToString(startDate)}</td>
+      <td className={styles.tableData}>{age}</td>
+      <td className={styles.tableData}>
         <div className={styles.buttonWrapper}>
-          <NavLink to='/member_progress'>
+          <NavLink className={styles.link} to='/member_progress'>
             <Button dataId={userId} onClick={setCurrentUser}>
               Progress
             </Button>
           </NavLink>
-          <NavLink to='/member_tasks'>
+          <NavLink className={styles.link} to='/member_tasks'>
             <Button dataId={userId} onClick={setCurrentUser}>
               Tasks
             </Button>

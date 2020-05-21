@@ -4,48 +4,34 @@ import { NavLink } from 'react-router-dom';
 import Button from '../Button/Button';
 import styles from './TaskTrackManagement.module.scss';
 
-const TasksTracksManagementRow = ({
-  index,
-  taskName,
-  userId,
-  taskId,
-  setCurrentUser,
-  setCurrentTask,
-  showTaskTrack,
-}) => {
+const TasksTracksManagementRow = ({ index, taskName, userId, taskId, setCurrentUser, setCurrentTask, show }) => {
+  const onClick = (e) => {
+    setCurrentUser(e);
+    setCurrentTask(e);
+    show('taskTrackPage', true);
+  };
   return (
     <tr key={userId}>
-      <td>{index}</td>
-      <td>
+      <td className={styles.tableData}>{index}</td>
+      <td className={styles.tableData}>
         <NavLink
+          className={styles.link}
           to='/task_track_management'
           data-id={userId}
           data-taskid={taskId}
-          onClick={(e) => {
-            setCurrentUser(e);
-            setCurrentTask(e);
-            showTaskTrack(true);
-          }}
+          onClick={onClick}
         >
           {taskName}
         </NavLink>
       </td>
-      <td>Note text</td>
-      <td>Note date</td>
-      <td>
+      <td className={styles.tableData}>Note text</td>
+      <td className={styles.tableData}>Note date</td>
+      <td className={styles.tableData}>
         <div className={styles.buttonWrapper}>
-          <Button
-            dataId={userId}
-            taskId={taskId}
-            onClick={(e) => {
-              setCurrentUser(e);
-              setCurrentTask(e);
-              showTaskTrack(true);
-            }}
-          >
+          <Button dataId={userId} taskId={taskId} onClick={onClick}>
             Edit
           </Button>
-          <NavLink to='/task_track_management'>
+          <NavLink className={styles.link} to='/task_track_management'>
             <Button className={styles.dangerousButton} dataId={userId}>
               Delete
             </Button>
@@ -63,7 +49,7 @@ TasksTracksManagementRow.propTypes = {
   taskId: PropTypes.string,
   setCurrentUser: PropTypes.func.isRequired,
   setCurrentTask: PropTypes.func.isRequired,
-  showTaskTrack: PropTypes.func.isRequired,
+  show: PropTypes.func.isRequired,
 };
 
 TasksTracksManagementRow.defaultProps = {

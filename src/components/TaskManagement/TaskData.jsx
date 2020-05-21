@@ -4,50 +4,29 @@ import PropTypes from 'prop-types';
 import styles from './TaskManagement.module.scss';
 import Button from '../Button/Button';
 
-const TaskData = ({
-  index,
-  taskName,
-  startDate,
-  deadline,
-  userId,
-  taskId,
-  setCurrentUser,
-  setCurrentTask,
-  showTask,
-}) => {
+const TaskData = ({ index, taskName, startDate, deadline, userId, taskId, setCurrentUser, setCurrentTask, show }) => {
+  const onClick = (e) => {
+    setCurrentUser(e);
+    setCurrentTask(e);
+    show('taskPage', true);
+  };
   return (
     <tr key={`${index}${taskName}`}>
-      <td>{index + 1}</td>
-      <td>
-        <NavLink
-          to='/task_page'
-          data-id={userId}
-          data-taskid={taskId}
-          onClick={(e) => {
-            setCurrentUser(e);
-            setCurrentTask(e);
-          }}
-        >
+      <td className={styles.tableData}>{index + 1}</td>
+      <td className={styles.tableData}>
+        <NavLink className={styles.link} to='/task_management' data-id={userId} data-taskid={taskId} onClick={onClick}>
           {taskName}
         </NavLink>
       </td>
-      <td>{startDate}</td>
-      <td>{deadline}</td>
-      <td>
+      <td className={styles.tableData}>{startDate}</td>
+      <td className={styles.tableData}>{deadline}</td>
+      <td className={styles.tableData}>
         <div className={styles.buttonWrapper}>
-          <Button
-            dataId={userId}
-            taskId={taskId}
-            onClick={(e) => {
-              setCurrentUser(e);
-              setCurrentTask(e);
-              showTask(true);
-            }}
-          >
+          <Button dataId={userId} taskId={taskId} onClick={onClick}>
             Edit
           </Button>
 
-          <NavLink to='/task_management'>
+          <NavLink className={styles.link} to='/task_management'>
             <Button className={styles.dangerousButton} dataId={userId}>
               Delete
             </Button>
@@ -64,7 +43,7 @@ TaskData.propTypes = {
   deadline: PropTypes.instanceOf(Date),
   taskId: PropTypes.number,
   setCurrentTask: PropTypes.func.isRequired,
-  showTask: PropTypes.func.isRequired,
+  show: PropTypes.func.isRequired,
   startDate: PropTypes.instanceOf(Date),
   userId: PropTypes.string,
   setCurrentUser: PropTypes.func.isRequired,

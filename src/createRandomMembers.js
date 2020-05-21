@@ -1,26 +1,17 @@
 import faker from 'faker';
 import { courseDirections, universities } from './constants';
 
-const randomFromArray = (randomNumber, array) => {
-  if (randomNumber > 0 && randomNumber < 0.25) {
-    return array[0];
-  }
-  if (randomNumber >= 0.25 && randomNumber < 0.5) {
-    return array[1];
-  }
-  if (randomNumber >= 0.5 && randomNumber < 0.75) {
-    return array[2];
-  }
-  return array[3];
+const randomFromArray = (array) => {
+  // randomNumber will be between 0 and array length
+  const randomNumber = Math.floor(Math.random() * array.length);
+  return array[randomNumber];
 };
 
 const createRandomMembers = (amount) => {
   const randomMembers = [];
   for (let i = 1; i < amount + 1; i += 1) {
-    const randEducation = Math.random();
-    const randDirection = Math.random();
-    const education = randomFromArray(randEducation, universities);
-    const direction = randomFromArray(randDirection, courseDirections);
+    const education = randomFromArray(universities);
+    const direction = randomFromArray(courseDirections);
     const tasks = Array(
       faker.random.number({
         min: 1,

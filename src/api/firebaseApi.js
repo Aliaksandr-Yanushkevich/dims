@@ -1,52 +1,60 @@
 import firebase from './firebase';
 import createRandomMembers from '../createRandomMembers';
-import dateToStringForInput from '../components/common/dateToStringForInput';
 import addUserIdToEveryTask from './adduserIdToEverytask';
 
 const firestore = firebase.firestore();
 const collection = 'dims';
+
 const getData = () => {
   return firestore
     .collection(collection)
     .orderBy('firstName')
     .get();
 };
+
 const updateData = (userId) => {
   return firestore.collection(collection).doc(userId);
 };
+
+export const getLink = (path) => path.substring(path.indexOf('/') + 1);
 
 const firebaseApi = {
   getMembers() {
     let members = [];
     return getData().then((storeMembers) => {
       storeMembers.forEach((member) => {
+        const { index, firstName, lastName, age, direction, education, startDate } = member.data();
+        const userId = getLink(member.ref.path);
         members = [
           ...members,
           {
-            index: member.data().userId,
-            firstName: member.data().firstName,
-            lastName: member.data().lastName,
-            age: member.data().age,
-            direction: member.data().direction,
-            education: member.data().education,
-            startDate: member.data().startDate.toDate(),
-            userId: member.ref.path.substring(member.ref.path.indexOf('/') + 1),
+            index,
+            firstName,
+            lastName,
+            age,
+            direction,
+            education,
+            startDate: startDate.toDate(),
+            userId,
           },
         ];
       });
       return members;
     });
   },
+
   getNames() {
     let memberNames = [];
     return getData().then((members) => {
       members.forEach((member) => {
+        const { firstName, lastName } = member.data();
+        const userId = getLink(member.ref.path);
         memberNames = [
           ...memberNames,
           {
-            firstName: member.data().firstName,
-            lastName: member.data().lastName,
-            userId: member.ref.path.substring(member.ref.path.indexOf('/') + 1),
+            firstName,
+            lastName,
+            userId,
           },
         ];
       });
@@ -59,30 +67,27 @@ const firebaseApi = {
       .collection(collection)
       .doc(userId)
       .get()
-      .then((querySnapshot) => ({
-        firstName: querySnapshot.data().firstName,
-        lastName: querySnapshot.data().lastName,
-        age: querySnapshot.data().age,
-        direction: querySnapshot.data().direction,
-        education: querySnapshot.data().education,
-        startDate: dateToStringForInput(querySnapshot.data().startDate.toDate()),
-        tasks: querySnapshot.data().tasks,
-      }));
+      .then((querySnapshot) => {
+        const { firstName, lastName, age, direction, education, startDate, tasks } = querySnapshot.data();
+        return { firstName, lastName, age, direction, education, startDate: startDate.toDate(), tasks };
+      });
   },
+
   createFakeMembers(amount) {
     return new Promise((resolve) => {
       const members = createRandomMembers(amount);
       members.forEach((member) => {
+        const { firstName, lastName, direction, education, startDate, age, tasks } = member;
         firestore
           .collection(collection)
           .add({
-            firstName: member.firstName,
-            lastName: member.lastName,
-            direction: member.direction,
-            education: member.education,
-            startDate: member.startDate,
-            age: member.age,
-            tasks: member.tasks,
+            firstName,
+            lastName,
+            direction,
+            education,
+            startDate,
+            age,
+            tasks,
           })
           .then((docRef) => {
             console.log('Document written with ID: ', docRef.id);
@@ -96,17 +101,18 @@ const firebaseApi = {
       this.getMembers();
     });
   },
+
   getUserTasks(userId) {
     return firestore
       .collection(collection)
       .doc(userId)
       .get()
-      .then((querySnapshot) => ({
-        firstName: querySnapshot.data().firstName,
-        lastName: querySnapshot.data().lastName,
-        tasks: querySnapshot.data().tasks,
-      }));
+      .then((querySnapshot) => {
+        const { firstName, lastName, tasks } = querySnapshot.data();
+        return { firstName, lastName, tasks };
+      });
   },
+
   createMember(memberData) {
     const { firstName, lastName, age, direction, education, startDate } = memberData;
     return firestore
@@ -123,23 +129,30 @@ const firebaseApi = {
       .then((docRef) => {
         console.log('Document written with ID: ', docRef.id);
       })
+      .then(() => {
+        this.getMembers();
+      })
       .catch((error) => {
         console.error('Error adding document: ', error);
       });
   },
+
   updateMember(userId, updatedMemberData) {
     return updateData(userId).update(updatedMemberData);
   },
+
   updateTasks(userId, tasks) {
     return updateData(userId).update(tasks);
   },
+
   getTaskList() {
     const taskList = [];
     let tasksWithId = [];
     return getData().then((membersData) => {
       membersData.forEach((member) => {
+        const userId = getLink(member.ref.path);
         taskList.push({
-          userId: member.ref.path.substring(member.ref.path.indexOf('/') + 1),
+          userId,
           tasks: member.data().tasks,
         });
       });
@@ -149,6 +162,7 @@ const firebaseApi = {
         task.startDate = task.startDate.toDate();
         task.deadLineDate = task.deadLineDate.toDate();
       });
+
       return tasksWithId;
     });
   },
@@ -160,6 +174,9 @@ const firebaseApi = {
       .delete()
       .then(() => {
         console.log('Member deleted successfully');
+      })
+      .then(() => {
+        this.getMembers();
       });
   },
 };

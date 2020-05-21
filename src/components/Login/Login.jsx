@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Login.module.scss';
 import Button from '../Button/Button';
-import FormField from '../../utils/validators/FormField';
+import FormField from '../FormField/FormField';
 
 class Login extends React.Component {
   state = {
@@ -14,51 +14,21 @@ class Login extends React.Component {
 
   onChange = (e) => {
     const { id, value, checked } = e.currentTarget;
-    switch (id) {
-      case 'login':
-        this.setState({ login: value });
-        break;
-      case 'password':
-        this.setState({ password: value });
-        break;
-      case 'remember':
-        this.setState({ remember: checked });
-        break;
-      default:
-        break;
-    }
+    id === 'remember' ? this.setState({ [`${id}`]: checked }) : this.setState({ [`${id}`]: value });
   };
 
   validateForm = (id, message) => {
-    switch (id) {
-      case 'login':
-        this.setState({ loginIsValid: !message });
-        break;
-      case 'password':
-        this.setState({ passwordIsValid: !message });
-        break;
-      default:
-        break;
-    }
+    this.setState({ [`${id}IsValid`]: !message });
   };
 
   render() {
     const { login, password, remember, loginIsValid, passwordIsValid } = this.state;
     return (
       <div className={styles.wrapper}>
-        <h1 className='title'>Login</h1>
+        <h1 className={styles.title}>Login</h1>
         <form action=''>
+          <FormField id='login' label='Login' value={login} onChange={this.onChange} validateForm={this.validateForm} />
           <FormField
-            required
-            inputType='text'
-            id='login'
-            label='Login'
-            value={login}
-            onChange={this.onChange}
-            validateForm={this.validateForm}
-          />
-          <FormField
-            required
             minLength={4}
             maxLength={30}
             inputType='password'

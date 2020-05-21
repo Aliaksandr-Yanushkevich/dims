@@ -35,26 +35,26 @@ class MemberProgres extends Component {
 
   render() {
     const { tasks, firstName, lastName } = this.state;
-    const { userId, taskId, showTask, setCurrentTask, taskPageIsVisible } = this.props;
+    const { userId, taskId, show, setCurrentTask, taskPageIsVisible } = this.props;
     if (!tasks) {
       return <Preloader />;
     }
 
-    const tasksArray = tasks.map((task) => (
+    const tasksArray = tasks.map(({ taskId, taskName, description }) => (
       <MemberProgressData
-        key={`${task.description}${task.taskName}`}
-        taskId={task.taskId}
-        taskName={task.taskName}
-        taskDescription={task.description}
+        key={`${description}${taskName}`}
+        taskId={taskId}
+        taskName={taskName}
+        taskDescription={description}
         setCurrentTask={setCurrentTask}
-        showTask={showTask}
+        show={show}
       />
     ));
     return (
       <>
-        {taskPageIsVisible ? <TaskPage userId={userId} taskId={taskId} showTask={showTask} /> : null}
+        {taskPageIsVisible && <TaskPage userId={userId} taskId={taskId} show={show} />}
         <h1 className={styles.title}>Member Progress Grid</h1>
-        <h2>{`${firstName} ${lastName} progress:`}</h2>
+        <h2 className={styles.subtitle}>{`${firstName} ${lastName} progress:`}</h2>
         <table>
           <tbody>
             <tr>
@@ -71,7 +71,7 @@ class MemberProgres extends Component {
 MemberProgres.propTypes = {
   userId: PropTypes.string.isRequired,
   taskId: PropTypes.string.isRequired,
-  showTask: PropTypes.func.isRequired,
+  show: PropTypes.func.isRequired,
   setCurrentTask: PropTypes.func.isRequired,
   taskPageIsVisible: PropTypes.bool.isRequired,
 };

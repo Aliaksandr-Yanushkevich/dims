@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styles from './TaskTrackManagement.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import { tasksTrackTitle } from '../../constants';
 import firebaseApi from '../../api/firebaseApi';
@@ -26,7 +27,7 @@ class TasksTracks extends React.Component {
 
   render() {
     const { tasks } = this.state;
-    const { userId, taskId, setCurrentUser, setCurrentTask, taskTrackPageIsVisible, showTaskTrack } = this.props;
+    const { userId, taskId, setCurrentUser, setCurrentTask, taskTrackPageIsVisible, show } = this.props;
     const tableRows = tasks
       ? tasks.map((task, index) => {
           return (
@@ -37,7 +38,7 @@ class TasksTracks extends React.Component {
               taskId={task.taskId}
               setCurrentUser={setCurrentUser}
               setCurrentTask={setCurrentTask}
-              showTaskTrack={showTaskTrack}
+              show={show}
             />
           );
         })
@@ -53,10 +54,10 @@ class TasksTracks extends React.Component {
             taskId={taskId}
             setCurrentTask={this.setCurrentTask}
             setCurrentUser={this.setCurrentUser}
-            showTaskTrack={showTaskTrack}
+            show={show}
           />
         ) : null}
-        <h1>Task Track Management</h1>
+        <h1 className={styles.title}>Task Track Management</h1>
         <table>
           <thead>
             <tr>
@@ -76,7 +77,7 @@ TasksTracks.propTypes = {
   setCurrentUser: PropTypes.func.isRequired,
   setCurrentTask: PropTypes.func.isRequired,
   taskTrackPageIsVisible: PropTypes.bool.isRequired,
-  showTaskTrack: PropTypes.func.isRequired,
+  show: PropTypes.func.isRequired,
 };
 
 TasksTracks.defaultProps = {

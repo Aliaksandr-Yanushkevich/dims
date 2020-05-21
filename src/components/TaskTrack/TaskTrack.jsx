@@ -4,7 +4,7 @@ import Button from '../Button/Button';
 import dateToStringForInput from '../common/dateToStringForInput';
 import firebaseApi from '../../api/firebaseApi';
 import styles from './TaskTrack.module.scss';
-import FormField from '../../utils/validators/FormField';
+import FormField from '../FormField/FormField';
 
 class TaskTrack extends React.Component {
   state = {
@@ -38,10 +38,15 @@ class TaskTrack extends React.Component {
 
   render() {
     const { taskName, note, noteIsValid } = this.state;
-    const { showTaskTrack } = this.props;
+    const { show } = this.props;
+
+    const backToGrid = () => {
+      show('taskTrackPage');
+    };
+
     return (
       <div className={styles.wrapper}>
-        <h1>{`Task Track - ${taskName}`}</h1>
+        <h1 className={styles.title}>{`Task Track - ${taskName}`}</h1>
 
         <div className={styles.dateItem}>
           <label htmlFor='date'>Date </label>
@@ -53,8 +58,6 @@ class TaskTrack extends React.Component {
           value={note}
           placeholder='Type your note here'
           onChange={this.onChange}
-          required
-          maxLength={140}
           inputType='textarea'
           validateForm={this.validateForm}
         />
@@ -62,7 +65,7 @@ class TaskTrack extends React.Component {
           <Button className={styles.successButton} onClick={() => console.log('note saved!')} disabled={!noteIsValid}>
             Save
           </Button>
-          <Button onClick={() => showTaskTrack(false)}>Back to grid</Button>
+          <Button onClick={backToGrid}>Back to grid</Button>
         </div>
       </div>
     );
@@ -72,7 +75,7 @@ class TaskTrack extends React.Component {
 TaskTrack.propTypes = {
   userId: PropTypes.string.isRequired,
   taskId: PropTypes.string.isRequired,
-  showTaskTrack: PropTypes.func.isRequired,
+  show: PropTypes.func.isRequired,
 };
 
 export default TaskTrack;

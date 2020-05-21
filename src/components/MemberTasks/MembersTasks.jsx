@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import styles from './MembersTasks.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
 import MemberCurrentTasks from './MemberCurrentTasks';
@@ -32,7 +33,7 @@ class MemberTasks extends Component {
 
   render() {
     const { tasks, firstName, lastName } = this.state;
-    const { userId, taskId, setCurrentTask, taskTrackPageIsVisible, showTaskTrack } = this.props;
+    const { userId, taskId, setCurrentTask, taskTrackPageIsVisible, show } = this.props;
     if (!tasks) return <Preloader />;
     const tasksArr = tasks.map((task) => (
       <MemberCurrentTasks
@@ -41,7 +42,7 @@ class MemberTasks extends Component {
         startDate={task.startDate.toDate()}
         deadLineDate={task.deadLineDate.toDate()}
         setCurrentTask={setCurrentTask}
-        showTaskTrack={showTaskTrack}
+        show={show}
       />
     ));
     return (
@@ -52,11 +53,11 @@ class MemberTasks extends Component {
             taskId={taskId}
             setCurrentTask={this.setCurrentTask}
             setCurrentUser={this.setCurrentUser}
-            showTaskTrack={showTaskTrack}
+            show={show}
           />
         ) : null}
-        <h1>Member&apos;s Task Manage Grid</h1>
-        <h2>{`Hi, dear ${firstName} ${lastName}! This is your current tasks:`}</h2>
+        <h1 className={styles.title}>Member&apos;s Task Manage Grid</h1>
+        <h2 className={styles.subtitle}>{`Hi, dear ${firstName} ${lastName}! This is your current tasks:`}</h2>
         <table>
           <tbody>
             <TableHeader titleArray={membersTasksTitle} />
@@ -73,7 +74,7 @@ MemberTasks.propTypes = {
   taskId: PropTypes.string,
   setCurrentTask: PropTypes.func.isRequired,
   taskTrackPageIsVisible: PropTypes.bool.isRequired,
-  showTaskTrack: PropTypes.func.isRequired,
+  show: PropTypes.func.isRequired,
 };
 MemberTasks.defaultProps = { userId: '', taskId: '' };
 
