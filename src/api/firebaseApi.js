@@ -19,6 +19,24 @@ const updateData = (userId) => {
 export const getLink = (path) => path.substring(path.indexOf('/') + 1);
 
 const firebaseApi = {
+  register(email, password) {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .catch((error) => {
+        console.error(`${error.message} ${error.code}`);
+      });
+  },
+
+  login(email, password) {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .catch((error) => {
+        console.error(`${error.message} ${error.code}`);
+      });
+  },
+
   getMembers() {
     let members = [];
     return getData().then((storeMembers) => {

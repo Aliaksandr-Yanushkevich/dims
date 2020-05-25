@@ -11,6 +11,7 @@
     "@testing-library/user-event": "7.1.2",
     "faker": "^4.1.0",
     "firebase": "^7.14.2",
+    "firebaseui": "^4.5.0",
     "node-sass": "^4.14.0",
     "prop-types": "^15.7.2",
     "react": "16.13.1",
@@ -48,6 +49,7 @@
     "eslint-plugin-prettier": "3.1.2",
     "husky": "4.2.4",
     "prettier": "1.19.1",
-    "pretty-quick": "2.0.1"
+    "pretty-quick": "2.0.1",
+    "react-bootstrap": "^1.0.1"
   }
 }

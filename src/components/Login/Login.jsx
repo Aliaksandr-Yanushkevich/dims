@@ -1,4 +1,6 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
+import firebaseApi from '../../api/firebaseApi';
 import styles from './Login.module.scss';
 import Button from '../Button/Button';
 import FormField from '../FormField/FormField';
@@ -10,6 +12,11 @@ class Login extends React.Component {
     remember: false,
     loginIsValid: false,
     passwordIsValid: false,
+  };
+
+  login = () => {
+    const { login, password } = this.state;
+    firebaseApi.login(login, password);
   };
 
   onChange = (e) => {
@@ -45,7 +52,15 @@ class Login extends React.Component {
                 <input id='remember' type='checkbox' checked={remember} onChange={this.onChange} />
               </label>
             </div>
-            <Button disabled={!(loginIsValid && passwordIsValid)}>Login</Button>
+            <Button disabled={!(loginIsValid && passwordIsValid)} onClick={this.login}>
+              Login
+            </Button>
+          </div>
+          <div className={styles.item}>
+            Don&apos;t have an account yet?
+            <NavLink to='/registration'>
+              <Button>Register</Button>
+            </NavLink>
           </div>
         </form>
       </div>

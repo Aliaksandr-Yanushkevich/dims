@@ -10,6 +10,7 @@ import firebaseApi from './api/firebaseApi';
 import styles from './App.module.scss';
 import TaskManagement from './components/TaskManagement/TaskManagement';
 import Login from './components/Login/Login';
+import Registration from './components/Registration/Registration';
 
 class App extends Component {
   state = {
@@ -106,6 +107,9 @@ class App extends Component {
             <Route path='/login'>
               <Login />
             </Route>
+            <Route path='/registration'>
+              <Registration />
+            </Route>
           </div>
           <Footer />
         </div>
@@ -114,5 +118,4 @@ class App extends Component {
   }
 }
 
-firebaseApi.createFakeMembers(20);
 export default App;
