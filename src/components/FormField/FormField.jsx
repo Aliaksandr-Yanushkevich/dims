@@ -25,7 +25,7 @@ class FormField extends React.Component {
 
   validate = () => {
     const { touched } = this.state;
-    const { id, required, minLength, maxLength, value, validateForm, min, max } = this.props;
+    const { id, required, minLength, maxLength, value, min, max } = this.props;
     if (touched) {
       if (required && value.length === 0) {
         const message = 'Field is required';
@@ -77,7 +77,7 @@ class FormField extends React.Component {
   };
 
   render() {
-    const { id, name, required, inputType, label, onChange, value, placeholder, min, max } = this.props;
+    const { id, name, required, inputType, label, onChange, value, placeholder, min, max, cols, rows } = this.props;
     const { touched, message } = this.state;
     if (inputType === 'textarea') {
       return (
@@ -87,8 +87,8 @@ class FormField extends React.Component {
             <textarea
               name={name}
               id={id}
-              cols='30'
-              rows='10'
+              cols={cols}
+              rows={rows}
               value={value}
               onChange={onChange}
               onFocus={this.onFocus}
@@ -127,7 +127,7 @@ class FormField extends React.Component {
 }
 
 FormField.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
   name: PropTypes.string,
   required: PropTypes.bool,
   minLength: PropTypes.number,
@@ -140,9 +140,12 @@ FormField.propTypes = {
   label: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
+  cols: PropTypes.number,
+  rows: PropTypes.number,
 };
 
 FormField.defaultProps = {
+  id: '',
   name: '',
   required: true,
   inputType: 'text',
@@ -152,6 +155,8 @@ FormField.defaultProps = {
   min: 0,
   max: 150,
   placeholder: '',
+  cols: 30,
+  rows: 10,
 };
 
 export default FormField;

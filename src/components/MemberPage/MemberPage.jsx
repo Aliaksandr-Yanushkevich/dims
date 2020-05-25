@@ -50,7 +50,7 @@ class MemberPage extends React.Component {
   };
 
   updateMember = (userId, updatedData) => {
-    if (updatedData && Object.keys(updatedData).length > 0) {
+    if (updatedData && Object.keys(updatedData).lengthS) {
       firebaseApi
         .updateMember(userId, updatedData)
         .then(() => console.log('updated successfully'))

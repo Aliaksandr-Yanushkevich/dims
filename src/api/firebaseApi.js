@@ -5,15 +5,18 @@ import addUserIdToEveryTask from './adduserIdToEverytask';
 const firestore = firebase.firestore();
 const collection = 'dims';
 
+const getCollection = (name) => {
+  return firestore.collection(name);
+};
+
 const getData = () => {
-  return firestore
-    .collection(collection)
+  return getCollection(collection)
     .orderBy('firstName')
     .get();
 };
 
 const updateData = (userId) => {
-  return firestore.collection(collection).doc(userId);
+  return getCollection(collection).doc(userId);
 };
 
 export const getLink = (path) => path.substring(path.indexOf('/') + 1);
@@ -81,8 +84,7 @@ const firebaseApi = {
   },
 
   getMemberData(userId) {
-    return firestore
-      .collection(collection)
+    return getCollection(collection)
       .doc(userId)
       .get()
       .then((querySnapshot) => {
@@ -96,8 +98,7 @@ const firebaseApi = {
       const members = createRandomMembers(amount);
       members.forEach((member) => {
         const { firstName, lastName, direction, education, startDate, age, tasks } = member;
-        firestore
-          .collection(collection)
+        getCollection(collection)
           .add({
             firstName,
             lastName,
@@ -121,8 +122,7 @@ const firebaseApi = {
   },
 
   getUserTasks(userId) {
-    return firestore
-      .collection(collection)
+    return getCollection(collection)
       .doc(userId)
       .get()
       .then((querySnapshot) => {
@@ -186,8 +186,7 @@ const firebaseApi = {
   },
 
   deleteMember(userId) {
-    return firestore
-      .collection(collection)
+    return getCollection(collection)
       .doc(userId)
       .delete()
       .then(() => {
