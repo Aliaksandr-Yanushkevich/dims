@@ -4,25 +4,22 @@ import { NavLink } from 'react-router-dom';
 import dateToString from '../common/dateToString';
 import styles from './MembersTasks.module.scss';
 import Button from '../Button/Button';
+import TableData from '../common/TableData/TableData';
 
-const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate, setCurrentTask, show }) => {
-  const onClick = (e) => {
-    setCurrentTask(e);
-    show('taskTrackPage', true);
-  };
+const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate, editTask }) => {
   return (
     <tr key={`${taskId}${taskName}`}>
-      <td className={styles.tableData}>{taskId}</td>
-      <td className={styles.tableData}>{taskName}</td>
-      <td className={styles.tableData}>{dateToString(startDate)}</td>
-      <td className={styles.tableData}>{dateToString(deadLineDate)}</td>
-      <td className={styles.tableData}>Here should be task status</td>
-      <td className={styles.tableData}>
-        <Button taskId={taskId} onClick={onClick}>
+      <TableData>{taskId}</TableData>
+      <TableData>{taskName}</TableData>
+      <TableData>{dateToString(startDate)}</TableData>
+      <TableData>{dateToString(deadLineDate)}</TableData>
+      <TableData>Here should be task status</TableData>
+      <TableData>
+        <Button taskId={taskId} onClick={editTask}>
           Track
         </Button>
-      </td>
-      <td className={styles.tableData}>
+      </TableData>
+      <TableData>
         <div className={styles.buttonWrapper}>
           <NavLink className={styles.link} to='/member_success'>
             <Button className={styles.successButton}>Success</Button>
@@ -31,7 +28,7 @@ const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate, setCurr
             <Button className={styles.dangerousButton}>Fail</Button>
           </NavLink>
         </div>
-      </td>
+      </TableData>
     </tr>
   );
 };
@@ -41,8 +38,7 @@ MemberCurrentTasks.propTypes = {
   taskName: PropTypes.string,
   startDate: PropTypes.instanceOf(Date),
   deadLineDate: PropTypes.instanceOf(Date),
-  setCurrentTask: PropTypes.func.isRequired,
-  show: PropTypes.func.isRequired,
+  editTask: PropTypes.func.isRequired,
 };
 
 MemberCurrentTasks.defaultProps = {

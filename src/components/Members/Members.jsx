@@ -8,11 +8,39 @@ import { membersTitle } from '../../constants';
 import Button from '../Button/Button';
 import styles from './Members.module.scss';
 import MemberPage from '../MemberPage/MemberPage';
+import firebaseTrueApi from '../../api/firebaseTrueApi';
 
 class Members extends React.Component {
   state = {
+    members: null,
     memberPageIsVisible: false,
   };
+
+  componentDidMount() {
+    const members = [];
+    firebaseTrueApi
+      .getUsers()
+      .then((users) =>
+        users.forEach((user) => {
+          const { firstName, lastName, birthDate, direction, education, startDate, userId } = user.data();
+          members.push({
+            firstName,
+            lastName,
+            birthDate: birthDate.toDate(),
+            direction,
+            education,
+            startDate: startDate.toDate(),
+            userId,
+          });
+        }),
+      )
+      .then(() => {
+        this.setState({ members });
+      })
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
+      });
+  }
 
   createMember = (e) => {
     const { setCurrentUser } = this.props;
@@ -31,28 +59,31 @@ class Members extends React.Component {
   };
 
   render() {
-    const { memberPageIsVisible } = this.state;
-    const { userId, membersArray, setCurrentUser } = this.props;
-    if (!membersArray) return <Preloader />;
-    const memberRows = membersArray.map((member, index) => (
-      <MemberData
-        key={`${member.firstName}${member.lastName}`}
-        index={index + 1}
-        firstName={member.firstName}
-        lastName={member.lastName}
-        age={member.age}
-        direction={member.direction}
-        education={member.education}
-        startDate={member.startDate}
-        userId={member.userId}
-        setCurrentUser={setCurrentUser}
-        deleteMember={this.deleteMember}
-        createMember={this.createMember}
-      />
-    ));
+    const { members, memberPageIsVisible } = this.state;
+    const { currentUserId, setCurrentUser } = this.props;
+    if (!members) return <Preloader />;
+    const memberRows = members.map((member, index) => {
+      const { firstName, lastName, birthDate, direction, education, startDate, userId } = member;
+      return (
+        <MemberData
+          key={userId}
+          index={index + 1}
+          firstName={firstName}
+          lastName={lastName}
+          birthDate={birthDate}
+          direction={direction}
+          education={education}
+          startDate={startDate}
+          userId={userId}
+          setCurrentUser={setCurrentUser}
+          deleteMember={this.deleteMember}
+          createMember={this.createMember}
+        />
+      );
+    });
     return (
       <>
-        {memberPageIsVisible ? <MemberPage userId={userId} hideMemberPage={this.hideMemberPage} /> : null}
+        {memberPageIsVisible && <MemberPage userId={currentUserId} hideMemberPage={this.hideMemberPage} />}
         <h1 className={styles.title}>Members Manage Grid</h1>
         <div className={styles.tableWrapper}>
           <Button id={styles.register} dataId='newMember' onClick={this.createMember}>
@@ -73,35 +104,8 @@ class Members extends React.Component {
 }
 
 Members.propTypes = {
-  membersArray: PropTypes.arrayOf(
-    PropTypes.shape({
-      index: PropTypes.number,
-      firstName: PropTypes.string,
-      lastName: PropTypes.string,
-      age: PropTypes.number,
-      direction: PropTypes.string,
-      education: PropTypes.string,
-      startDate: PropTypes.instanceOf(Date),
-      userId: PropTypes.string,
-    }),
-  ),
   setCurrentUser: PropTypes.func.isRequired,
-  userId: PropTypes.string.isRequired,
-};
-
-Members.defaultProps = {
-  membersArray: [
-    {
-      index: 1,
-      firstName: 'Ivan',
-      lastName: 'Ivanov',
-      age: 22,
-      direction: 'Java',
-      education: 'BSUIR',
-      startDate: new Date('December 17, 1995 03:24:00'),
-      userId: 'fLFWTByHgY6EZlalpay2',
-    },
-  ],
+  currentUserId: PropTypes.string.isRequired,
 };
 
 export default Members;

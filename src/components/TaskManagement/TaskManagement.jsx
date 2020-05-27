@@ -13,24 +13,32 @@ import Button from '../Button/Button';
 class TaskManagement extends React.Component {
   state = {
     tasks: null,
+    taskPageIsVisible: false,
   };
 
   componentDidMount() {
     firebaseApi
       .getTaskList()
       .then((tasks) => this.setState({ tasks }))
-      .catch((error) => console.error(`Error receiving data: ${error}`));
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
+      });
   }
 
   createTask = (e) => {
-    const { setCurrentTask, show } = this.props;
+    const { setCurrentTask, setCurrentUser } = this.props;
+    setCurrentUser(e);
     setCurrentTask(e);
-    show('taskPage', true);
+    this.setState({ taskPageIsVisible: true });
+  };
+
+  hideMemberPage = () => {
+    this.setState({ taskPageIsVisible: false });
   };
 
   render() {
-    const { tasks } = this.state;
-    const { setCurrentUser, setCurrentTask, userId, taskId, taskPageIsVisible, show } = this.props;
+    const { tasks, taskPageIsVisible } = this.state;
+    const { setCurrentUser, setCurrentTask, userId, taskId } = this.props;
     if (!tasks) {
       return <Preloader />;
     }
@@ -46,9 +54,7 @@ class TaskManagement extends React.Component {
               deadline={deadline}
               taskId={task.taskId}
               userId={task.userId}
-              setCurrentUser={setCurrentUser}
-              setCurrentTask={setCurrentTask}
-              show={show}
+              createTask={this.createTask}
             />
           );
         })
@@ -58,7 +64,7 @@ class TaskManagement extends React.Component {
       <>
         <h1 className={styles.title}>Task management</h1>
         <div className={styles.tableWrapper}>
-          {taskPageIsVisible ? <TasksPage userId={userId} taskId={taskId} show={show} /> : null}
+          {taskPageIsVisible && <TasksPage userId={userId} taskId={taskId} hideMemberPage={this.hideMemberPage} />}
           <Button id={styles.createTask} taskId='newTask' onClick={this.createTask}>
             Create task
           </Button>
@@ -78,11 +84,9 @@ class TaskManagement extends React.Component {
 
 TaskManagement.propTypes = {
   setCurrentTask: PropTypes.func.isRequired,
-  show: PropTypes.func.isRequired,
   setCurrentUser: PropTypes.func.isRequired,
   userId: PropTypes.string,
   taskId: PropTypes.string,
-  taskPageIsVisible: PropTypes.bool.isRequired,
 };
 
 TaskManagement.defaultProps = {

@@ -2,22 +2,19 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styles from './MembersProgress.module.scss';
+import TableData from '../common/TableData/TableData';
 
-const MemberProgressData = ({ taskId, taskName, taskDescription, setCurrentTask, show }) => {
-  const onClick = (e) => {
-    setCurrentTask(e);
-    show('taskPage', true);
-  };
+const MemberProgressData = ({ taskId, taskName, taskDescription, createTask }) => {
   return (
     <tr key={`${taskId}${taskName}`}>
-      <td className={styles.tableData}>{taskId + 1}</td>
-      <td className={styles.tableData}>
-        <NavLink className={styles.link} to='/member_progress:userId?' data-taskid={taskId} onClick={onClick}>
+      <TableData>{taskId + 1}</TableData>
+      <TableData>
+        <NavLink className={styles.link} to='/member_progress:userId?' data-taskid={taskId} onClick={createTask}>
           {taskName}
         </NavLink>
-      </td>
-      <td className={styles.tableData}>{taskDescription}</td>
-      <td className={styles.tableData}>Here should be track date</td>
+      </TableData>
+      <TableData>{taskDescription}</TableData>
+      <TableData>Here should be track date</TableData>
     </tr>
   );
 };
@@ -27,7 +24,6 @@ MemberProgressData.propTypes = {
   taskName: PropTypes.string,
   taskDescription: PropTypes.string,
   setCurrentTask: PropTypes.func.isRequired,
-  show: PropTypes.func.isRequired,
 };
 MemberProgressData.defaultProps = {
   taskId: 0,

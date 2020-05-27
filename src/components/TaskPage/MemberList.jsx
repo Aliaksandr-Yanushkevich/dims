@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './TaskPage.module.scss';
 
-const MemberList = ({ names }) => {
-  const memberNames = names.map(({ firstName, lastName, userId }) => (
+const MemberList = ({ members }) => {
+  const memberNames = members.map(({ firstName, lastName, userId }) => (
     <li>
       <input type='checkbox' id={userId} />
       <label htmlFor={userId}>{`${firstName} ${lastName}`}</label>
@@ -22,7 +22,7 @@ const MemberList = ({ names }) => {
 };
 
 MemberList.propTypes = {
-  names: PropTypes.arrayOf(PropTypes.o).isRequired,
+  members: PropTypes.arrayOf(PropTypes.o).isRequired,
 };
 
 export default MemberList;

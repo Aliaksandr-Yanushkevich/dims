@@ -13,6 +13,7 @@ class MemberProgres extends Component {
     tasks: null,
     firstName: null,
     lastName: null,
+    taskPageIsVisible: false,
   };
 
   componentDidMount() {
@@ -33,9 +34,19 @@ class MemberProgres extends Component {
     }
   }
 
+  createTask = (e) => {
+    const { setCurrentTask } = this.props;
+    setCurrentTask(e);
+    this.setState({ taskPageIsVisible: true });
+  };
+
+  hideMemberPage = () => {
+    this.setState({ taskPageIsVisible: false });
+  };
+
   render() {
-    const { tasks, firstName, lastName } = this.state;
-    const { userId, taskId, show, setCurrentTask, taskPageIsVisible } = this.props;
+    const { tasks, firstName, lastName, taskPageIsVisible } = this.state;
+    const { userId, taskId } = this.props;
     if (!tasks) {
       return <Preloader />;
     }
@@ -46,13 +57,12 @@ class MemberProgres extends Component {
         taskId={taskId}
         taskName={taskName}
         taskDescription={description}
-        setCurrentTask={setCurrentTask}
-        show={show}
+        createTask={this.createTask}
       />
     ));
     return (
       <>
-        {taskPageIsVisible && <TaskPage userId={userId} taskId={taskId} show={show} />}
+        {taskPageIsVisible && <TaskPage userId={userId} taskId={taskId} hideMemberPage={this.hideMemberPage} />}
         <h1 className={styles.title}>Member Progress Grid</h1>
         <h2 className={styles.subtitle}>{`${firstName} ${lastName} progress:`}</h2>
         <table>
@@ -71,9 +81,7 @@ class MemberProgres extends Component {
 MemberProgres.propTypes = {
   userId: PropTypes.string.isRequired,
   taskId: PropTypes.string.isRequired,
-  show: PropTypes.func.isRequired,
   setCurrentTask: PropTypes.func.isRequired,
-  taskPageIsVisible: PropTypes.bool.isRequired,
 };
 
 export default MemberProgres;

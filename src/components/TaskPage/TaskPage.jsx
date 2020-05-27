@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ReactDom from 'react-dom';
 import firebaseApi from '../../api/firebaseApi';
 import dateToStringForInput from '../common/dateToStringForInput';
 import Button from '../Button/Button';
@@ -8,8 +9,14 @@ import FormField from '../FormField/FormField';
 import MemberList from './MemberList';
 
 class TaskPage extends React.Component {
+  constructor() {
+    super();
+    this.root = document.createElement('div');
+    document.body.appendChild(this.root);
+  }
+
   state = {
-    names: null,
+    members: null,
     taskName: '',
     description: '',
     startDate: '',
@@ -36,51 +43,37 @@ class TaskPage extends React.Component {
             deadLineDate: deadLineDateConverted,
           });
         })
-        .catch((error) => console.error(`Error receiving data: ${error}`));
+        .catch((error) => {
+          console.error(`Error receiving data: ${error}`);
+        });
     }
     firebaseApi
       .getNames()
-      .then((names) => this.setState({ names }))
-      .catch((error) => console.error(`Error receiving data: ${error}`));
+      .then((members) => this.setState({ members }))
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
+      });
+  }
+
+  componentWillUnmount() {
+    document.body.removeChild(this.root);
   }
 
   onChange = (e) => {
     const { id, value } = e.currentTarget;
-    switch (id) {
-      case 'taskName':
-        this.setState({ taskName: value });
-        break;
-      case 'description':
-        this.setState({ description: value });
-        break;
-      case 'startDate':
-        this.setState({ startDate: value });
-        break;
-      case 'deadLineDate':
-        this.setState({ deadLineDate: value });
-        break;
-      default:
-        break;
-    }
+    this.setState({ [id]: value });
   };
 
   validateForm = (id, message) => {
-    switch (id) {
-      case 'taskName':
-        this.setState({ taskNameIsValid: !message });
-        break;
-      case 'description':
-        this.setState({ descriptionIsValid: !message });
-        break;
-      case 'startDate':
-        this.setState({ startDateIsValid: !message });
-        break;
-      case 'deadLineDate':
-        this.setState({ deadLineDateIsValid: !message });
-        break;
-      default:
-        break;
-    }
+    this.setState({ [`${id}IsValid`]: !message });
+  };
+
+  updateTask = () => {
+    console.log('task is updated!');
+  };
+
+  createTask = () => {
+    console.log('task is created!');
   };
 
   render() {
@@ -94,21 +87,13 @@ class TaskPage extends React.Component {
       startDateIsValid,
       deadLineDateIsValid,
     } = this.state;
-    const { names } = this.state;
-    const { taskId, show } = this.props;
+    const { members } = this.state;
+    const { taskId, hideMemberPage } = this.props;
 
-    const backToGrid = () => {
-      show('taskPage');
-    };
-
-    return (
+    return ReactDom.createPortal(
       <div className={styles.wrapper}>
         <form action=''>
-          {taskId === 'newTask' ? (
-            <h1 className={styles.title}>New task</h1>
-          ) : (
-            <h1 className={styles.title}>{`Task - ${taskName}`}</h1>
-          )}
+          <h1 className={styles.title}>{taskId === 'newTask' ? 'New task' : `Task - ${taskName}`}</h1>
           <FormField
             id='taskName'
             label='Task name:'
@@ -143,29 +128,20 @@ class TaskPage extends React.Component {
             value={deadLineDate}
             validateForm={this.validateForm}
           />
-          {names ? <MemberList names={names} /> : null}
+          {members && <MemberList members={members} />}
           <div className={styles.buttonWrapper}>
-            {taskId !== 'newTask' ? (
-              <Button
-                className={styles.successButton}
-                onClick={() => console.log('task updated/sent!')}
-                disabled={!(taskNameIsValid && descriptionIsValid && startDateIsValid && deadLineDateIsValid)}
-              >
-                Save
-              </Button>
-            ) : (
-              <Button
-                className={styles.successButton}
-                onClick={() => console.log('task created!')}
-                disabled={!(taskNameIsValid && descriptionIsValid && startDateIsValid && deadLineDateIsValid)}
-              >
-                Create
-              </Button>
-            )}
-            <Button onClick={backToGrid}>Back to grid</Button>
+            <Button
+              className={styles.successButton}
+              onClick={taskId === 'newTask' ? this.createTask : this.updateTask}
+              disabled={!(taskNameIsValid && descriptionIsValid && startDateIsValid && deadLineDateIsValid)}
+            >
+              {taskId === 'newTask' ? 'Create' : 'Save'}
+            </Button>
+            <Button onClick={hideMemberPage}>Back to grid</Button>
           </div>
         </form>
-      </div>
+      </div>,
+      this.root,
     );
   }
 }
@@ -173,7 +149,6 @@ class TaskPage extends React.Component {
 TaskPage.propTypes = {
   userId: PropTypes.string.isRequired,
   taskId: PropTypes.string.isRequired,
-  show: PropTypes.func.isRequired,
 };
 
 TaskPage.defaultProps = {};

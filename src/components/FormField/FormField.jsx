@@ -23,55 +23,60 @@ class FormField extends React.Component {
     this.setState({ message });
   };
 
+  checkRequirement = (expression, id, message) => {
+    if (!expression) {
+      this.validation(id, message);
+      return false;
+    }
+    return true;
+  };
+
   validate = () => {
     const { touched } = this.state;
     const { id, required, minLength, maxLength, value, min, max } = this.props;
     if (touched) {
-      if (required && value.length === 0) {
-        const message = 'Field is required';
-        this.validation(id, message);
+      if (!this.checkRequirement(!(required && !value.length), id, 'Field is required')) {
         return;
       }
       if (id === 'login') {
         // regexp for validating email
-        const message = 'You have entered an invalid email address';
-        if (!emailRegexp.test(value)) {
-          this.validation(id, message);
+        if (!this.checkRequirement(emailRegexp.test(value), id, 'You have entered an invalid email address')) {
           return;
         }
       }
 
       if (id === 'firstName' || id === 'lastName') {
         // regexp for validating latin letters
-        const message = 'First name and last name  should consist of latin letters only';
-        if (!latinLetterRegexp.test(value)) {
-          this.validation(id, message);
+        if (
+          !this.checkRequirement(
+            latinLetterRegexp.test(value),
+            id,
+            'First name and last name  should consist of latin letters only',
+          )
+        ) {
           return;
         }
       }
 
       if (id === 'age') {
         const message = value < 0 ? 'Age should be positive number' : 'You look much younger';
-        if (value < min) {
-          this.validation(id, message);
+        if (!this.checkRequirement(value < min, id, message)) {
           return;
         }
-        if (value > max) {
-          this.validation(id, message);
+
+        if (!this.checkRequirement(value > max, id, message)) {
           return;
         }
       }
 
-      if (value.length < minLength) {
-        const message = `Min length should be ${minLength} symbols`;
-        this.validation(id, message);
+      if (!this.checkRequirement(minLength < value.length, id, `Min length should be ${minLength} symbols`)) {
         return;
       }
-      if (value.length > maxLength) {
-        const message = `Max length should be ${maxLength} symbols`;
-        this.validation(id, message);
+
+      if (!this.checkRequirement(maxLength > value.length, id, `Max length should be ${maxLength} symbols`)) {
         return;
       }
+
       this.validation(id, null);
     }
   };

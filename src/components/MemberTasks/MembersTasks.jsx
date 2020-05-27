@@ -13,6 +13,7 @@ class MemberTasks extends Component {
     tasks: null,
     firstName: null,
     lastName: null,
+    taskTrackPageIsVisible: false,
   };
 
   componentDidMount() {
@@ -27,13 +28,25 @@ class MemberTasks extends Component {
             lastName,
           }),
         )
-        .catch((error) => console.error(`Error receiving data: ${error}`));
+        .catch((error) => {
+          console.error(`Error receiving data: ${error}`);
+        });
     }
   }
 
+  editTask = (e) => {
+    const { setCurrentTask } = this.props;
+    setCurrentTask(e);
+    this.setState({ taskTrackPageIsVisible: true });
+  };
+
+  hideTaskTrackPage = () => {
+    this.setState({ taskTrackPageIsVisible: false });
+  };
+
   render() {
-    const { tasks, firstName, lastName } = this.state;
-    const { userId, taskId, setCurrentTask, taskTrackPageIsVisible, show } = this.props;
+    const { tasks, firstName, lastName, taskTrackPageIsVisible } = this.state;
+    const { userId, taskId } = this.props;
     if (!tasks) return <Preloader />;
     const tasksArr = tasks.map((task) => (
       <MemberCurrentTasks
@@ -41,21 +54,20 @@ class MemberTasks extends Component {
         taskName={task.taskName}
         startDate={task.startDate.toDate()}
         deadLineDate={task.deadLineDate.toDate()}
-        setCurrentTask={setCurrentTask}
-        show={show}
+        editTask={this.editTask}
       />
     ));
     return (
       <>
-        {taskTrackPageIsVisible ? (
+        {taskTrackPageIsVisible && (
           <TaskTrack
             userId={userId}
             taskId={taskId}
             setCurrentTask={this.setCurrentTask}
             setCurrentUser={this.setCurrentUser}
-            show={show}
+            hideTaskTrackPage={this.hideTaskTrackPage}
           />
-        ) : null}
+        )}
         <h1 className={styles.title}>Member&apos;s Task Manage Grid</h1>
         <h2 className={styles.subtitle}>{`Hi, dear ${firstName} ${lastName}! This is your current tasks:`}</h2>
         <table>
@@ -73,8 +85,6 @@ MemberTasks.propTypes = {
   userId: PropTypes.string,
   taskId: PropTypes.string,
   setCurrentTask: PropTypes.func.isRequired,
-  taskTrackPageIsVisible: PropTypes.bool.isRequired,
-  show: PropTypes.func.isRequired,
 };
 MemberTasks.defaultProps = { userId: '', taskId: '' };
 

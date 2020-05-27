@@ -4,52 +4,81 @@ import PropTypes from 'prop-types';
 import dateToString from '../common/dateToString';
 import styles from './Members.module.scss';
 import Button from '../Button/Button';
+import TableData from '../common/TableData/TableData';
+import firebaseTrueApi from '../../api/firebaseTrueApi';
+import getAge from '../../helpers/getAge';
 
-const MemberData = ({
-  index,
-  firstName,
-  lastName,
-  direction,
-  education,
-  startDate,
-  age,
-  userId,
-  setCurrentUser,
-  deleteMember,
-  createMember,
-}) => {
-  return (
-    <tr key={`${firstName}${lastName}`}>
-      <td className={styles.tableData}>{index}</td>
-      <td className={styles.tableData}>{`${firstName} ${lastName}`}</td>
-      <td className={styles.tableData}>{direction}</td>
-      <td className={styles.tableData}>{education}</td>
-      <td className={styles.tableData}>{dateToString(startDate)}</td>
-      <td className={styles.tableData}>{age}</td>
-      <td className={styles.tableData}>
-        <div className={styles.buttonWrapper}>
-          <NavLink className={styles.link} to='/member_progress'>
-            <Button dataId={userId} onClick={setCurrentUser}>
-              Progress
-            </Button>
-          </NavLink>
-          <NavLink className={styles.link} to='/member_tasks'>
-            <Button dataId={userId} onClick={setCurrentUser}>
-              Tasks
-            </Button>
-          </NavLink>
-          <Button dataId={userId} onClick={createMember}>
-            Edit
-          </Button>
+class MemberData extends React.Component {
+  state = {
+    directions: null,
+  };
 
-          <Button dataId={userId} onClick={() => deleteMember(userId)} className={styles.dangerousButton}>
-            Delete
-          </Button>
-        </div>
-      </td>
-    </tr>
-  );
-};
+  componentDidMount() {
+    const directions = [];
+    firebaseTrueApi
+      .getDirections()
+      .then((courseDirections) =>
+        courseDirections.forEach((direction) => {
+          const { directionId, name } = direction.data();
+          directions.push({ directionId, name });
+        }),
+      )
+      .then(() => {
+        this.setState({ directions });
+      })
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
+      });
+  }
+
+  render() {
+    const {
+      index,
+      firstName,
+      lastName,
+      birthDate,
+      direction,
+      education,
+      startDate,
+      userId,
+      setCurrentUser,
+      deleteMember,
+      createMember,
+    } = this.props;
+    const age = getAge(birthDate);
+    return (
+      <tr key={userId}>
+        <TableData>{index}</TableData>
+        <TableData>{`${firstName} ${lastName}`}</TableData>
+        <TableData>{direction}</TableData>
+        <TableData>{education}</TableData>
+        <TableData>{dateToString(startDate)}</TableData>
+        <TableData>{age}</TableData>
+        <TableData>
+          <div className={styles.buttonWrapper}>
+            <NavLink className={styles.link} to='/member_progress'>
+              <Button dataId={userId} onClick={setCurrentUser}>
+                Progress
+              </Button>
+            </NavLink>
+            <NavLink className={styles.link} to='/member_tasks'>
+              <Button dataId={userId} onClick={setCurrentUser}>
+                Tasks
+              </Button>
+            </NavLink>
+            <Button dataId={userId} onClick={createMember}>
+              Edit
+            </Button>
+
+            <Button dataId={userId} onClick={() => deleteMember(userId)} className={styles.dangerousButton}>
+              Delete
+            </Button>
+          </div>
+        </TableData>
+      </tr>
+    );
+  }
+}
 
 MemberData.propTypes = {
   index: PropTypes.number,

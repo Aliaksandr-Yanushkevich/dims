@@ -1,5 +1,5 @@
 import faker from 'faker';
-import { courseDirections, universities } from './constants';
+import { courseDirections, universities } from '../constants';
 
 const randomFromArray = (array) => {
   // randomNumber will be between 0 and array length

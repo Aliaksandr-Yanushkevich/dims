@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ReactDom from 'react-dom';
 import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
 import Button from '../Button/Button';
@@ -9,6 +10,12 @@ import Select from '../common/Select/Select';
 import { directions } from '../../constants';
 
 class MemberPage extends React.Component {
+  constructor() {
+    super();
+    this.root = document.createElement('div');
+    document.body.appendChild(this.root);
+  }
+
   state = {
     oldData: null,
     newData: {
@@ -35,8 +42,14 @@ class MemberPage extends React.Component {
         .then((memberData) => {
           this.setState({ oldData: memberData, newData: memberData, isFetching: false });
         })
-        .catch((error) => console.error(`Error receiving data: ${error}`));
+        .catch((error) => {
+          console.error(`Error receiving data: ${error}`);
+        });
     }
+  }
+
+  componentWillUnmount() {
+    document.body.removeChild(this.root);
   }
 
   createMember = (memberData) => {
@@ -50,7 +63,7 @@ class MemberPage extends React.Component {
   };
 
   updateMember = (userId, updatedData) => {
-    if (updatedData && Object.keys(updatedData).lengthS) {
+    if (updatedData && Object.keys(updatedData).length) {
       firebaseApi
         .updateMember(userId, updatedData)
         .then(() => console.log('updated successfully'))
@@ -60,21 +73,20 @@ class MemberPage extends React.Component {
     }
   };
 
-  calculateDataDifference = () => {
+  calculateDataDifference = (oldData, newData) => {
     //  compare two objects and return different
-    const { oldData, newData } = this.state;
     const serverData = [...Object.entries(oldData)];
     const updatedData = [...Object.entries(newData)];
     const dataDifference = updatedData.filter((value, index) => !serverData[index].includes(value[1]));
     const result = [];
+    debugger;
     for (let i = 0; i < dataDifference.length; i += 1) {
       result.push({ [dataDifference[i][0]]: dataDifference[i][1] });
     }
-    if (result.length > 0) {
+    if (result.length) {
       return { ...result };
-      // return Object.assign(...result);
     }
-    return undefined;
+    return null;
   };
 
   onChange = (e) => {
@@ -88,25 +100,29 @@ class MemberPage extends React.Component {
 
   render() {
     const { userId, hideMemberPage } = this.props;
-    const { newData, isFetching, firstNameIsValid, lastNameIsValid, ageIsValid, educationIsValid } = this.state;
+    const {
+      newData,
+      oldData,
+      isFetching,
+      firstNameIsValid,
+      lastNameIsValid,
+      ageIsValid,
+      educationIsValid,
+    } = this.state;
     const { firstName, lastName, age, education, direction, startDate } = newData;
     if (isFetching) {
       return <Preloader />;
     }
     const updateUser = () => {
-      this.updateMember(userId, this.calculateDataDifference());
+      this.updateMember(userId, this.calculateDataDifference(oldData, newData));
     };
     const createUser = () => {
       this.createMember(newData);
     };
-    return (
+    return ReactDom.createPortal(
       <div className={styles.wrapper}>
-        {userId === 'newMember' ? (
-          <h1 className={styles.title}>Register Member</h1>
-        ) : (
-          <h1 className={styles.title}>Edit Member</h1>
-        )}
-        <form action=''>
+        <h1 className={styles.title}>{userId === 'newMember' ? 'Register Member' : 'Edit Member'}</h1>
+        <form>
           <FormField
             id='firstName'
             label='First Name:'
@@ -154,27 +170,19 @@ class MemberPage extends React.Component {
             validateForm={this.validateForm}
           />
           <div className={styles.buttonWrapper}>
-            {userId !== 'newMember' ? (
-              <Button
-                className={styles.successButton}
-                onClick={updateUser}
-                disabled={!(firstNameIsValid && lastNameIsValid && ageIsValid && educationIsValid)}
-              >
-                Save
-              </Button>
-            ) : (
-              <Button
-                className={styles.successButton}
-                onClick={createUser}
-                disabled={!(firstNameIsValid && lastNameIsValid && ageIsValid && educationIsValid)}
-              >
-                Create
-              </Button>
-            )}
+            <Button
+              className={styles.successButton}
+              onClick={userId !== 'newMember' ? updateUser : createUser}
+              disabled={!(firstNameIsValid && lastNameIsValid && ageIsValid && educationIsValid)}
+            >
+              {userId !== 'newMember' ? 'Save' : 'Create'}
+            </Button>
+
             <Button onClick={hideMemberPage}>Back to grid</Button>
           </div>
         </form>
-      </div>
+      </div>,
+      this.root,
     );
   }
 }

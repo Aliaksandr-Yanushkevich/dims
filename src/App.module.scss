@@ -1,5 +1,9 @@
 @import './styleguide/styleguide.scss';
 
+body {
+  font-family: $font;
+}
+
 .wrapper {
   display: grid;
   max-width: 1440px;
@@ -10,7 +14,6 @@
     'f';
   grid-template-rows: 4rem 1fr 4rem;
   grid-template-columns: 1fr;
-  font-family: $font;
   height: 100vh;
 }
 

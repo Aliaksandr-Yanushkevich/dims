@@ -3,32 +3,28 @@ import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import Button from '../Button/Button';
 import styles from './TaskTrackManagement.module.scss';
+import TableData from '../common/TableData/TableData';
 
-const TasksTracksManagementRow = ({ index, taskName, userId, taskId, setCurrentUser, setCurrentTask, show }) => {
-  const onClick = (e) => {
-    setCurrentUser(e);
-    setCurrentTask(e);
-    show('taskTrackPage', true);
-  };
+const TasksTracksManagementRow = ({ index, taskName, userId, taskId, editTask }) => {
   return (
     <tr key={userId}>
-      <td className={styles.tableData}>{index}</td>
-      <td className={styles.tableData}>
+      <TableData>{index}</TableData>
+      <TableData>
         <NavLink
           className={styles.link}
           to='/task_track_management'
           data-id={userId}
           data-taskid={taskId}
-          onClick={onClick}
+          onClick={editTask}
         >
           {taskName}
         </NavLink>
-      </td>
-      <td className={styles.tableData}>Note text</td>
-      <td className={styles.tableData}>Note date</td>
-      <td className={styles.tableData}>
+      </TableData>
+      <TableData>Note text</TableData>
+      <TableData>Note date</TableData>
+      <TableData>
         <div className={styles.buttonWrapper}>
-          <Button dataId={userId} taskId={taskId} onClick={onClick}>
+          <Button dataId={userId} taskId={taskId} onClick={editTask}>
             Edit
           </Button>
           <NavLink className={styles.link} to='/task_track_management'>
@@ -37,7 +33,7 @@ const TasksTracksManagementRow = ({ index, taskName, userId, taskId, setCurrentU
             </Button>
           </NavLink>
         </div>
-      </td>
+      </TableData>
     </tr>
   );
 };
@@ -47,9 +43,7 @@ TasksTracksManagementRow.propTypes = {
   taskName: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
   taskId: PropTypes.string,
-  setCurrentUser: PropTypes.func.isRequired,
-  setCurrentTask: PropTypes.func.isRequired,
-  show: PropTypes.func.isRequired,
+  editTask: PropTypes.func.isRequired,
 };
 
 TasksTracksManagementRow.defaultProps = {

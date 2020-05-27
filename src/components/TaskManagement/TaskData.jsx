@@ -3,26 +3,28 @@ import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styles from './TaskManagement.module.scss';
 import Button from '../Button/Button';
+import TableData from '../common/TableData/TableData';
 
-const TaskData = ({ index, taskName, startDate, deadline, userId, taskId, setCurrentUser, setCurrentTask, show }) => {
-  const onClick = (e) => {
-    setCurrentUser(e);
-    setCurrentTask(e);
-    show('taskPage', true);
-  };
+const TaskData = ({ index, taskName, startDate, deadline, userId, taskId, createTask }) => {
   return (
     <tr key={`${index}${taskName}`}>
-      <td className={styles.tableData}>{index + 1}</td>
-      <td className={styles.tableData}>
-        <NavLink className={styles.link} to='/task_management' data-id={userId} data-taskid={taskId} onClick={onClick}>
+      <TableData>{index + 1}</TableData>
+      <TableData>
+        <NavLink
+          className={styles.link}
+          to='/task_management'
+          data-id={userId}
+          data-taskid={taskId}
+          onClick={createTask}
+        >
           {taskName}
         </NavLink>
-      </td>
-      <td className={styles.tableData}>{startDate}</td>
-      <td className={styles.tableData}>{deadline}</td>
-      <td className={styles.tableData}>
+      </TableData>
+      <TableData>{startDate}</TableData>
+      <TableData>{deadline}</TableData>
+      <TableData>
         <div className={styles.buttonWrapper}>
-          <Button dataId={userId} taskId={taskId} onClick={onClick}>
+          <Button dataId={userId} taskId={taskId} onClick={createTask}>
             Edit
           </Button>
 
@@ -32,7 +34,7 @@ const TaskData = ({ index, taskName, startDate, deadline, userId, taskId, setCur
             </Button>
           </NavLink>
         </div>
-      </td>
+      </TableData>
     </tr>
   );
 };
@@ -43,7 +45,6 @@ TaskData.propTypes = {
   deadline: PropTypes.instanceOf(Date),
   taskId: PropTypes.number,
   setCurrentTask: PropTypes.func.isRequired,
-  show: PropTypes.func.isRequired,
   startDate: PropTypes.instanceOf(Date),
   userId: PropTypes.string,
   setCurrentUser: PropTypes.func.isRequired,

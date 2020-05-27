@@ -18,7 +18,9 @@ class TaskTrack extends React.Component {
     firebaseApi
       .getUserTasks(userId)
       .then((response) => this.setState({ taskName: response.tasks[taskId].taskName }))
-      .catch((error) => console.error(`Error receiving data: ${error}`));
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
+      });
   }
 
   onChange = (e) => {
@@ -38,12 +40,7 @@ class TaskTrack extends React.Component {
 
   render() {
     const { taskName, note, noteIsValid } = this.state;
-    const { show } = this.props;
-
-    const backToGrid = () => {
-      show('taskTrackPage');
-    };
-
+    const { hideTaskTrackPage } = this.props;
     return (
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{`Task Track - ${taskName}`}</h1>
@@ -65,7 +62,7 @@ class TaskTrack extends React.Component {
           <Button className={styles.successButton} onClick={() => console.log('note saved!')} disabled={!noteIsValid}>
             Save
           </Button>
-          <Button onClick={backToGrid}>Back to grid</Button>
+          <Button onClick={hideTaskTrackPage}>Back to grid</Button>
         </div>
       </div>
     );
@@ -75,7 +72,7 @@ class TaskTrack extends React.Component {
 TaskTrack.propTypes = {
   userId: PropTypes.string.isRequired,
   taskId: PropTypes.string.isRequired,
-  show: PropTypes.func.isRequired,
+  hideTaskTrackPage: PropTypes.func.isRequired,
 };
 
 export default TaskTrack;

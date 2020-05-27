@@ -1,6 +1,6 @@
 import firebase from './firebase';
-import createRandomMembers from '../createRandomMembers';
-import addUserIdToEveryTask from './adduserIdToEverytask';
+import createRandomMembers from '../helpers/createRandomMembers';
+import addUserIdToEveryTask from './addUserIdToEverytask';
 
 const firestore = firebase.firestore();
 const collection = 'dims';
@@ -108,8 +108,8 @@ const firebaseApi = {
             age,
             tasks,
           })
-          .then((docRef) => {
-            console.log('Document written with ID: ', docRef.id);
+          .then(() => {
+            console.log('success');
           })
           .catch((error) => {
             console.error('Error adding document: ', error);
@@ -174,7 +174,7 @@ const firebaseApi = {
           tasks: member.data().tasks,
         });
       });
-      const temp = taskList.map((task) => addUserIdToEveryTask(task));
+      const temp = taskList.map((task) => addUserIdToEveryTask(task.tasks, task.userId));
       temp.forEach((item) => (tasksWithId = [...tasksWithId, ...item]));
       tasksWithId.forEach((task) => {
         task.startDate = task.startDate.toDate();

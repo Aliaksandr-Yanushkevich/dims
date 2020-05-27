@@ -21,7 +21,7 @@ class Login extends React.Component {
 
   onChange = (e) => {
     const { id, value, checked } = e.currentTarget;
-    id === 'remember' ? this.setState({ [`${id}`]: checked }) : this.setState({ [`${id}`]: value });
+    id === 'remember' ? this.setState({ [id]: checked }) : this.setState({ [id]: value });
   };
 
   validateForm = (id, message) => {

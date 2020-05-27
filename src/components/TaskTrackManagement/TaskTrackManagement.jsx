@@ -11,6 +11,7 @@ import TaskTrack from '../TaskTrack/TaskTrack';
 class TasksTracks extends React.Component {
   state = {
     tasks: null,
+    taskTrackPageIsVisible: false,
   };
 
   componentDidMount() {
@@ -25,9 +26,20 @@ class TasksTracks extends React.Component {
     }
   }
 
+  editTask = (e) => {
+    const { setCurrentTask, setCurrentUser } = this.props;
+    setCurrentTask(e);
+    setCurrentUser(e);
+    this.setState({ taskTrackPageIsVisible: true });
+  };
+
+  hideTaskTrackPage = () => {
+    this.setState({ taskTrackPageIsVisible: false });
+  };
+
   render() {
-    const { tasks } = this.state;
-    const { userId, taskId, setCurrentUser, setCurrentTask, taskTrackPageIsVisible, show } = this.props;
+    const { tasks, taskTrackPageIsVisible } = this.state;
+    const { userId, taskId } = this.props;
     const tableRows = tasks
       ? tasks.map((task, index) => {
           return (
@@ -36,9 +48,7 @@ class TasksTracks extends React.Component {
               taskName={task.taskName}
               userId={userId}
               taskId={task.taskId}
-              setCurrentUser={setCurrentUser}
-              setCurrentTask={setCurrentTask}
-              show={show}
+              editTask={this.editTask}
             />
           );
         })
@@ -49,13 +59,7 @@ class TasksTracks extends React.Component {
     return (
       <>
         {taskTrackPageIsVisible ? (
-          <TaskTrack
-            userId={userId}
-            taskId={taskId}
-            setCurrentTask={this.setCurrentTask}
-            setCurrentUser={this.setCurrentUser}
-            show={show}
-          />
+          <TaskTrack userId={userId} taskId={taskId} hideTaskTrackPage={this.hideTaskTrackPage} />
         ) : null}
         <h1 className={styles.title}>Task Track Management</h1>
         <table>
@@ -76,8 +80,6 @@ TasksTracks.propTypes = {
   taskId: PropTypes.string,
   setCurrentUser: PropTypes.func.isRequired,
   setCurrentTask: PropTypes.func.isRequired,
-  taskTrackPageIsVisible: PropTypes.bool.isRequired,
-  show: PropTypes.func.isRequired,
 };
 
 TasksTracks.defaultProps = {

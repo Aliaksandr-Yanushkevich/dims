@@ -1,5 +1,5 @@
-const addUserIdToEveryTask = (taskList) => {
-  return taskList.tasks.map((task) => ({ ...task, userId: taskList.userId }));
+const addUserIdToEveryTask = (tasks, userId) => {
+  return tasks.map((task) => ({ ...task, userId }));
 };
 
 export default addUserIdToEveryTask;
