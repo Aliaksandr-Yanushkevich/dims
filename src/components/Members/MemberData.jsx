@@ -17,13 +17,14 @@ class MemberData extends React.Component {
     const directions = [];
     firebaseTrueApi
       .getDirections()
-      .then((courseDirections) =>
+      .then((courseDirections) => {
         courseDirections.forEach((direction) => {
           const { directionId, name } = direction.data();
           directions.push({ directionId, name });
-        }),
-      )
+        });
+      })
       .then(() => {
+        debugger;
         this.setState({ directions });
       })
       .catch((error) => {
@@ -37,7 +38,7 @@ class MemberData extends React.Component {
       firstName,
       lastName,
       birthDate,
-      direction,
+      directionId,
       education,
       startDate,
       userId,
@@ -45,7 +46,14 @@ class MemberData extends React.Component {
       deleteMember,
       createMember,
     } = this.props;
+    const { directions } = this.state;
     const age = getAge(birthDate);
+    debugger;
+    const direction = directions
+      ? directions.filter((courseDirection) => {
+          return courseDirection.directionId === directionId;
+        })[0].name
+      : null;
     return (
       <tr key={userId}>
         <TableData>{index}</TableData>

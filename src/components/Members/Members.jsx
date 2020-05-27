@@ -22,12 +22,12 @@ class Members extends React.Component {
       .getUsers()
       .then((users) =>
         users.forEach((user) => {
-          const { firstName, lastName, birthDate, direction, education, startDate, userId } = user.data();
+          const { firstName, lastName, birthDate, directionId, education, startDate, userId } = user.data();
           members.push({
             firstName,
             lastName,
             birthDate: birthDate.toDate(),
-            direction,
+            directionId,
             education,
             startDate: startDate.toDate(),
             userId,
@@ -63,7 +63,8 @@ class Members extends React.Component {
     const { currentUserId, setCurrentUser } = this.props;
     if (!members) return <Preloader />;
     const memberRows = members.map((member, index) => {
-      const { firstName, lastName, birthDate, direction, education, startDate, userId } = member;
+      const { firstName, lastName, birthDate, directionId, education, startDate, userId } = member;
+
       return (
         <MemberData
           key={userId}
@@ -71,7 +72,7 @@ class Members extends React.Component {
           firstName={firstName}
           lastName={lastName}
           birthDate={birthDate}
-          direction={direction}
+          directionId={directionId}
           education={education}
           startDate={startDate}
           userId={userId}
@@ -81,6 +82,7 @@ class Members extends React.Component {
         />
       );
     });
+
     return (
       <>
         {memberPageIsVisible && <MemberPage userId={currentUserId} hideMemberPage={this.hideMemberPage} />}
