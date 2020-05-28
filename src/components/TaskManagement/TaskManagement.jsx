@@ -7,7 +7,7 @@ import { taskManagementTitle } from '../../constants';
 import TaskData from './TaskData';
 import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
-import dateToString from '../common/dateToString';
+import dateToString from '../../helpers/dateToString';
 import Button from '../Button/Button';
 
 class TaskManagement extends React.Component {

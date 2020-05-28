@@ -79,7 +79,7 @@ class App extends Component {
               <Registration />
             </Route>
           </div>
-          <Button onClick={() => firebaseTrueApi.createTasks(15)}>Create profiles</Button>
+          {/* <Button onClick={() => firebaseTrueApi.createTasks(15)}>Create profiles</Button> */}
           <Footer />
         </div>
       </BrowserRouter>

@@ -6,7 +6,7 @@ import { emailRegexp, latinLetterRegexp } from '../../constants';
 class FormField extends React.Component {
   state = {
     touched: false,
-    message: null,
+    message: '',
   };
 
   componentDidMount() {
@@ -35,7 +35,7 @@ class FormField extends React.Component {
     const { touched } = this.state;
     const { id, required, minLength, maxLength, value, min, max } = this.props;
     if (touched) {
-      if (!this.checkRequirement(!(required && !value.length), id, 'Field is required')) {
+      if (!this.checkRequirement(!(required && !value.toString().length), id, 'Field is required')) {
         return;
       }
       if (id === 'login') {
@@ -58,8 +58,8 @@ class FormField extends React.Component {
         }
       }
 
-      if (id === 'age') {
-        const message = value < 0 ? 'Age should be positive number' : 'You look much younger';
+      if (id === 'mathScore') {
+        const message = Number(value) < 0 || Number(value) > 100 ? 'Score should be between 0 and 100' : '';
         if (!this.checkRequirement(value < min, id, message)) {
           return;
         }
@@ -82,11 +82,25 @@ class FormField extends React.Component {
   };
 
   render() {
-    const { id, name, required, inputType, label, onChange, value, placeholder, min, max, cols, rows } = this.props;
+    const {
+      id,
+      name,
+      required,
+      inputType,
+      label,
+      onChange,
+      value,
+      placeholder,
+      min,
+      max,
+      step,
+      cols,
+      rows,
+    } = this.props;
     const { touched, message } = this.state;
     if (inputType === 'textarea') {
       return (
-        <>
+        <div>
           <div className={styles.textareaItem}>
             <label htmlFor={id}>{label}</label>
             <textarea
@@ -104,11 +118,11 @@ class FormField extends React.Component {
             />
           </div>
           <p className={styles.message}>{message}</p>
-        </>
+        </div>
       );
     }
     return (
-      <>
+      <div className={styles.gridItem}>
         <div className={styles.item}>
           <label htmlFor={id}>{label}</label>
           <input
@@ -122,11 +136,12 @@ class FormField extends React.Component {
             placeholder={placeholder}
             min={min}
             max={max}
+            step={step}
             required={required}
           />
         </div>
         <p className={styles.message}>{message}</p>
-      </>
+      </div>
     );
   }
 }
@@ -141,6 +156,7 @@ FormField.propTypes = {
   validateForm: PropTypes.func.isRequired,
   min: PropTypes.number,
   max: PropTypes.number,
+  step: PropTypes.number,
   inputType: PropTypes.string,
   label: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
@@ -159,6 +175,7 @@ FormField.defaultProps = {
   value: '',
   min: 0,
   max: 150,
+  step: 1,
   placeholder: '',
   cols: 30,
   rows: 10,

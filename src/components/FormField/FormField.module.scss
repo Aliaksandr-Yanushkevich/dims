@@ -6,13 +6,18 @@
 
 .message {
   color: $dangerousColor;
+  margin: 0;
+}
+
+.gridItem {
+  height: 3rem;
 }
 
 .item {
   display: flex;
   justify-content: space-between;
   flex-direction: row;
-  margin-bottom: 1rem;
+  height: 50%;
 }
 
 .textareaItem {

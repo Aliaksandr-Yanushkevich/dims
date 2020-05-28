@@ -43,23 +43,36 @@ const firebaseTrueApi = {
           mobilePhone,
           skype,
           startDate,
-        });
-      firestore
-        .collection('UserTask')
-        .doc(userId)
-        .set({ userId })
-        .then(() => {
-          console.log('Document written successfully');
         })
         .catch((error) => {
           console.error('Something went wrong', error);
         });
     });
   },
+
+  createUser(userId, userInfo) {
+    return firestore
+      .collection('UserProfile')
+      .doc(userId)
+      .set({
+        ...userInfo,
+      })
+      .catch((error) => {
+        console.error('Something went wrong', error);
+      });
+  },
+
   getUsers() {
     return firestore
       .collection('UserProfile')
       .orderBy('firstName')
+      .get();
+  },
+
+  getUserInfo(userId) {
+    return firestore
+      .collection('UserProfile')
+      .doc(userId)
       .get();
   },
 
@@ -68,27 +81,6 @@ const firebaseTrueApi = {
       .collection('Direction')
       .orderBy('directionId')
       .get();
-  },
-  pushUserIds() {
-    firestore
-      .collection('UserProfile')
-      .orderBy('firstName')
-      .get()
-      .then((users) => {
-        users.forEach((user) => {
-          const { userId } = user.data();
-          firestore
-            .collection('UserTask')
-            .doc(userId)
-            .set({ userId })
-            .then(() => {
-              console.log('Document written successfully');
-            })
-            .catch((error) => {
-              console.error('Something went wrong', error);
-            });
-        });
-      });
   },
   createTaskState(amount) {
     const taskStates = createFakeTaskState(amount);

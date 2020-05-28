@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
-import dateToString from '../common/dateToString';
+import dateToString from '../../helpers/dateToString';
 import styles from './MembersTasks.module.scss';
 import Button from '../Button/Button';
 import TableData from '../common/TableData/TableData';

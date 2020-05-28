@@ -1,15 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styles from './Select.module.scss';
 
+// props.options should be an array of objects {value: xxx, title: yyy}
 const Select = ({ id, name, onChange, value, options }) => {
-  const optionsArray = options.map((option) => <option value={option}>{option}</option>);
+  const optionsArray = options ? options.map((option) => <option value={option.value}>{option.title}</option>) : null;
   return (
-    <>
+    <div className={styles.item}>
       <label htmlFor={id}>{`${name}:`}</label>
       <select id={id} name={name} onChange={onChange} value={value}>
         {optionsArray}
       </select>
-    </>
+    </div>
   );
 };
 

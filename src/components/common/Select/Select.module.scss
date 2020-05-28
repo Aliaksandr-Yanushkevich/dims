@@ -1,0 +1,19 @@
+@import '../../../styleguide/styleguide.scss';
+
+.error {
+  border: 2px solid $dangerousColor;
+}
+
+.message {
+  color: $dangerousColor;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+select {
+  height: 1.5rem;
+}
