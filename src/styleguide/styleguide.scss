@@ -105,3 +105,14 @@ tbody tr:nth-child(even) {
     color: #f0bb0c;
   }
 }
+
+td .link {
+  color: #000000;
+  &:hover {
+    color: $primaryColor;
+  }
+}
+
+textarea {
+  overflow: auto;
+}

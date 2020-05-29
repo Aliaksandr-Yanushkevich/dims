@@ -5,7 +5,7 @@ import TableHeader from '../common/TableHeader/TableHeader';
 import TasksPage from '../TaskPage/TaskPage';
 import { taskManagementTitle } from '../../constants';
 import TaskData from './TaskData';
-import firebaseApi from '../../api/firebaseApi';
+import firebaseTrueApi from '../../api/firebaseTrueApi';
 import Preloader from '../common/Preloader/Preloader';
 import dateToString from '../../helpers/dateToString';
 import Button from '../Button/Button';
@@ -17,17 +17,23 @@ class TaskManagement extends React.Component {
   };
 
   componentDidMount() {
-    firebaseApi
+    const tasks = [];
+    firebaseTrueApi
       .getTaskList()
-      .then((tasks) => this.setState({ tasks }))
+      .then((tasksList) => {
+        tasksList.forEach((task) => {
+          const { name, startDate, deadlineDate, taskId } = task.data();
+          tasks.push({ name, startDate: startDate.toDate(), deadlineDate: deadlineDate.toDate(), taskId });
+        });
+        this.setState({ tasks });
+      })
       .catch((error) => {
         console.error(`Error receiving data: ${error}`);
       });
   }
 
-  createTask = (e) => {
-    const { setCurrentTask, setCurrentUser } = this.props;
-    setCurrentUser(e);
+  newTask = (e) => {
+    const { setCurrentTask } = this.props;
     setCurrentTask(e);
     this.setState({ taskPageIsVisible: true });
   };
@@ -38,23 +44,23 @@ class TaskManagement extends React.Component {
 
   render() {
     const { tasks, taskPageIsVisible } = this.state;
-    const { setCurrentUser, setCurrentTask, userId, taskId } = this.props;
+    const { setCurrentTask, currentTaskId } = this.props;
     if (!tasks) {
       return <Preloader />;
     }
     const taskRows = tasks
       ? tasks.map((task, index) => {
-          const startDate = dateToString(task.startDate);
-          const deadline = dateToString(task.deadLineDate);
+          const { name, startDate, deadlineDate, taskId } = task;
+          const start = dateToString(startDate);
+          const deadline = dateToString(deadlineDate);
           return (
             <TaskData
               index={index}
-              taskName={task.taskName}
-              startDate={startDate}
+              taskName={name}
+              startDate={start}
               deadline={deadline}
-              taskId={task.taskId}
-              userId={task.userId}
-              createTask={this.createTask}
+              taskId={taskId}
+              newTask={this.newTask}
             />
           );
         })
@@ -64,8 +70,8 @@ class TaskManagement extends React.Component {
       <>
         <h1 className={styles.title}>Task management</h1>
         <div className={styles.tableWrapper}>
-          {taskPageIsVisible && <TasksPage userId={userId} taskId={taskId} hideMemberPage={this.hideMemberPage} />}
-          <Button id={styles.createTask} taskId='newTask' onClick={this.createTask}>
+          {taskPageIsVisible && <TasksPage taskId={currentTaskId} hideMemberPage={this.hideMemberPage} />}
+          <Button id={styles.createTask} taskId='newTask' onClick={this.newTask}>
             Create task
           </Button>
           <table>
@@ -84,14 +90,11 @@ class TaskManagement extends React.Component {
 
 TaskManagement.propTypes = {
   setCurrentTask: PropTypes.func.isRequired,
-  setCurrentUser: PropTypes.func.isRequired,
-  userId: PropTypes.string,
-  taskId: PropTypes.string,
+  currentTaskId: PropTypes.string,
 };
 
 TaskManagement.defaultProps = {
-  userId: '',
-  taskId: '',
+  currentTaskId: '',
 };
 
 export default TaskManagement;

@@ -114,6 +114,73 @@ const firebaseTrueApi = {
         });
     });
   },
+
+  createTask(taskInfo) {
+    const { taskId } = taskInfo;
+    return firestore
+      .collection('Task')
+      .doc(taskId)
+      .set({ ...taskInfo })
+      .then(() => {
+        console.log('Document written successfully');
+      })
+      .catch((error) => {
+        console.error('Something went wrong', error);
+      });
+  },
+
+  assignTask(task) {
+    debugger;
+    const { userId, taskId, userTaskId, stateId } = task;
+    return firestore
+      .collection('UserTask')
+      .doc(userTaskId)
+      .set({ userId, taskId, userTaskId, stateId });
+  },
+
+  setTaskState(stateId) {
+    debugger;
+    return firestore
+      .collection('TaskState')
+      .doc(stateId)
+      .set({ stateId, stateName: '' });
+  },
+
+  getTask(taskId) {
+    return firestore
+      .collection('Task')
+      .doc(taskId)
+      .get();
+  },
+
+  getNames() {
+    let members = [];
+    return firestore
+      .collection('UserProfile')
+      .orderBy('firstName')
+      .get()
+      .then((users) => {
+        users.forEach((user) => {
+          const { firstName, lastName, userId } = user.data();
+          members = [
+            ...members,
+            {
+              firstName,
+              lastName,
+              userId,
+            },
+          ];
+        });
+        return members;
+      });
+  },
+
+  getTaskList() {
+    return firestore
+      .collection('Task')
+      .orderBy('deadlineDate')
+      .get();
+  },
 };
 
 export default firebaseTrueApi;

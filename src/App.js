@@ -32,8 +32,7 @@ class App extends Component {
 
   setCurrentTask = (e) => {
     e.persist();
-    const value = e.target.dataset.taskid;
-    const taskId = value !== 'newTask' ? Number.parseInt(value, 10) : value;
+    const taskId = e.target.dataset.taskid;
     this.setState({
       currentTaskId: taskId,
     });
@@ -59,7 +58,7 @@ class App extends Component {
             <Route path='/task_management'>
               <TaskManagement
                 userId={currentUserId}
-                taskId={currentTaskId}
+                currentTaskId={currentTaskId}
                 setCurrentTask={this.setCurrentTask}
                 setCurrentUser={this.setCurrentUser}
               />

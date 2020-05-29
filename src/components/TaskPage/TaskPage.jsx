@@ -1,53 +1,51 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDom from 'react-dom';
-import firebaseApi from '../../api/firebaseApi';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
 import Button from '../Button/Button';
 import styles from './TaskPage.module.scss';
 import FormField from '../FormField/FormField';
 import MemberList from './MemberList';
+import firebaseTrueApi from '../../api/firebaseTrueApi';
+import generateID from '../../helpers/generateID';
 
 class TaskPage extends React.Component {
   constructor() {
     super();
+    this.state = {
+      members: null,
+      name: '',
+      description: '',
+      startDate: '',
+      deadlineDate: '',
+      userTasks: [],
+    };
     this.root = document.createElement('div');
     document.body.appendChild(this.root);
   }
 
-  state = {
-    members: null,
-    taskName: '',
-    description: '',
-    startDate: '',
-    deadLineDate: '',
-    taskNameIsValid: false,
-    descriptionIsValid: false,
-    startDateIsValid: false,
-    deadLineDateIsValid: false,
-  };
-
   componentDidMount() {
-    const { userId, taskId } = this.props;
-    if (userId && taskId !== 'newTask') {
-      firebaseApi
-        .getUserTasks(userId)
-        .then((result) => {
-          const { taskName, description, startDate, deadLineDate } = result.tasks[taskId];
-          const startDateConverted = dateToStringForInput(startDate.toDate());
-          const deadLineDateConverted = dateToStringForInput(deadLineDate.toDate());
+    const { taskId } = this.props;
+    if (taskId && taskId !== 'newTask') {
+      this.setState({ taskId });
+      firebaseTrueApi
+        .getTask(taskId)
+        .then((task) => {
+          const { name, description, startDate, deadlineDate } = task.data();
           this.setState({
-            taskName,
+            name,
             description,
-            startDate: startDateConverted,
-            deadLineDate: deadLineDateConverted,
+            startDate: dateToStringForInput(startDate.toDate()),
+            deadlineDate: dateToStringForInput(deadlineDate.toDate()),
           });
         })
         .catch((error) => {
           console.error(`Error receiving data: ${error}`);
         });
+    } else {
+      this.setState({ taskId: generateID() });
     }
-    firebaseApi
+    firebaseTrueApi
       .getNames()
       .then((members) => this.setState({ members }))
       .catch((error) => {
@@ -64,43 +62,56 @@ class TaskPage extends React.Component {
     this.setState({ [id]: value });
   };
 
-  validateForm = (id, message) => {
-    this.setState({ [`${id}IsValid`]: !message });
-  };
-
-  updateTask = () => {
-    console.log('task is updated!');
-  };
-
   createTask = () => {
-    console.log('task is created!');
+    const { name, description, startDate, deadlineDate, userTasks, taskId } = this.state;
+    const preparedstartDate = new Date(startDate);
+    const preparedDeadlineDate = new Date(deadlineDate);
+    const taskInfo = {
+      taskId,
+      name,
+      description,
+      startDate: preparedstartDate,
+      deadlineDate: preparedDeadlineDate,
+    };
+    firebaseTrueApi.createTask(taskInfo).then(() => {
+      userTasks.forEach((task) => {
+        firebaseTrueApi.assignTask(task);
+        firebaseTrueApi.setTaskState(task.stateId);
+      });
+    });
+  };
+
+  asignTask = (userId, checked) => {
+    const { userTasks, taskId } = this.state;
+    const stateId = generateID();
+    const userTaskId = generateID();
+    let memberTasks = userTasks;
+    if (checked) {
+      memberTasks = [...memberTasks, { userId, taskId, stateId, userTaskId }];
+    } else {
+      memberTasks = memberTasks.filter((member) => member.userId !== userId);
+    }
+    this.setState({ userTasks: memberTasks });
   };
 
   render() {
-    const {
-      deadLineDate,
-      description,
-      startDate,
-      taskName,
-      taskNameIsValid,
-      descriptionIsValid,
-      startDateIsValid,
-      deadLineDateIsValid,
-    } = this.state;
-    const { members } = this.state;
+    const { name, description, startDate, deadlineDate, members } = this.state;
     const { taskId, hideMemberPage } = this.props;
 
     return ReactDom.createPortal(
       <div className={styles.wrapper}>
         <form action=''>
-          <h1 className={styles.title}>{taskId === 'newTask' ? 'New task' : `Task - ${taskName}`}</h1>
+          <h1 className={styles.title}>{taskId === 'newTask' ? 'New task' : `Edit task`}</h1>
           <FormField
-            id='taskName'
+            id='name'
+            name='taskName'
+            inputType='textarea'
             label='Task name:'
             onChange={this.onChange}
-            value={taskName}
+            value={name}
             placeholder='Task name'
-            validateForm={this.validateForm}
+            cols={30}
+            rows={2}
           />
           <FormField
             id='description'
@@ -110,31 +121,18 @@ class TaskPage extends React.Component {
             onChange={this.onChange}
             value={description}
             placeholder='Task description'
-            validateForm={this.validateForm}
           />
+          <FormField id='startDate' inputType='date' label='Start:' onChange={this.onChange} value={startDate} />
           <FormField
-            id='startDate'
-            inputType='date'
-            label='Start:'
-            onChange={this.onChange}
-            value={startDate}
-            validateForm={this.validateForm}
-          />
-          <FormField
-            id='deadLineDate'
+            id='deadlineDate'
             inputType='date'
             label='Deadline:'
             onChange={this.onChange}
-            value={deadLineDate}
-            validateForm={this.validateForm}
+            value={deadlineDate}
           />
-          {members && <MemberList members={members} />}
+          {members && <MemberList members={members} asignTask={this.asignTask} />}
           <div className={styles.buttonWrapper}>
-            <Button
-              className={styles.successButton}
-              onClick={taskId === 'newTask' ? this.createTask : this.updateTask}
-              disabled={!(taskNameIsValid && descriptionIsValid && startDateIsValid && deadLineDateIsValid)}
-            >
+            <Button className={styles.successButton} onClick={this.createTask}>
               {taskId === 'newTask' ? 'Create' : 'Save'}
             </Button>
             <Button onClick={hideMemberPage}>Back to grid</Button>
@@ -147,10 +145,7 @@ class TaskPage extends React.Component {
 }
 
 TaskPage.propTypes = {
-  userId: PropTypes.string.isRequired,
   taskId: PropTypes.string.isRequired,
 };
-
-TaskPage.defaultProps = {};
 
 export default TaskPage;

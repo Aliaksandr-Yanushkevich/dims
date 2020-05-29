@@ -57,7 +57,11 @@ class MemberData extends React.Component {
     return (
       <tr key={userId}>
         <TableData>{index}</TableData>
-        <TableData>{`${firstName} ${lastName}`}</TableData>
+        <TableData>
+          <NavLink className={styles.link} to='/members' data-id={userId} onClick={createMember}>
+            {`${firstName} ${lastName}`}
+          </NavLink>
+        </TableData>
         <TableData>{direction}</TableData>
         <TableData>{education}</TableData>
         <TableData>{dateToString(startDate)}</TableData>

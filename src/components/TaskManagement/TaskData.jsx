@@ -5,18 +5,12 @@ import styles from './TaskManagement.module.scss';
 import Button from '../Button/Button';
 import TableData from '../common/TableData/TableData';
 
-const TaskData = ({ index, taskName, startDate, deadline, userId, taskId, createTask }) => {
+const TaskData = ({ index, taskName, startDate, deadline, userId, taskId, newTask }) => {
   return (
     <tr key={`${index}${taskName}`}>
       <TableData>{index + 1}</TableData>
       <TableData>
-        <NavLink
-          className={styles.link}
-          to='/task_management'
-          data-id={userId}
-          data-taskid={taskId}
-          onClick={createTask}
-        >
+        <NavLink className={styles.link} to='/task_management' data-taskid={taskId} onClick={newTask}>
           {taskName}
         </NavLink>
       </TableData>
@@ -24,7 +18,7 @@ const TaskData = ({ index, taskName, startDate, deadline, userId, taskId, create
       <TableData>{deadline}</TableData>
       <TableData>
         <div className={styles.buttonWrapper}>
-          <Button dataId={userId} taskId={taskId} onClick={createTask}>
+          <Button taskId={taskId} onClick={newTask}>
             Edit
           </Button>
 

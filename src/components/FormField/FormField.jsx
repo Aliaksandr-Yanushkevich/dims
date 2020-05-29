@@ -9,25 +9,16 @@ class FormField extends React.Component {
     message: '',
   };
 
-  componentDidMount() {
-    this.validate();
-  }
-
   onFocus = () => {
     this.setState({ touched: true });
   };
 
-  validation = (id, message) => {
-    const { validateForm } = this.props;
-    validateForm(id, message);
-    this.setState({ message });
-  };
-
-  checkRequirement = (expression, id, message) => {
+  checkRequirement = (expression, message) => {
     if (!expression) {
-      this.validation(id, message);
+      this.setState({ message });
       return false;
     }
+    this.setState({ message: null });
     return true;
   };
 
@@ -35,12 +26,12 @@ class FormField extends React.Component {
     const { touched } = this.state;
     const { id, required, minLength, maxLength, value, min, max } = this.props;
     if (touched) {
-      if (!this.checkRequirement(!(required && !value.toString().length), id, 'Field is required')) {
+      if (!this.checkRequirement(!(required && !value.toString().length), 'Field is required')) {
         return;
       }
       if (id === 'login') {
         // regexp for validating email
-        if (!this.checkRequirement(emailRegexp.test(value), id, 'You have entered an invalid email address')) {
+        if (!this.checkRequirement(emailRegexp.test(value), 'You have entered an invalid email address')) {
           return;
         }
       }
@@ -50,7 +41,6 @@ class FormField extends React.Component {
         if (
           !this.checkRequirement(
             latinLetterRegexp.test(value),
-            id,
             'First name and last name  should consist of latin letters only',
           )
         ) {
@@ -60,24 +50,21 @@ class FormField extends React.Component {
 
       if (id === 'mathScore') {
         const message = Number(value) < 0 || Number(value) > 100 ? 'Score should be between 0 and 100' : '';
-        if (!this.checkRequirement(value < min, id, message)) {
+        if (!this.checkRequirement(value < min, message)) {
           return;
         }
 
-        if (!this.checkRequirement(value > max, id, message)) {
+        if (!this.checkRequirement(value > max, message)) {
           return;
         }
       }
 
-      if (!this.checkRequirement(minLength < value.length, id, `Min length should be ${minLength} symbols`)) {
+      if (!this.checkRequirement(minLength <= value.length, `Min length should be ${minLength} symbols`)) {
         return;
       }
 
-      if (!this.checkRequirement(maxLength > value.length, id, `Max length should be ${maxLength} symbols`)) {
-        return;
+      if (!this.checkRequirement(maxLength >= value.length, `Max length should be ${maxLength} symbols`)) {
       }
-
-      this.validation(id, null);
     }
   };
 
@@ -153,7 +140,6 @@ FormField.propTypes = {
   minLength: PropTypes.number,
   maxLength: PropTypes.number,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  validateForm: PropTypes.func.isRequired,
   min: PropTypes.number,
   max: PropTypes.number,
   step: PropTypes.number,
