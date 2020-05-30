@@ -6,16 +6,16 @@ import styles from './MembersTasks.module.scss';
 import Button from '../Button/Button';
 import TableData from '../common/TableData/TableData';
 
-const MemberCurrentTasks = ({ taskId, taskName, startDate, deadLineDate, editTask }) => {
+const MemberCurrentTasks = ({ index, userTaskId, taskName, startDate, deadlineDate, stateName, trackTask }) => {
   return (
-    <tr key={`${taskId}${taskName}`}>
-      <TableData>{taskId}</TableData>
+    <tr key={userTaskId}>
+      <TableData>{index + 1}</TableData>
       <TableData>{taskName}</TableData>
       <TableData>{dateToString(startDate)}</TableData>
-      <TableData>{dateToString(deadLineDate)}</TableData>
-      <TableData>Here should be task status</TableData>
+      <TableData>{dateToString(deadlineDate)}</TableData>
+      <TableData>{stateName}</TableData>
       <TableData>
-        <Button taskId={taskId} onClick={editTask}>
+        <Button taskId={userTaskId} onClick={trackTask}>
           Track
         </Button>
       </TableData>

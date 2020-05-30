@@ -22,35 +22,40 @@ class MemberProgres extends Component {
 
   componentDidMount() {
     // this property is attempt to fix memory leak. there is problem with setState taskData https://qna.habr.com/q/605261
-    // setTimeout on 47 lines is other workaround - but this fixed problem
+    // setTimeout on 51 line is other workaround - but this aproach fixes problem
     this._isMounted = true;
 
     const { userId } = this.props;
     const taskData = [];
     if (userId) {
-      firebaseTrueApi.getUserInfo(userId).then((userInfo) => {
-        const { firstName, lastName } = userInfo.data();
-        this.setState({ firstName, lastName });
-      });
+      firebaseTrueApi
+        .getUserInfo(userId)
+        .then((userInfo) => {
+          const { firstName, lastName } = userInfo.data();
+          this.setState({ firstName, lastName });
+        })
+        .catch((error) => {
+          console.error(`Error receiving data: ${error}`);
+        });
 
       firebaseTrueApi
         .getUserTaskList(userId)
         .then((taskList) => {
           taskList.forEach((task) => {
-            const { taskId, userTaskId } = task;
-            firebaseTrueApi.getUserTaskData(taskId, userTaskId).then((taskInfo) => {
+            const { taskId, userTaskId, stateId } = task;
+            firebaseTrueApi.getUserTaskData(taskId, userTaskId, stateId).then((taskInfo) => {
               taskData.push(taskInfo);
             });
           });
-          return taskData;
         })
-        .then((result) => {
+        .then(() => {
           if (this._isMounted) {
             console.log(taskData.length);
             setTimeout(() => {
-              this.setState({ taskData: result });
+              // workaround
+              this.setState({ taskData });
               console.log(taskData.length);
-            }, 500);
+            }, 2000);
           }
         })
         .catch((error) => {

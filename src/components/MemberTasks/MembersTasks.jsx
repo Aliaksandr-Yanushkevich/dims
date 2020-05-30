@@ -5,12 +5,13 @@ import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
 import MemberCurrentTasks from './MemberCurrentTasks';
 import { membersTasksTitle } from '../../constants';
-import firebaseApi from '../../api/firebaseApi';
 import TaskTrack from '../TaskTrack/TaskTrack';
+import firebaseTrueApi from '../../api/firebaseTrueApi';
 
 class MemberTasks extends Component {
   state = {
-    tasks: null,
+    currentUserTaskId: null,
+    taskData: null,
     firstName: null,
     lastName: null,
     taskTrackPageIsVisible: false,
@@ -18,26 +19,45 @@ class MemberTasks extends Component {
 
   componentDidMount() {
     const { userId } = this.props;
+    const taskData = [];
     if (userId) {
-      firebaseApi
-        .getUserTasks(userId)
-        .then(({ tasks, firstName, lastName }) =>
-          this.setState({
-            tasks,
-            firstName,
-            lastName,
-          }),
-        )
+      firebaseTrueApi
+        .getUserInfo(userId)
+        .then((userInfo) => {
+          const { firstName, lastName } = userInfo.data();
+          this.setState({ firstName, lastName });
+        })
+        .catch((error) => {
+          console.error(`Error receiving data: ${error}`);
+        });
+
+      firebaseTrueApi
+        .getUserTaskList(userId)
+        .then((taskList) => {
+          taskList.forEach((task) => {
+            const { taskId, userTaskId, stateId } = task;
+            firebaseTrueApi.getUserTaskData(taskId, userTaskId, stateId).then((taskInfo) => {
+              taskData.push(taskInfo);
+            });
+          });
+        })
+        .then(() => {
+          setTimeout(() => {
+            // workaround
+            console.log(taskData);
+            this.setState({ taskData });
+          }, 1000);
+        })
         .catch((error) => {
           console.error(`Error receiving data: ${error}`);
         });
     }
   }
 
-  editTask = (e) => {
-    const { setCurrentTask } = this.props;
-    setCurrentTask(e);
-    this.setState({ taskTrackPageIsVisible: true });
+  trackTask = (e) => {
+    e.persist();
+    const currentUserTaskId = e.target.dataset.taskid;
+    this.setState({ currentUserTaskId, taskTrackPageIsVisible: true });
   };
 
   hideTaskTrackPage = () => {
@@ -45,28 +65,24 @@ class MemberTasks extends Component {
   };
 
   render() {
-    const { tasks, firstName, lastName, taskTrackPageIsVisible } = this.state;
-    const { userId, taskId } = this.props;
-    if (!tasks) return <Preloader />;
-    const tasksArr = tasks.map((task) => (
+    const { taskData, firstName, lastName, taskTrackPageIsVisible, currentUserTaskId } = this.state;
+    const { userId } = this.props;
+    if (!taskData) return <Preloader />;
+    const tasksArr = taskData.map((task, index) => (
       <MemberCurrentTasks
-        taskId={task.taskId}
-        taskName={task.taskName}
-        startDate={task.startDate.toDate()}
-        deadLineDate={task.deadLineDate.toDate()}
-        editTask={this.editTask}
+        index={index}
+        userTaskId={task.userTaskId}
+        taskName={task.name}
+        startDate={task.startDate}
+        deadlineDate={task.deadlineDate}
+        stateName={task.stateName}
+        trackTask={this.trackTask}
       />
     ));
     return (
       <>
         {taskTrackPageIsVisible && (
-          <TaskTrack
-            userId={userId}
-            taskId={taskId}
-            setCurrentTask={this.setCurrentTask}
-            setCurrentUser={this.setCurrentUser}
-            hideTaskTrackPage={this.hideTaskTrackPage}
-          />
+          <TaskTrack userId={userId} userTaskId={currentUserTaskId} hideTaskTrackPage={this.hideTaskTrackPage} />
         )}
         <h1 className={styles.title}>Member&apos;s Task Manage Grid</h1>
         <h2 className={styles.subtitle}>{`Hi, dear ${firstName} ${lastName}! This is your current tasks:`}</h2>
@@ -83,9 +99,8 @@ class MemberTasks extends Component {
 
 MemberTasks.propTypes = {
   userId: PropTypes.string,
-  taskId: PropTypes.string,
   setCurrentTask: PropTypes.func.isRequired,
 };
-MemberTasks.defaultProps = { userId: '', taskId: '' };
+MemberTasks.defaultProps = { userId: '' };
 
 export default MemberTasks;

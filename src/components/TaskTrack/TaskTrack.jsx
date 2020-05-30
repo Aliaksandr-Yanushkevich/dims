@@ -2,30 +2,35 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '../Button/Button';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
-import firebaseApi from '../../api/firebaseApi';
 import styles from './TaskTrack.module.scss';
 import FormField from '../FormField/FormField';
+import firebaseTrueApi from '../../api/firebaseTrueApi';
+import Preloader from '../common/Preloader/Preloader';
+import generateID from '../../helpers/generateID';
 
 class TaskTrack extends React.Component {
   state = {
     taskName: null,
     note: '',
-    noteIsValid: false,
   };
 
   componentDidMount() {
-    const { userId, taskId } = this.props;
-    firebaseApi
-      .getUserTasks(userId)
-      .then((response) => this.setState({ taskName: response.tasks[taskId].taskName }))
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
+    const { userTaskId } = this.props;
+    if (userTaskId) {
+      firebaseTrueApi
+        .getTaskName(userTaskId)
+        .then((taskName) => {
+          this.setState({ taskName });
+        })
+        .catch((error) => {
+          console.error(`Error receiving data: ${error}`);
+        });
+    }
   }
 
   onChange = (e) => {
     const { value } = e.currentTarget;
-    this.setState({ note: value });
+    this.setState({ trackNote: value });
   };
 
   validateForm = (id, message) => {
@@ -38,9 +43,21 @@ class TaskTrack extends React.Component {
     }
   };
 
+  trackTask = () => {
+    const { userTaskId } = this.props;
+    const { trackNote } = this.state;
+    const taskTrackId = generateID();
+    const trackDate = new Date();
+    firebaseTrueApi.trackTask(userTaskId, taskTrackId, trackDate, trackNote);
+  };
+
   render() {
-    const { taskName, note, noteIsValid } = this.state;
+    const { taskName, trackNote } = this.state;
     const { hideTaskTrackPage } = this.props;
+    if (!taskName) {
+      return <Preloader />;
+    }
+
     return (
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{`Task Track - ${taskName}`}</h1>
@@ -52,14 +69,14 @@ class TaskTrack extends React.Component {
         <FormField
           id='note'
           name='note'
-          value={note}
+          value={trackNote}
           placeholder='Type your note here'
           onChange={this.onChange}
           inputType='textarea'
           validateForm={this.validateForm}
         />
         <div className={styles.buttonWrapper}>
-          <Button className={styles.successButton} onClick={() => console.log('note saved!')} disabled={!noteIsValid}>
+          <Button className={styles.successButton} onClick={this.trackTask}>
             Save
           </Button>
           <Button onClick={hideTaskTrackPage}>Back to grid</Button>

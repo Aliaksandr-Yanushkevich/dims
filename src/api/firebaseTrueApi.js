@@ -181,7 +181,7 @@ const firebaseTrueApi = {
   },
 
   getUserTaskList(userId) {
-    // func returns array of {taskId, userTaskId} for current user
+    // func returns array of {taskId, userTaskId, staeId} for current user
     const taskList = [];
     return firestore
       .collection('UserTask')
@@ -189,14 +189,14 @@ const firebaseTrueApi = {
       .get()
       .then((tasks) => {
         tasks.forEach((task) => {
-          const { taskId, userTaskId } = task.data();
-          taskList.push({ taskId, userTaskId });
+          const { taskId, userTaskId, stateId } = task.data();
+          taskList.push({ taskId, userTaskId, stateId });
         });
         return taskList;
       });
   },
 
-  getUserTaskData(taskId, userTaskId) {
+  getUserTaskData(taskId, userTaskId, stateId) {
     // func returns composite object from two collection (Task and TaskTrack)
     const taskData = {};
     return firestore
@@ -204,9 +204,12 @@ const firebaseTrueApi = {
       .doc(taskId)
       .get()
       .then((task) => {
-        const { name } = task.data();
+        const { name, startDate, deadlineDate } = task.data();
         taskData.name = name;
         taskData.taskId = taskId;
+        taskData.userTaskId = userTaskId;
+        taskData.startDate = startDate.toDate();
+        taskData.deadlineDate = deadlineDate.toDate();
       })
       .then(() => {
         return firestore
@@ -216,16 +219,54 @@ const firebaseTrueApi = {
           .limit(1)
           .get()
           .then((taskInfo) => {
-            if (taskInfo.size) {
+            if (taskInfo.data) {
               const { trackDate, trackNote } = taskInfo.data();
-              taskData.trackDate = trackDate;
+              taskData.trackDate = trackDate.toDate();
               taskData.trackNote = trackNote;
             }
             taskData.trackDate = '-';
             taskData.trackNote = '-';
           })
           .then(() => {
+            return firestore
+              .collection('TaskState')
+              .doc(stateId)
+              .get()
+              .then((taskState) => {
+                const { stateName } = taskState.data();
+                taskData.stateName = stateName;
+              });
+          })
+          .then(() => {
             return taskData;
+          });
+      });
+  },
+
+  trackTask(userTaskId, taskTrackId, trackDate, trackNote) {
+    return firestore
+      .collection('TaskTrack')
+      .doc(userTaskId)
+      .set({ userTaskId, taskTrackId, trackDate, trackNote });
+  },
+
+  getTaskName(userTaskId) {
+    return firestore
+      .collection('UserTask')
+      .doc(userTaskId)
+      .get()
+      .then((taskData) => {
+        const { taskId } = taskData.data();
+        return taskId;
+      })
+      .then((id) => {
+        return firestore
+          .collection('Task')
+          .doc(id)
+          .get()
+          .then((taskInfo) => {
+            const { name } = taskInfo.data();
+            return name;
           });
       });
   },

@@ -57,7 +57,7 @@ class App extends Component {
               />
             </Route>
             <Route path='/member_tasks:userId?'>
-              <MemberTasks userId={currentUserId} taskId={currentTaskId} setCurrentTask={this.setCurrentTask} />
+              <MemberTasks userId={currentUserId} taskId={currentTaskId} />
             </Route>
             <Route path='/task_management'>
               <TaskManagement
