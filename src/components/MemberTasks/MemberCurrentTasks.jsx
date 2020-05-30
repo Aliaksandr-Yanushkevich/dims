@@ -5,8 +5,29 @@ import dateToString from '../../helpers/dateToString';
 import styles from './MembersTasks.module.scss';
 import Button from '../Button/Button';
 import TableData from '../common/TableData/TableData';
+import firebaseTrueApi from '../../api/firebaseTrueApi';
 
-const MemberCurrentTasks = ({ index, userTaskId, taskName, startDate, deadlineDate, stateName, trackTask }) => {
+const MemberCurrentTasks = ({
+  index,
+  userTaskId,
+  taskName,
+  startDate,
+  deadlineDate,
+  stateName,
+  trackTask,
+  stateId,
+}) => {
+  const succesedTask = (e) => {
+    e.persist();
+    const currentTaskId = e.target.dataset.taskid;
+    firebaseTrueApi.completeTask(currentTaskId, 'success');
+  };
+
+  const failedTask = (e) => {
+    e.persist();
+    const currentTaskId = e.target.dataset.taskid;
+    firebaseTrueApi.completeTask(currentTaskId, 'fail');
+  };
   return (
     <tr key={userTaskId}>
       <TableData>{index + 1}</TableData>
@@ -21,12 +42,13 @@ const MemberCurrentTasks = ({ index, userTaskId, taskName, startDate, deadlineDa
       </TableData>
       <TableData>
         <div className={styles.buttonWrapper}>
-          <NavLink className={styles.link} to='/member_success'>
-            <Button className={styles.successButton}>Success</Button>
-          </NavLink>
-          <NavLink className={styles.link} to='/member_fail'>
-            <Button className={styles.dangerousButton}>Fail</Button>
-          </NavLink>
+          <Button className={styles.successButton} taskId={stateId} onClick={succesedTask}>
+            Success
+          </Button>
+
+          <Button className={styles.dangerousButton} taskId={stateId} onClick={failedTask}>
+            Fail
+          </Button>
         </div>
       </TableData>
     </tr>

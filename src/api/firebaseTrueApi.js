@@ -210,6 +210,7 @@ const firebaseTrueApi = {
         taskData.userTaskId = userTaskId;
         taskData.startDate = startDate.toDate();
         taskData.deadlineDate = deadlineDate.toDate();
+        taskData.stateId = stateId;
       })
       .then(() => {
         return firestore
@@ -268,6 +269,16 @@ const firebaseTrueApi = {
             const { name } = taskInfo.data();
             return name;
           });
+      });
+  },
+
+  completeTask(currentTaskId, stateName) {
+    firestore
+      .collection('TaskState')
+      .doc(currentTaskId)
+      .set({ stateName })
+      .then(() => {
+        console.log('task is completed');
       });
   },
 };

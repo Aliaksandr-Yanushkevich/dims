@@ -77,6 +77,7 @@ class MemberTasks extends Component {
         deadlineDate={task.deadlineDate}
         stateName={task.stateName}
         trackTask={this.trackTask}
+        stateId={task.stateId}
       />
     ));
     return (
