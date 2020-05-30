@@ -4,17 +4,17 @@ import PropTypes from 'prop-types';
 import styles from './MembersProgress.module.scss';
 import TableData from '../common/TableData/TableData';
 
-const MemberProgressData = ({ taskId, taskName, taskDescription, createTask }) => {
+const MemberProgressData = ({ index, taskId, taskName, trackNote, trackDate, createTask }) => {
   return (
     <tr key={`${taskId}${taskName}`}>
-      <TableData>{taskId + 1}</TableData>
+      <TableData>{index + 1}</TableData>
       <TableData>
         <NavLink className={styles.link} to='/member_progress:userId?' data-taskid={taskId} onClick={createTask}>
           {taskName}
         </NavLink>
       </TableData>
-      <TableData>{taskDescription}</TableData>
-      <TableData>Here should be track date</TableData>
+      <TableData>{trackNote}</TableData>
+      <TableData>{trackDate}</TableData>
     </tr>
   );
 };

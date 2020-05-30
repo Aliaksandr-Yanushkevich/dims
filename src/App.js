@@ -50,7 +50,11 @@ class App extends Component {
               <Members currentUserId={currentUserId} setCurrentUser={this.setCurrentUser} />
             </Route>
             <Route path='/member_progress:userId?'>
-              <MemberProgress userId={currentUserId} taskId={currentTaskId} setCurrentTask={this.setCurrentTask} />
+              <MemberProgress
+                userId={currentUserId}
+                currentTaskId={currentTaskId}
+                setCurrentTask={this.setCurrentTask}
+              />
             </Route>
             <Route path='/member_tasks:userId?'>
               <MemberTasks userId={currentUserId} taskId={currentTaskId} setCurrentTask={this.setCurrentTask} />

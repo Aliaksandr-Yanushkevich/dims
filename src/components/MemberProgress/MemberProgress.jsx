@@ -5,33 +5,62 @@ import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
 import MemberProgressData from './MemberProgressData';
 import { memberProgressTitle } from '../../constants';
-import firebaseApi from '../../api/firebaseApi';
 import TaskPage from '../TaskPage/TaskPage';
+import firebaseTrueApi from '../../api/firebaseTrueApi';
 
 class MemberProgres extends Component {
-  state = {
-    tasks: null,
-    firstName: null,
-    lastName: null,
-    taskPageIsVisible: false,
-  };
+  constructor() {
+    super();
+    this._isMounted = false;
+    this.state = {
+      firstName: null,
+      lastName: null,
+      taskPageIsVisible: false,
+      taskData: null,
+    };
+  }
 
   componentDidMount() {
+    // this property is attempt to fix memory leak. there is problem with setState taskData https://qna.habr.com/q/605261
+    // setTimeout on 47 lines is other workaround - but this fixed problem
+    this._isMounted = true;
+
     const { userId } = this.props;
+    const taskData = [];
     if (userId) {
-      firebaseApi
-        .getUserTasks(userId)
-        .then(({ tasks, firstName, lastName }) =>
-          this.setState({
-            tasks,
-            firstName,
-            lastName,
-          }),
-        )
+      firebaseTrueApi.getUserInfo(userId).then((userInfo) => {
+        const { firstName, lastName } = userInfo.data();
+        this.setState({ firstName, lastName });
+      });
+
+      firebaseTrueApi
+        .getUserTaskList(userId)
+        .then((taskList) => {
+          taskList.forEach((task) => {
+            const { taskId, userTaskId } = task;
+            firebaseTrueApi.getUserTaskData(taskId, userTaskId).then((taskInfo) => {
+              taskData.push(taskInfo);
+            });
+          });
+          return taskData;
+        })
+        .then((result) => {
+          if (this._isMounted) {
+            console.log(taskData.length);
+            setTimeout(() => {
+              this.setState({ taskData: result });
+              console.log(taskData.length);
+            }, 500);
+          }
+        })
         .catch((error) => {
           console.error(`Error receiving data: ${error}`);
         });
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   createTask = (e) => {
@@ -45,24 +74,27 @@ class MemberProgres extends Component {
   };
 
   render() {
-    const { tasks, firstName, lastName, taskPageIsVisible } = this.state;
-    const { userId, taskId } = this.props;
-    if (!tasks) {
+    const { firstName, lastName, taskPageIsVisible, taskData } = this.state;
+    const { userId, currentTaskId } = this.props;
+    if (!taskData) {
       return <Preloader />;
     }
-
-    const tasksArray = tasks.map(({ taskId, taskName, description }) => (
-      <MemberProgressData
-        key={`${description}${taskName}`}
-        taskId={taskId}
-        taskName={taskName}
-        taskDescription={description}
-        createTask={this.createTask}
-      />
-    ));
+    const tasksArray = taskData.map((task, index) => {
+      return (
+        <MemberProgressData
+          key={task.taskId}
+          index={index}
+          taskId={task.taskId}
+          taskName={task.name}
+          trackNote={task.trackNote}
+          trackDate={task.trackDate}
+          createTask={this.createTask}
+        />
+      );
+    });
     return (
       <>
-        {taskPageIsVisible && <TaskPage userId={userId} taskId={taskId} hideMemberPage={this.hideMemberPage} />}
+        {taskPageIsVisible && <TaskPage userId={userId} taskId={currentTaskId} hideMemberPage={this.hideMemberPage} />}
         <h1 className={styles.title}>Member Progress Grid</h1>
         <h2 className={styles.subtitle}>{`${firstName} ${lastName} progress:`}</h2>
         <table>

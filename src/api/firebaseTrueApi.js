@@ -130,7 +130,6 @@ const firebaseTrueApi = {
   },
 
   assignTask(task) {
-    debugger;
     const { userId, taskId, userTaskId, stateId } = task;
     return firestore
       .collection('UserTask')
@@ -139,7 +138,6 @@ const firebaseTrueApi = {
   },
 
   setTaskState(stateId) {
-    debugger;
     return firestore
       .collection('TaskState')
       .doc(stateId)
@@ -178,8 +176,58 @@ const firebaseTrueApi = {
   getTaskList() {
     return firestore
       .collection('Task')
-      .orderBy('deadlineDate')
+      .orderBy('deadlineDate', 'desc')
       .get();
+  },
+
+  getUserTaskList(userId) {
+    // func returns array of {taskId, userTaskId} for current user
+    const taskList = [];
+    return firestore
+      .collection('UserTask')
+      .where('userId', '==', userId)
+      .get()
+      .then((tasks) => {
+        tasks.forEach((task) => {
+          const { taskId, userTaskId } = task.data();
+          taskList.push({ taskId, userTaskId });
+        });
+        return taskList;
+      });
+  },
+
+  getUserTaskData(taskId, userTaskId) {
+    // func returns composite object from two collection (Task and TaskTrack)
+    const taskData = {};
+    return firestore
+      .collection('Task')
+      .doc(taskId)
+      .get()
+      .then((task) => {
+        const { name } = task.data();
+        taskData.name = name;
+        taskData.taskId = taskId;
+      })
+      .then(() => {
+        return firestore
+          .collection('TaskTrack')
+          .where('userTaskId', '==', userTaskId)
+          .orderBy('trackDate', 'desc')
+          .limit(1)
+          .get()
+          .then((taskInfo) => {
+            if (taskInfo.size) {
+              const { trackDate, trackNote } = taskInfo.data();
+              taskData.trackDate = trackDate;
+              taskData.trackNote = trackNote;
+            }
+            taskData.trackDate = '-';
+            taskData.trackNote = '-';
+          })
+          .then(() => {
+            return taskData;
+          });
+      });
   },
 };
 
