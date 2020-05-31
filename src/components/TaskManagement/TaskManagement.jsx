@@ -38,13 +38,21 @@ class TaskManagement extends React.Component {
     this.setState({ taskPageIsVisible: true });
   };
 
+  deleteTask = (e) => {
+    const taskId = e.target.dataset.taskid;
+    firebaseTrueApi
+      .deleteTask(taskId)
+      .then(() => console.log('Task is removed successfully'))
+      .catch((error) => console.error('Problem with removing task', error));
+  };
+
   hideMemberPage = () => {
     this.setState({ taskPageIsVisible: false });
   };
 
   render() {
     const { tasks, taskPageIsVisible } = this.state;
-    const { setCurrentTask, currentTaskId } = this.props;
+    const { currentTaskId } = this.props;
     if (!tasks) {
       return <Preloader />;
     }
@@ -61,6 +69,7 @@ class TaskManagement extends React.Component {
               deadline={deadline}
               taskId={taskId}
               newTask={this.newTask}
+              deleteTask={this.deleteTask}
             />
           );
         })

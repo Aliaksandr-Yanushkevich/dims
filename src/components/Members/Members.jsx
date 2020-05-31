@@ -53,7 +53,6 @@ class Members extends React.Component {
   };
 
   deleteUser = (e) => {
-    debugger;
     e.persist();
     const userId = e.target.dataset.id;
     firebaseTrueApi

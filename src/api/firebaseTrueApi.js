@@ -311,6 +311,32 @@ const firebaseTrueApi = {
     });
   },
 
+  deleteTask(taskId) {
+    return this.deleteItemWithId('Task', taskId).then(() => {
+      firestore
+        .collection('UserTask')
+        .where('taskId', '==', taskId)
+        .get()
+        .then((tasks) => {
+          tasks.forEach((task) => {
+            const { userTaskId, stateId } = task.data();
+            this.deleteItemWithId('UserTask', userTaskId);
+            this.deleteItemWithId('TaskState', stateId);
+            return firestore
+              .collection('TaskTrack')
+              .where('userTaskId', '==', userTaskId)
+              .get()
+              .then((trackedTasks) => {
+                trackedTasks.forEach((trackedtask) => {
+                  const { taskTrackId } = trackedtask.data();
+                  this.deleteItemWithId('TaskTrack', taskTrackId);
+                });
+              });
+          });
+        });
+    });
+  },
+
   deleteItemWithId(collection, docId) {
     if (docId) {
       return firestore
