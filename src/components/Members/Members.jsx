@@ -52,10 +52,18 @@ class Members extends React.Component {
     this.setState({ memberPageIsVisible: false });
   };
 
-  deleteMember = (userId) => {
-    firebaseApi.deleteMember(userId).catch((error) => {
-      console.error(`Error removing member: ${error}`);
-    });
+  deleteUser = (e) => {
+    debugger;
+    e.persist();
+    const userId = e.target.dataset.id;
+    firebaseTrueApi
+      .deleteUser(userId)
+      .then(() => {
+        console.log('User and all his data succesfully deleted');
+      })
+      .catch((error) => {
+        console.error(`Error removing member: ${error}`);
+      });
   };
 
   render() {
@@ -77,7 +85,7 @@ class Members extends React.Component {
           startDate={startDate}
           userId={userId}
           setCurrentUser={setCurrentUser}
-          deleteMember={this.deleteMember}
+          deleteUser={this.deleteUser}
           createMember={this.createMember}
         />
       );

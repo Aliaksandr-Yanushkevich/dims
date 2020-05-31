@@ -220,13 +220,16 @@ const firebaseTrueApi = {
           .limit(1)
           .get()
           .then((taskInfo) => {
-            if (taskInfo.data) {
-              const { trackDate, trackNote } = taskInfo.data();
-              taskData.trackDate = trackDate.toDate();
-              taskData.trackNote = trackNote;
+            if (taskInfo.size) {
+              taskInfo.forEach((task) => {
+                const { trackDate, trackNote } = task.data();
+                taskData.trackDate = trackDate.toDate();
+                taskData.trackNote = trackNote;
+              });
+            } else {
+              taskData.trackDate = '-';
+              taskData.trackNote = '-';
             }
-            taskData.trackDate = '-';
-            taskData.trackNote = '-';
           })
           .then(() => {
             return firestore
@@ -247,7 +250,7 @@ const firebaseTrueApi = {
   trackTask(userTaskId, taskTrackId, trackDate, trackNote) {
     return firestore
       .collection('TaskTrack')
-      .doc(userTaskId)
+      .doc(taskTrackId)
       .set({ userTaskId, taskTrackId, trackDate, trackNote });
   },
 
@@ -276,10 +279,45 @@ const firebaseTrueApi = {
     firestore
       .collection('TaskState')
       .doc(currentTaskId)
-      .set({ stateName })
+      .update({ stateName })
       .then(() => {
         console.log('task is completed');
       });
+  },
+
+  deleteUser(userId) {
+    return this.deleteItemWithId('UserProfile', userId).then(() => {
+      firestore
+        .collection('UserTask')
+        .where('userId', '==', userId)
+        .get()
+        .then((tasks) => {
+          tasks.forEach((task) => {
+            const { userTaskId, stateId } = task.data();
+            this.deleteItemWithId('UserTask', userTaskId);
+            this.deleteItemWithId('TaskState', stateId);
+            return firestore
+              .collection('TaskTrack')
+              .where('userTaskId', '==', userTaskId)
+              .get()
+              .then((trackedTasks) => {
+                trackedTasks.forEach((trackedtask) => {
+                  const { taskTrackId } = trackedtask.data();
+                  this.deleteItemWithId('TaskTrack', taskTrackId);
+                });
+              });
+          });
+        });
+    });
+  },
+
+  deleteItemWithId(collection, docId) {
+    if (docId) {
+      return firestore
+        .collection(collection)
+        .doc(docId)
+        .delete();
+    }
   },
 };
 

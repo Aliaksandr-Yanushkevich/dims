@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styles from './MembersProgress.module.scss';
 import TableData from '../common/TableData/TableData';
+import dateToString from '../../helpers/dateToString';
 
 const MemberProgressData = ({ index, taskId, taskName, trackNote, trackDate, createTask }) => {
   return (
@@ -14,7 +15,7 @@ const MemberProgressData = ({ index, taskId, taskName, trackNote, trackDate, cre
         </NavLink>
       </TableData>
       <TableData>{trackNote}</TableData>
-      <TableData>{trackDate}</TableData>
+      <TableData>{trackDate !== '-' ? dateToString(trackDate) : trackDate}</TableData>
     </tr>
   );
 };

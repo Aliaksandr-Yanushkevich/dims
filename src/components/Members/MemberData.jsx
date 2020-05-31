@@ -42,7 +42,7 @@ class MemberData extends React.Component {
       startDate,
       userId,
       setCurrentUser,
-      deleteMember,
+      deleteUser,
       createMember,
     } = this.props;
     const { directions } = this.state;
@@ -82,7 +82,7 @@ class MemberData extends React.Component {
               Edit
             </Button>
 
-            <Button dataId={userId} onClick={() => deleteMember(userId)} className={styles.dangerousButton}>
+            <Button dataId={userId} onClick={deleteUser} className={styles.dangerousButton}>
               Delete
             </Button>
           </div>
