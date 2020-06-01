@@ -17,7 +17,7 @@ class TasksTracksManagementRow extends React.Component {
   }
 
   render() {
-    const { index, taskTrackId, trackNote, editTask, trackDate, userTaskId } = this.props;
+    const { index, taskTrackId, trackNote, editTask, trackDate, userTaskId, deleteNote } = this.props;
     const { taskName } = this.state;
     return (
       <tr key={taskTrackId}>
@@ -35,7 +35,7 @@ class TasksTracksManagementRow extends React.Component {
               Edit
             </Button>
             <NavLink className={styles.link} to='/task_track_management'>
-              <Button className={styles.dangerousButton} taskId={taskTrackId}>
+              <Button className={styles.dangerousButton} taskId={taskTrackId} onClick={deleteNote}>
                 Delete
               </Button>
             </NavLink>

@@ -117,7 +117,7 @@ class MemberProgres extends Component {
 
 MemberProgres.propTypes = {
   userId: PropTypes.string.isRequired,
-  taskId: PropTypes.string.isRequired,
+  currentTaskId: PropTypes.string.isRequired,
   setCurrentTask: PropTypes.func.isRequired,
 };
 

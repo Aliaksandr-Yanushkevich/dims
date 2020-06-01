@@ -37,7 +37,7 @@ class TasksTracks extends React.Component {
         .then(() => {
           setTimeout(() => {
             this.setState({ trackData });
-          }, 1000);
+          }, 1500);
         })
 
         .catch((error) => console.error('Track info receiving error', error));
@@ -45,15 +45,24 @@ class TasksTracks extends React.Component {
   }
 
   editTask = (e) => {
-    // const { setCurrentTask, setCurrentUser } = this.props;
-    // setCurrentTask(e);
-    // setCurrentUser(e);
     e.persist();
-    debugger;
     const currentTaskTrackId = e.target.dataset.taskid;
     const currentTaskName = e.target.dataset.name;
     const currentUserTaskId = e.target.dataset.id;
     this.setState({ currentTaskTrackId, currentTaskName, currentUserTaskId, taskTrackPageIsVisible: true });
+  };
+
+  deleteNote = (e) => {
+    e.persist();
+    const currentTaskTrackId = e.target.dataset.taskid;
+    firebaseTrueApi
+      .deleteItemWithId('TaskTrack', currentTaskTrackId)
+      .then(() => {
+        console.log('Track note deleted successfully');
+      })
+      .catch((error) => {
+        console.error('Problem with note removing', error);
+      });
   };
 
   hideTaskTrackPage = () => {
@@ -73,6 +82,7 @@ class TasksTracks extends React.Component {
               trackNote={task.trackNote}
               trackDate={dateToString(task.trackDate)}
               editTask={this.editTask}
+              deleteNote={this.deleteNote}
             />
           );
         })
