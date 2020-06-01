@@ -36,19 +36,17 @@ const TaskData = ({ index, taskName, startDate, deadline, taskId, newTask, delet
 TaskData.propTypes = {
   index: PropTypes.number,
   taskName: PropTypes.string,
-  deadline: PropTypes.instanceOf(Date),
-  taskId: PropTypes.number,
-  setCurrentTask: PropTypes.func.isRequired,
-  startDate: PropTypes.instanceOf(Date),
-  userId: PropTypes.string,
-  setCurrentUser: PropTypes.func.isRequired,
+  deadline: PropTypes.string,
+  taskId: PropTypes.string,
+  startDate: PropTypes.string,
+  deleteTask: PropTypes.func.isRequired,
+  newTask: PropTypes.func.isRequired,
 };
 TaskData.defaultProps = {
   index: 1,
-  startDate: new Date('December 17, 1995 03:24:00'),
-  deadline: new Date('December 18, 1995 03:24:00'),
-  userId: '',
-  taskId: 0,
+  startDate: '',
+  deadline: '',
+  taskId: '',
   taskName: '',
 };
 

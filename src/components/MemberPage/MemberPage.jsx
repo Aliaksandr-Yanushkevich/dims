@@ -176,7 +176,7 @@ class MemberPage extends React.Component {
       directions,
     } = this.state;
 
-    const preparedDIrections = directions ? directionsToOptions(directions) : null;
+    const preparedDIrections = directions ? directionsToOptions(directions) : '';
     const preparedGenders = [
       { value: 'male', title: 'Male' },
       { value: 'female', title: 'Female' },

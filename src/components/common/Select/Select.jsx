@@ -4,7 +4,13 @@ import styles from './Select.module.scss';
 
 // props.options should be an array of objects {value: xxx, title: yyy}
 const Select = ({ id, name, onChange, value, options }) => {
-  const optionsArray = options ? options.map((option) => <option value={option.value}>{option.title}</option>) : null;
+  const optionsArray = options
+    ? options.map((option) => (
+        <option key={option.title} value={option.value}>
+          {option.title}
+        </option>
+      ))
+    : null;
   return (
     <div className={styles.item}>
       <label htmlFor={id}>{`${name}:`}</label>
@@ -19,8 +25,8 @@ Select.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
-  options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  options: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
 };
 
 export default Select;

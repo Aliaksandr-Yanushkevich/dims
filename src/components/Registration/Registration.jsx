@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import firebaseApi from '../../api/firebaseApi';
+// import firebaseApi from '../../api/firebaseApi';
 import styles from './Registration.module.scss';
 import Button from '../Button/Button';
 import FormField from '../FormField/FormField';
@@ -17,7 +17,7 @@ class Registration extends React.Component {
 
   register = () => {
     const { email, password } = this.state;
-    firebaseApi.register(email, password);
+    // firebaseApi.register(email, password);
   };
 
   onChange = (e) => {

@@ -57,7 +57,6 @@ class MemberTasks extends Component {
 
   trackTask = (e) => {
     e.persist();
-    debugger;
     const currentUserTaskId = e.target.dataset.taskid;
     const currentTaskName = e.target.dataset.id;
     this.setState({ currentTaskName, currentUserTaskId, taskTrackPageIsVisible: true });
@@ -72,6 +71,7 @@ class MemberTasks extends Component {
     if (!taskData) return <Preloader />;
     const tasksArr = taskData.map((task, index) => (
       <MemberCurrentTasks
+        key={task.userTaskId}
         index={index}
         userTaskId={task.userTaskId}
         taskName={task.name}
@@ -82,6 +82,7 @@ class MemberTasks extends Component {
         stateId={task.stateId}
       />
     ));
+
     return (
       <>
         {taskTrackPageIsVisible && (
@@ -94,10 +95,12 @@ class MemberTasks extends Component {
         <h1 className={styles.title}>Member&apos;s Task Manage Grid</h1>
         <h2 className={styles.subtitle}>{`Hi, dear ${firstName} ${lastName}! This is your current tasks:`}</h2>
         <table>
-          <tbody>
-            <TableHeader titleArray={membersTasksTitle} />
-            {tasksArr}
-          </tbody>
+          <thead>
+            <tr>
+              <TableHeader titleArray={membersTasksTitle} />
+            </tr>
+          </thead>
+          <tbody>{tasksArr}</tbody>
         </table>
       </>
     );
@@ -105,9 +108,7 @@ class MemberTasks extends Component {
 }
 
 MemberTasks.propTypes = {
-  userId: PropTypes.string,
-  setCurrentTask: PropTypes.func.isRequired,
+  userId: PropTypes.string.isRequired,
 };
-MemberTasks.defaultProps = { userId: '' };
 
 export default MemberTasks;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import firebaseApi from '../../api/firebaseApi';
+// import firebaseApi from '../../api/firebaseApi';
 import styles from './Login.module.scss';
 import Button from '../Button/Button';
 import FormField from '../FormField/FormField';
@@ -16,7 +16,7 @@ class Login extends React.Component {
 
   login = () => {
     const { login, password } = this.state;
-    firebaseApi.login(login, password);
+    // firebaseApi.login(login, password);
   };
 
   onChange = (e) => {
@@ -34,7 +34,7 @@ class Login extends React.Component {
       <div className={styles.wrapper}>
         <h1 className={styles.title}>Login</h1>
         <form action=''>
-          <FormField id='login' label='Login' value={login} onChange={this.onChange} validateForm={this.validateForm} />
+          <FormField id='email' label='Login' value={login} onChange={this.onChange} validateForm={this.validateForm} />
           <FormField
             minLength={4}
             maxLength={30}
@@ -52,14 +52,14 @@ class Login extends React.Component {
                 <input id='remember' type='checkbox' checked={remember} onChange={this.onChange} />
               </label>
             </div>
-            <Button disabled={!(loginIsValid && passwordIsValid)} onClick={this.login}>
+            <Button id='login' disabled={!(loginIsValid && passwordIsValid)} onClick={this.login}>
               Login
             </Button>
           </div>
           <div className={styles.item}>
             Don&apos;t have an account yet?
             <NavLink to='/registration'>
-              <Button>Register</Button>
+              <Button id='register'>Register</Button>
             </NavLink>
           </div>
         </form>

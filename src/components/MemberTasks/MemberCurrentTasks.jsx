@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
 import dateToString from '../../helpers/dateToString';
 import styles from './MembersTasks.module.scss';
 import Button from '../Button/Button';
@@ -56,18 +55,14 @@ const MemberCurrentTasks = ({
 };
 
 MemberCurrentTasks.propTypes = {
-  taskId: PropTypes.number,
-  taskName: PropTypes.string,
-  startDate: PropTypes.instanceOf(Date),
-  deadLineDate: PropTypes.instanceOf(Date),
-  editTask: PropTypes.func.isRequired,
-};
-
-MemberCurrentTasks.defaultProps = {
-  taskId: 0,
-  taskName: '',
-  startDate: new Date(),
-  deadLineDate: new Date(),
+  stateName: PropTypes.string.isRequired,
+  trackTask: PropTypes.func.isRequired,
+  stateId: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
+  userTaskId: PropTypes.string.isRequired,
+  taskName: PropTypes.string.isRequired,
+  startDate: PropTypes.instanceOf(Date).isRequired,
+  deadlineDate: PropTypes.instanceOf(Date).isRequired,
 };
 
 export default MemberCurrentTasks;

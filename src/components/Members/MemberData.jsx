@@ -43,7 +43,7 @@ class MemberData extends React.Component {
       userId,
       setCurrentUser,
       deleteUser,
-      createMember,
+      createUser,
     } = this.props;
     const { directions } = this.state;
 
@@ -58,7 +58,7 @@ class MemberData extends React.Component {
       <tr key={userId}>
         <TableData>{index}</TableData>
         <TableData>
-          <NavLink className={styles.link} to='/members' data-id={userId} onClick={createMember}>
+          <NavLink className={styles.link} to='/members' data-id={userId} onClick={createUser}>
             {`${firstName} ${lastName}`}
           </NavLink>
         </TableData>
@@ -78,7 +78,7 @@ class MemberData extends React.Component {
                 Tasks
               </Button>
             </NavLink>
-            <Button dataId={userId} onClick={createMember}>
+            <Button dataId={userId} onClick={createUser}>
               Edit
             </Button>
 
@@ -102,8 +102,8 @@ MemberData.propTypes = {
   birthDate: PropTypes.instanceOf(Date).isRequired,
   userId: PropTypes.string.isRequired,
   setCurrentUser: PropTypes.func.isRequired,
-  deleteMember: PropTypes.func.isRequired,
-  createMember: PropTypes.func.isRequired,
+  deleteUser: PropTypes.func.isRequired,
+  createUser: PropTypes.func.isRequired,
 };
 MemberData.defaultProps = {
   index: 1,

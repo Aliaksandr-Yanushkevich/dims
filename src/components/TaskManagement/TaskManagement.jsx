@@ -63,6 +63,7 @@ class TaskManagement extends React.Component {
           const deadline = dateToString(deadlineDate);
           return (
             <TaskData
+              key={taskId}
               index={index}
               taskName={name}
               startDate={start}

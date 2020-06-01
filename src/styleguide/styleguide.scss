@@ -64,6 +64,7 @@ table {
   border-spacing: 2px;
   border-collapse: separate;
   color: $textColor;
+  table-layout: fixed;
 }
 
 tbody {
@@ -79,6 +80,10 @@ tbody {
   border: 1px solid #9bc2e6;
   max-width: 20rem;
   text-transform: capitalize;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  word-wrap: break-word;
 }
 
 .tableHeader {

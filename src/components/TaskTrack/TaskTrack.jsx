@@ -16,7 +16,6 @@ class TaskTrack extends React.Component {
 
   componentDidMount() {
     const { taskTrackId, taskName } = this.props;
-    debugger;
     if (taskTrackId) {
       firebaseTrueApi
         .getTaskTrack(taskTrackId)
@@ -45,7 +44,6 @@ class TaskTrack extends React.Component {
 
   trackTask = () => {
     const { userTaskId, taskTrackId } = this.props;
-    debugger;
     const { trackNote } = this.state;
     const trackDate = new Date();
     if (taskTrackId) {
@@ -79,6 +77,7 @@ class TaskTrack extends React.Component {
           onChange={this.onChange}
           inputType='textarea'
           validateForm={this.validateForm}
+          label='Note'
         />
         <div className={styles.buttonWrapper}>
           <Button className={styles.successButton} onClick={this.trackTask}>
@@ -92,8 +91,14 @@ class TaskTrack extends React.Component {
 }
 
 TaskTrack.propTypes = {
-  taskId: PropTypes.string.isRequired,
+  userTaskId: PropTypes.string.isRequired,
+  taskTrackId: PropTypes.string,
+  taskName: PropTypes.string.isRequired,
   hideTaskTrackPage: PropTypes.func.isRequired,
+};
+
+TaskTrack.defaultProps = {
+  taskTrackId: null,
 };
 
 export default TaskTrack;

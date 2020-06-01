@@ -48,14 +48,12 @@ class TasksTracksManagementRow extends React.Component {
 
 TasksTracksManagementRow.propTypes = {
   index: PropTypes.number.isRequired,
-  taskName: PropTypes.string.isRequired,
-  userId: PropTypes.string.isRequired,
-  taskId: PropTypes.string,
+  userTaskId: PropTypes.string.isRequired,
   editTask: PropTypes.func.isRequired,
-};
-
-TasksTracksManagementRow.defaultProps = {
-  taskId: '',
+  taskTrackId: PropTypes.string.isRequired,
+  trackNote: PropTypes.string.isRequired,
+  trackDate: PropTypes.string.isRequired,
+  deleteNote: PropTypes.func.isRequired,
 };
 
 export default TasksTracksManagementRow;

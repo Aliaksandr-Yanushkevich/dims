@@ -7,7 +7,10 @@ const TableData = ({ children }) => {
 };
 
 TableData.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
+};
+TableData.defaultProps = {
+  children: null,
 };
 
 export default TableData;

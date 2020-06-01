@@ -67,12 +67,7 @@ class App extends Component {
               />
             </Route>
             <Route path='/task_track_management'>
-              <TaskTrackManagement
-                userId={currentUserId}
-                taskId={currentTaskId}
-                setCurrentTask={this.setCurrentTask}
-                setCurrentUser={this.setCurrentUser}
-              />
+              <TaskTrackManagement userId={currentUserId} />
             </Route>
             <Route path='/login'>
               <Login />

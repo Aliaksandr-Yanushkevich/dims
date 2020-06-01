@@ -75,9 +75,9 @@ class TasksTracks extends React.Component {
       ? trackData.map((task, index) => {
           return (
             <TasksTracksManagementRow
+              key={task.taskTrackId}
               index={index + 1}
               userTaskId={task.userTaskId}
-              taskName={task.name}
               taskTrackId={task.taskTrackId}
               trackNote={task.trackNote}
               trackDate={dateToString(task.trackDate)}
@@ -116,8 +116,6 @@ class TasksTracks extends React.Component {
 
 TasksTracks.propTypes = {
   userId: PropTypes.string.isRequired,
-  setCurrentUser: PropTypes.func.isRequired,
-  setCurrentTask: PropTypes.func.isRequired,
 };
 
 export default TasksTracks;

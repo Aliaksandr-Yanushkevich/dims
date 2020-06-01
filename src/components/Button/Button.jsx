@@ -22,7 +22,7 @@ Button.propTypes = {
   dataName: PropTypes.string,
   className: PropTypes.string,
   dataId: PropTypes.string,
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   disabled: PropTypes.bool,
   children: PropTypes.string.isRequired,
 };
@@ -33,6 +33,7 @@ Button.defaultProps = {
   className: '',
   dataId: '',
   dataName: '',
+  onClick: () => {},
   disabled: false,
 };
 

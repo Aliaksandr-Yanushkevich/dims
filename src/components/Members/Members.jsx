@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import firebaseApi from '../../api/firebaseApi';
 import TableHeader from '../common/TableHeader/TableHeader';
 import MemberData from './MemberData';
 import Preloader from '../common/Preloader/Preloader';
@@ -42,7 +41,7 @@ class Members extends React.Component {
       });
   }
 
-  createMember = (e) => {
+  createUser = (e) => {
     const { setCurrentUser } = this.props;
     setCurrentUser(e);
     this.setState({ memberPageIsVisible: true });
@@ -85,7 +84,7 @@ class Members extends React.Component {
           userId={userId}
           setCurrentUser={setCurrentUser}
           deleteUser={this.deleteUser}
-          createMember={this.createMember}
+          createUser={this.createUser}
         />
       );
     });
@@ -95,7 +94,7 @@ class Members extends React.Component {
         {memberPageIsVisible && <MemberPage userId={currentUserId} hideMemberPage={this.hideMemberPage} />}
         <h1 className={styles.title}>Members Manage Grid</h1>
         <div className={styles.tableWrapper}>
-          <Button id={styles.register} dataId='newMember' onClick={this.createMember}>
+          <Button id={styles.register} dataId='newMember' onClick={this.createUser}>
             Register
           </Button>
           <table>
