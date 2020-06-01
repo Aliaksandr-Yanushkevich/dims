@@ -16,7 +16,7 @@ class TaskPage extends React.Component {
       members: null,
       name: '',
       description: '',
-      startDate: '',
+      startDate: dateToStringForInput(new Date()),
       deadlineDate: '',
       userTasks: [],
     };

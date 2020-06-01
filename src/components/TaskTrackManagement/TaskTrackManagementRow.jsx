@@ -4,39 +4,47 @@ import { NavLink } from 'react-router-dom';
 import Button from '../Button/Button';
 import styles from './TaskTrackManagement.module.scss';
 import TableData from '../common/TableData/TableData';
+import firebaseTrueApi from '../../api/firebaseTrueApi';
 
-const TasksTracksManagementRow = ({ index, taskName, userId, taskId, editTask }) => {
-  return (
-    <tr key={userId}>
-      <TableData>{index}</TableData>
-      <TableData>
-        <NavLink
-          className={styles.link}
-          to='/task_track_management'
-          data-id={userId}
-          data-taskid={taskId}
-          onClick={editTask}
-        >
-          {taskName}
-        </NavLink>
-      </TableData>
-      <TableData>Note text</TableData>
-      <TableData>Note date</TableData>
-      <TableData>
-        <div className={styles.buttonWrapper}>
-          <Button dataId={userId} taskId={taskId} onClick={editTask}>
-            Edit
-          </Button>
-          <NavLink className={styles.link} to='/task_track_management'>
-            <Button className={styles.dangerousButton} dataId={userId}>
-              Delete
-            </Button>
+class TasksTracksManagementRow extends React.Component {
+  state = {
+    taskName: null,
+  };
+
+  componentDidMount() {
+    const { userTaskId } = this.props;
+    firebaseTrueApi.getTaskName(userTaskId).then((taskName) => this.setState({ taskName }));
+  }
+
+  render() {
+    const { index, taskTrackId, trackNote, editTask, trackDate, userTaskId } = this.props;
+    const { taskName } = this.state;
+    return (
+      <tr key={taskTrackId}>
+        <TableData>{index}</TableData>
+        <TableData>
+          <NavLink className={styles.link} to='/task_track_management' data-taskid={taskTrackId} onClick={editTask}>
+            {taskName}
           </NavLink>
-        </div>
-      </TableData>
-    </tr>
-  );
-};
+        </TableData>
+        <TableData>{trackNote}</TableData>
+        <TableData>{trackDate}</TableData>
+        <TableData>
+          <div className={styles.buttonWrapper}>
+            <Button taskId={taskTrackId} dataName={taskName} dataId={userTaskId} onClick={editTask}>
+              Edit
+            </Button>
+            <NavLink className={styles.link} to='/task_track_management'>
+              <Button className={styles.dangerousButton} taskId={taskTrackId}>
+                Delete
+              </Button>
+            </NavLink>
+          </div>
+        </TableData>
+      </tr>
+    );
+  }
+}
 
 TasksTracksManagementRow.propTypes = {
   index: PropTypes.number.isRequired,

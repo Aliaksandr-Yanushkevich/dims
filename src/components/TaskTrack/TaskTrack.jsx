@@ -11,21 +11,21 @@ import generateID from '../../helpers/generateID';
 class TaskTrack extends React.Component {
   state = {
     taskName: null,
-    note: '',
+    trackNote: '',
   };
 
   componentDidMount() {
-    const { userTaskId } = this.props;
-    if (userTaskId) {
+    const { taskTrackId, taskName } = this.props;
+    debugger;
+    if (taskTrackId) {
       firebaseTrueApi
-        .getTaskName(userTaskId)
-        .then((taskName) => {
-          this.setState({ taskName });
-        })
+        .getTaskTrack(taskTrackId)
+        .then((trackNote) => this.setState({ trackNote }))
         .catch((error) => {
           console.error(`Error receiving data: ${error}`);
         });
     }
+    this.setState({ taskName });
   }
 
   onChange = (e) => {
@@ -44,11 +44,16 @@ class TaskTrack extends React.Component {
   };
 
   trackTask = () => {
-    const { userTaskId } = this.props;
+    const { userTaskId, taskTrackId } = this.props;
+    debugger;
     const { trackNote } = this.state;
-    const taskTrackId = generateID();
     const trackDate = new Date();
-    firebaseTrueApi.trackTask(userTaskId, taskTrackId, trackDate, trackNote);
+    if (taskTrackId) {
+      firebaseTrueApi.trackTask(userTaskId, taskTrackId, trackDate, trackNote);
+    } else {
+      const generatedTaskTrackId = generateID();
+      firebaseTrueApi.trackTask(userTaskId, generatedTaskTrackId, trackDate, trackNote);
+    }
   };
 
   render() {
@@ -87,7 +92,6 @@ class TaskTrack extends React.Component {
 }
 
 TaskTrack.propTypes = {
-  userId: PropTypes.string.isRequired,
   taskId: PropTypes.string.isRequired,
   hideTaskTrackPage: PropTypes.func.isRequired,
 };

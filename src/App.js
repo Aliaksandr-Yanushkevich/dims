@@ -10,12 +10,11 @@ import styles from './App.module.scss';
 import TaskManagement from './components/TaskManagement/TaskManagement';
 import Login from './components/Login/Login';
 import Registration from './components/Registration/Registration';
-import firebaseTrueApi from './api/firebaseTrueApi';
-import Button from './components/Button/Button';
 
 class App extends Component {
   state = {
-    currentUserId: 'newMember',
+    // currentUserId: 'newMember',
+    currentUserId: 'pu7f8c6lk',
     currentTaskId: 'newTask',
   };
 
@@ -82,7 +81,6 @@ class App extends Component {
               <Registration />
             </Route>
           </div>
-          {/* <Button onClick={() => firebaseTrueApi.createTasks(15)}>Create profiles</Button> */}
           <Footer />
         </div>
       </BrowserRouter>

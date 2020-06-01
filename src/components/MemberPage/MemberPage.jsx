@@ -20,7 +20,7 @@ class MemberPage extends React.Component {
       sex: 'male',
       mobilePhone: '',
       email: '',
-      startDate: '',
+      startDate: dateToStringForInput(new Date()),
       skype: '',
       birthDate: '',
       directionId: 0,
@@ -260,6 +260,7 @@ class MemberPage extends React.Component {
             onChange={this.onChange}
             value={address}
             validateForm={this.validateForm}
+            placeholder='City'
           />
 
           <FormField
@@ -271,6 +272,7 @@ class MemberPage extends React.Component {
             onChange={this.onChange}
             value={mathScore}
             validateForm={this.validateForm}
+            placeholder='Math test score'
           />
 
           <FormField
@@ -282,6 +284,7 @@ class MemberPage extends React.Component {
             label='Average score:'
             onChange={this.onChange}
             value={universityAverageScore}
+            placeholder='Diploma average score'
             validateForm={this.validateForm}
           />
 

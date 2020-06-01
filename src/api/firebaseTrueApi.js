@@ -275,6 +275,39 @@ const firebaseTrueApi = {
       });
   },
 
+  getTrackData(userTaskId) {
+    const trackInfo = [];
+    return firestore
+      .collection('TaskTrack')
+      .where('userTaskId', '==', userTaskId)
+      .get()
+      .then((taskDetail) => {
+        taskDetail.forEach((detail) => {
+          const track = {};
+          const { trackDate, trackNote, taskTrackId, userTaskId } = detail.data();
+          track.trackDate = trackDate.toDate();
+          track.trackNote = trackNote;
+          track.taskTrackId = taskTrackId;
+          track.userTaskId = userTaskId;
+          trackInfo.push(track);
+        });
+      })
+      .then(() => {
+        return trackInfo.length ? trackInfo : null;
+      });
+  },
+
+  getTaskTrack(taskTrackId) {
+    return firestore
+      .collection('TaskTrack')
+      .doc(taskTrackId)
+      .get()
+      .then((taskData) => {
+        const { trackNote } = taskData.data();
+        return trackNote;
+      });
+  },
+
   completeTask(currentTaskId, stateName) {
     firestore
       .collection('TaskState')

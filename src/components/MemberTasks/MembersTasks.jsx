@@ -10,6 +10,7 @@ import firebaseTrueApi from '../../api/firebaseTrueApi';
 
 class MemberTasks extends Component {
   state = {
+    currentTaskName: null,
     currentUserTaskId: null,
     taskData: null,
     firstName: null,
@@ -56,8 +57,10 @@ class MemberTasks extends Component {
 
   trackTask = (e) => {
     e.persist();
+    debugger;
     const currentUserTaskId = e.target.dataset.taskid;
-    this.setState({ currentUserTaskId, taskTrackPageIsVisible: true });
+    const currentTaskName = e.target.dataset.id;
+    this.setState({ currentTaskName, currentUserTaskId, taskTrackPageIsVisible: true });
   };
 
   hideTaskTrackPage = () => {
@@ -65,8 +68,7 @@ class MemberTasks extends Component {
   };
 
   render() {
-    const { taskData, firstName, lastName, taskTrackPageIsVisible, currentUserTaskId } = this.state;
-    const { userId } = this.props;
+    const { taskData, firstName, lastName, taskTrackPageIsVisible, currentTaskName, currentUserTaskId } = this.state;
     if (!taskData) return <Preloader />;
     const tasksArr = taskData.map((task, index) => (
       <MemberCurrentTasks
@@ -83,7 +85,11 @@ class MemberTasks extends Component {
     return (
       <>
         {taskTrackPageIsVisible && (
-          <TaskTrack userId={userId} userTaskId={currentUserTaskId} hideTaskTrackPage={this.hideTaskTrackPage} />
+          <TaskTrack
+            userTaskId={currentUserTaskId}
+            taskName={currentTaskName}
+            hideTaskTrackPage={this.hideTaskTrackPage}
+          />
         )}
         <h1 className={styles.title}>Member&apos;s Task Manage Grid</h1>
         <h2 className={styles.subtitle}>{`Hi, dear ${firstName} ${lastName}! This is your current tasks:`}</h2>

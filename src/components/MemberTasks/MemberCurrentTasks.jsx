@@ -36,7 +36,7 @@ const MemberCurrentTasks = ({
       <TableData>{dateToString(deadlineDate)}</TableData>
       <TableData>{stateName}</TableData>
       <TableData>
-        <Button taskId={userTaskId} onClick={trackTask}>
+        <Button taskId={userTaskId} dataId={taskName} onClick={trackTask}>
           Track
         </Button>
       </TableData>

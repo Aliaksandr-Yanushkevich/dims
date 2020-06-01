@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Button = ({ id, dataId, taskId, className, onClick, disabled, children }) => (
+const Button = ({ id, dataId, taskId, dataName, className, onClick, disabled, children }) => (
   <button
     id={id}
     type='button'
     data-id={dataId}
     data-taskid={taskId}
+    data-name={dataName}
     className={className}
     onClick={onClick}
     disabled={disabled}
@@ -18,6 +19,7 @@ const Button = ({ id, dataId, taskId, className, onClick, disabled, children }) 
 Button.propTypes = {
   id: PropTypes.string,
   taskId: PropTypes.string,
+  dataName: PropTypes.string,
   className: PropTypes.string,
   dataId: PropTypes.string,
   onClick: PropTypes.func.isRequired,
@@ -30,6 +32,7 @@ Button.defaultProps = {
   taskId: '',
   className: '',
   dataId: '',
+  dataName: '',
   disabled: false,
 };
 
