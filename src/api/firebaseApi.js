@@ -1,27 +1,305 @@
 import firebase from './firebase';
-import createRandomMembers from '../helpers/createRandomMembers';
-import addUserIdToEveryTask from './addUserIdToEverytask';
 
 const firestore = firebase.firestore();
-const collection = 'dims';
-
-const getCollection = (name) => {
-  return firestore.collection(name);
-};
-
-const getData = () => {
-  return getCollection(collection)
-    .orderBy('firstName')
-    .get();
-};
-
-const updateData = (userId) => {
-  return getCollection(collection).doc(userId);
-};
-
-export const getLink = (path) => path.substring(path.indexOf('/') + 1);
 
 const firebaseApi = {
+  createUser(userId, userInfo) {
+    return firestore
+      .collection('UserProfile')
+      .doc(userId)
+      .set({
+        ...userInfo,
+      })
+      .catch((error) => {
+        console.error('Something went wrong', error);
+      });
+  },
+
+  getUsers() {
+    return firestore
+      .collection('UserProfile')
+      .orderBy('firstName')
+      .get();
+  },
+
+  getUserInfo(userId) {
+    return firestore
+      .collection('UserProfile')
+      .doc(userId)
+      .get();
+  },
+
+  getDirections() {
+    return firestore
+      .collection('Direction')
+      .orderBy('directionId')
+      .get();
+  },
+
+  createTask(taskInfo) {
+    const { taskId } = taskInfo;
+    return firestore
+      .collection('Task')
+      .doc(taskId)
+      .set({ ...taskInfo })
+      .then(() => {
+        console.log('Document written successfully');
+      })
+      .catch((error) => {
+        console.error('Something went wrong', error);
+      });
+  },
+
+  assignTask(task) {
+    const { userId, taskId, userTaskId, stateId } = task;
+    return firestore
+      .collection('UserTask')
+      .doc(userTaskId)
+      .set({ userId, taskId, userTaskId, stateId });
+  },
+
+  setTaskState(stateId) {
+    return firestore
+      .collection('TaskState')
+      .doc(stateId)
+      .set({ stateId, stateName: '' });
+  },
+
+  getTask(taskId) {
+    return firestore
+      .collection('Task')
+      .doc(taskId)
+      .get();
+  },
+
+  getNames() {
+    let members = [];
+    return firestore
+      .collection('UserProfile')
+      .orderBy('firstName')
+      .get()
+      .then((users) => {
+        users.forEach((user) => {
+          const { firstName, lastName, userId } = user.data();
+          members = [
+            ...members,
+            {
+              firstName,
+              lastName,
+              userId,
+            },
+          ];
+        });
+        return members;
+      });
+  },
+
+  getTaskList() {
+    return firestore
+      .collection('Task')
+      .orderBy('deadlineDate', 'desc')
+      .get();
+  },
+
+  getUserTaskList(userId) {
+    // func returns array of {taskId, userTaskId, staeId} for current user
+    const taskList = [];
+    return firestore
+      .collection('UserTask')
+      .where('userId', '==', userId)
+      .get()
+      .then((tasks) => {
+        tasks.forEach((task) => {
+          const { taskId, userTaskId, stateId } = task.data();
+          taskList.push({ taskId, userTaskId, stateId });
+        });
+        return taskList;
+      });
+  },
+
+  getUserTaskData(taskId, userTaskId, stateId) {
+    // func returns composite object from two collection (Task and TaskTrack)
+    const taskData = {};
+    return firestore
+      .collection('Task')
+      .doc(taskId)
+      .get()
+      .then((task) => {
+        const { name, startDate, deadlineDate } = task.data();
+        taskData.name = name;
+        taskData.taskId = taskId;
+        taskData.userTaskId = userTaskId;
+        taskData.startDate = startDate.toDate();
+        taskData.deadlineDate = deadlineDate.toDate();
+        taskData.stateId = stateId;
+      })
+      .then(() => {
+        return firestore
+          .collection('TaskTrack')
+          .where('userTaskId', '==', userTaskId)
+          .orderBy('trackDate', 'desc')
+          .limit(1)
+          .get()
+          .then((taskInfo) => {
+            if (taskInfo.size) {
+              taskInfo.forEach((task) => {
+                const { trackDate, trackNote } = task.data();
+                taskData.trackDate = trackDate.toDate();
+                taskData.trackNote = trackNote;
+              });
+            } else {
+              taskData.trackDate = '-';
+              taskData.trackNote = '-';
+            }
+          })
+          .then(() => {
+            return firestore
+              .collection('TaskState')
+              .doc(stateId)
+              .get()
+              .then((taskState) => {
+                const { stateName } = taskState.data();
+                taskData.stateName = stateName;
+              });
+          })
+          .then(() => {
+            return taskData;
+          });
+      });
+  },
+
+  trackTask(userTaskId, taskTrackId, trackDate, trackNote) {
+    return firestore
+      .collection('TaskTrack')
+      .doc(taskTrackId)
+      .set({ userTaskId, taskTrackId, trackDate, trackNote });
+  },
+
+  getTaskName(userTaskId) {
+    return firestore
+      .collection('UserTask')
+      .doc(userTaskId)
+      .get()
+      .then((taskData) => {
+        const { taskId } = taskData.data();
+        return taskId;
+      })
+      .then((id) => {
+        return firestore
+          .collection('Task')
+          .doc(id)
+          .get()
+          .then((taskInfo) => {
+            const { name } = taskInfo.data();
+            return name;
+          });
+      });
+  },
+
+  getTrackData(userTaskId) {
+    const trackInfo = [];
+    return firestore
+      .collection('TaskTrack')
+      .where('userTaskId', '==', userTaskId)
+      .get()
+      .then((taskDetail) => {
+        taskDetail.forEach((detail) => {
+          const track = {};
+          const { trackDate, trackNote, taskTrackId } = detail.data();
+          track.trackDate = trackDate.toDate();
+          track.trackNote = trackNote;
+          track.taskTrackId = taskTrackId;
+          track.userTaskId = userTaskId;
+          trackInfo.push(track);
+        });
+      })
+      .then(() => {
+        return trackInfo.length ? trackInfo : null;
+      });
+  },
+
+  getTaskTrack(taskTrackId) {
+    return firestore
+      .collection('TaskTrack')
+      .doc(taskTrackId)
+      .get()
+      .then((taskData) => {
+        const { trackNote } = taskData.data();
+        return trackNote;
+      });
+  },
+
+  completeTask(currentTaskId, stateName) {
+    firestore
+      .collection('TaskState')
+      .doc(currentTaskId)
+      .update({ stateName })
+      .then(() => {
+        console.log('task is completed');
+      });
+  },
+
+  deleteUser(userId) {
+    return this.deleteItemWithId('UserProfile', userId).then(() => {
+      firestore
+        .collection('UserTask')
+        .where('userId', '==', userId)
+        .get()
+        .then((tasks) => {
+          tasks.forEach((task) => {
+            const { userTaskId, stateId } = task.data();
+            this.deleteItemWithId('UserTask', userTaskId);
+            this.deleteItemWithId('TaskState', stateId);
+            return firestore
+              .collection('TaskTrack')
+              .where('userTaskId', '==', userTaskId)
+              .get()
+              .then((trackedTasks) => {
+                trackedTasks.forEach((trackedtask) => {
+                  const { taskTrackId } = trackedtask.data();
+                  this.deleteItemWithId('TaskTrack', taskTrackId);
+                });
+              });
+          });
+        });
+    });
+  },
+
+  deleteTask(taskId) {
+    return this.deleteItemWithId('Task', taskId).then(() => {
+      firestore
+        .collection('UserTask')
+        .where('taskId', '==', taskId)
+        .get()
+        .then((tasks) => {
+          tasks.forEach((task) => {
+            const { userTaskId, stateId } = task.data();
+            this.deleteItemWithId('UserTask', userTaskId);
+            this.deleteItemWithId('TaskState', stateId);
+            return firestore
+              .collection('TaskTrack')
+              .where('userTaskId', '==', userTaskId)
+              .get()
+              .then((trackedTasks) => {
+                trackedTasks.forEach((trackedtask) => {
+                  const { taskTrackId } = trackedtask.data();
+                  this.deleteItemWithId('TaskTrack', taskTrackId);
+                });
+              });
+          });
+        });
+    });
+  },
+
+  deleteItemWithId(collection, docId) {
+    if (docId) {
+      return firestore
+        .collection(collection)
+        .doc(docId)
+        .delete();
+    }
+  },
+
   register(email, password) {
     firebase
       .auth()
@@ -37,163 +315,6 @@ const firebaseApi = {
       .signInWithEmailAndPassword(email, password)
       .catch((error) => {
         console.error(`${error.message} ${error.code}`);
-      });
-  },
-
-  getMembers() {
-    let members = [];
-    return getData().then((storeMembers) => {
-      storeMembers.forEach((member) => {
-        const { index, firstName, lastName, age, direction, education, startDate } = member.data();
-        const userId = getLink(member.ref.path);
-        members = [
-          ...members,
-          {
-            index,
-            firstName,
-            lastName,
-            age,
-            direction,
-            education,
-            startDate: startDate.toDate(),
-            userId,
-          },
-        ];
-      });
-      return members;
-    });
-  },
-
-  getNames() {
-    let memberNames = [];
-    return getData().then((members) => {
-      members.forEach((member) => {
-        const { firstName, lastName } = member.data();
-        const userId = getLink(member.ref.path);
-        memberNames = [
-          ...memberNames,
-          {
-            firstName,
-            lastName,
-            userId,
-          },
-        ];
-      });
-      return memberNames;
-    });
-  },
-
-  getMemberData(userId) {
-    return getCollection(collection)
-      .doc(userId)
-      .get()
-      .then((querySnapshot) => {
-        const { firstName, lastName, age, direction, education, startDate, tasks } = querySnapshot.data();
-        return { firstName, lastName, age, direction, education, startDate: startDate.toDate(), tasks };
-      });
-  },
-
-  createFakeMembers(amount) {
-    return new Promise((resolve) => {
-      const members = createRandomMembers(amount);
-      members.forEach((member) => {
-        const { firstName, lastName, direction, education, startDate, age, tasks } = member;
-        getCollection(collection)
-          .add({
-            firstName,
-            lastName,
-            direction,
-            education,
-            startDate,
-            age,
-            tasks,
-          })
-          .then(() => {
-            console.log('success');
-          })
-          .catch((error) => {
-            console.error('Error adding document: ', error);
-          });
-      });
-      resolve();
-    }).then(() => {
-      this.getMembers();
-    });
-  },
-
-  getUserTasks(userId) {
-    return getCollection(collection)
-      .doc(userId)
-      .get()
-      .then((querySnapshot) => {
-        const { firstName, lastName, tasks } = querySnapshot.data();
-        return { firstName, lastName, tasks };
-      });
-  },
-
-  createMember(memberData) {
-    const { firstName, lastName, age, direction, education, startDate } = memberData;
-    return firestore
-      .collection('dims')
-      .add({
-        firstName,
-        lastName,
-        age,
-        direction,
-        education,
-        startDate: new Date(startDate),
-        task: [],
-      })
-      .then((docRef) => {
-        console.log('Document written with ID: ', docRef.id);
-      })
-      .then(() => {
-        this.getMembers();
-      })
-      .catch((error) => {
-        console.error('Error adding document: ', error);
-      });
-  },
-
-  updateMember(userId, updatedMemberData) {
-    return updateData(userId).update(updatedMemberData);
-  },
-
-  updateTasks(userId, tasks) {
-    return updateData(userId).update(tasks);
-  },
-
-  getTaskList() {
-    const taskList = [];
-    let tasksWithId = [];
-    return getData().then((membersData) => {
-      membersData.forEach((member) => {
-        const userId = getLink(member.ref.path);
-        taskList.push({
-          userId,
-          tasks: member.data().tasks,
-        });
-      });
-      const temp = taskList.map((task) => addUserIdToEveryTask(task.tasks, task.userId));
-      temp.forEach((item) => (tasksWithId = [...tasksWithId, ...item]));
-      tasksWithId.forEach((task) => {
-        task.startDate = task.startDate.toDate();
-        task.deadLineDate = task.deadLineDate.toDate();
-      });
-
-      return tasksWithId;
-    });
-  },
-
-  deleteMember(userId) {
-    return getCollection(collection)
-      .doc(userId)
-      .delete()
-      .then(() => {
-        console.log('Member deleted successfully');
-      })
-      .then(() => {
-        this.getMembers();
       });
   },
 };

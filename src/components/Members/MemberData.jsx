@@ -5,7 +5,7 @@ import dateToString from '../../helpers/dateToString';
 import styles from './Members.module.scss';
 import Button from '../Button/Button';
 import TableData from '../common/TableData/TableData';
-import firebaseTrueApi from '../../api/firebaseTrueApi';
+import firebaseApi from '../../api/firebaseApi';
 import getAge from '../../helpers/getAge';
 
 class MemberData extends React.Component {
@@ -15,7 +15,7 @@ class MemberData extends React.Component {
 
   componentDidMount() {
     const directions = [];
-    firebaseTrueApi
+    firebaseApi
       .getDirections()
       .then((courseDirections) => {
         courseDirections.forEach((direction) => {

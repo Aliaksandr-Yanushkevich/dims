@@ -6,10 +6,11 @@ import Button from '../Button/Button';
 import styles from './MemberPage.module.scss';
 import FormField from '../FormField/FormField';
 import Select from '../common/Select/Select';
-import firebaseTrueApi from '../../api/firebaseTrueApi';
+import firebaseApi from '../../api/firebaseApi';
 import directionsToOptions from '../../helpers/directionsToOptions';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
 import generateID from '../../helpers/generateID';
+import { latinLetterRegexp, phoneNumberRegexp, emailRegexp } from '../../constants';
 
 class MemberPage extends React.Component {
   constructor() {
@@ -28,6 +29,7 @@ class MemberPage extends React.Component {
       education: '',
       mathScore: '',
       universityAverageScore: '',
+      formIsValid: false,
       isFetching: false,
     };
     this.root = document.createElement('div');
@@ -37,9 +39,12 @@ class MemberPage extends React.Component {
   componentDidMount() {
     const { userId } = this.props;
     const directions = [];
+
+    this.validateForm();
+
     if (userId && userId !== 'newMember') {
       this.setState({ isFetching: true });
-      firebaseTrueApi
+      firebaseApi
         .getUserInfo(userId)
         .then((userInfo) => {
           const {
@@ -79,7 +84,7 @@ class MemberPage extends React.Component {
           console.error(`Error receiving data: ${error}`);
         });
     }
-    firebaseTrueApi
+    firebaseApi
       .getDirections()
       .then((courseDirections) => {
         courseDirections.forEach((direction) => {
@@ -138,13 +143,50 @@ class MemberPage extends React.Component {
       universityAverageScore,
     };
 
-    firebaseTrueApi.createUser(userId, userInfo).catch((error) => {
+    firebaseApi.createUser(userId, userInfo).catch((error) => {
       console.error(`User creation error: ${error}`);
     });
   };
 
-  validateForm = (id, message) => {
-    this.setState({ [`${id}IsValid`]: !message });
+  validateForm = () => {
+    const {
+      firstName,
+      lastName,
+      mobilePhone,
+      address,
+      education,
+      skype,
+      birthDate,
+      mathScore,
+      universityAverageScore,
+      email,
+    } = this.state;
+    // magic numbers here are minimal/maximum length for input fields or other special requirements
+    if (
+      firstName.length &&
+      firstName.length <= 140 &&
+      latinLetterRegexp.test(firstName) &&
+      lastName.length &&
+      lastName.length <= 140 &&
+      latinLetterRegexp.test(lastName) &&
+      phoneNumberRegexp.test(mobilePhone) &&
+      emailRegexp.test(email) &&
+      skype.length &&
+      skype.length <= 140 &&
+      birthDate.length &&
+      address.length &&
+      address.length <= 140 &&
+      education.length &&
+      education.length <= 140 &&
+      mathScore >= 0 &&
+      mathScore <= 100 &&
+      universityAverageScore >= 0 &&
+      universityAverageScore <= 10
+    ) {
+      this.setState({ formIsValid: true });
+    } else {
+      this.setState({ formIsValid: false });
+    }
   };
 
   onChange = (e) => {
@@ -154,6 +196,7 @@ class MemberPage extends React.Component {
       preparedValue = Number(value);
     }
     this.setState({ [id]: preparedValue });
+    this.validateForm();
   };
 
   render() {
@@ -174,6 +217,7 @@ class MemberPage extends React.Component {
       universityAverageScore,
       isFetching,
       directions,
+      formIsValid,
     } = this.state;
 
     const preparedDIrections = directions ? directionsToOptions(directions) : '';
@@ -196,7 +240,6 @@ class MemberPage extends React.Component {
             onChange={this.onChange}
             value={firstName}
             placeholder='First Name'
-            validateForm={this.validateForm}
           />
 
           <FormField
@@ -205,7 +248,6 @@ class MemberPage extends React.Component {
             onChange={this.onChange}
             value={lastName}
             placeholder='Last Name'
-            validateForm={this.validateForm}
           />
 
           <Select id='sex' name='Sex' onChange={this.onChange} value={sex} options={preparedGenders} />
@@ -224,44 +266,15 @@ class MemberPage extends React.Component {
             onChange={this.onChange}
             value={mobilePhone}
             placeholder='Phone number'
-            validateForm={this.validateForm}
           />
 
-          <FormField
-            id='email'
-            label='Email:'
-            onChange={this.onChange}
-            value={email}
-            placeholder='Email'
-            validateForm={this.validateForm}
-          />
+          <FormField id='email' label='Email:' onChange={this.onChange} value={email} placeholder='Email' />
 
-          <FormField
-            id='skype'
-            label='Skype:'
-            onChange={this.onChange}
-            value={skype}
-            placeholder='Skype account'
-            validateForm={this.validateForm}
-          />
+          <FormField id='skype' label='Skype:' onChange={this.onChange} value={skype} placeholder='Skype account' />
 
-          <FormField
-            id='birthDate'
-            inputType='date'
-            label='Birthday:'
-            onChange={this.onChange}
-            value={birthDate}
-            validateForm={this.validateForm}
-          />
+          <FormField id='birthDate' inputType='date' label='Birthday:' onChange={this.onChange} value={birthDate} />
 
-          <FormField
-            id='address'
-            label='Address:'
-            onChange={this.onChange}
-            value={address}
-            validateForm={this.validateForm}
-            placeholder='City'
-          />
+          <FormField id='address' label='Address:' onChange={this.onChange} value={address} placeholder='City' />
 
           <FormField
             id='mathScore'
@@ -271,7 +284,6 @@ class MemberPage extends React.Component {
             label='Math score:'
             onChange={this.onChange}
             value={mathScore}
-            validateForm={this.validateForm}
             placeholder='Math test score'
           />
 
@@ -285,7 +297,6 @@ class MemberPage extends React.Component {
             onChange={this.onChange}
             value={universityAverageScore}
             placeholder='Diploma average score'
-            validateForm={this.validateForm}
           />
 
           <FormField
@@ -294,18 +305,10 @@ class MemberPage extends React.Component {
             onChange={this.onChange}
             value={education}
             placeholder='University Name'
-            validateForm={this.validateForm}
           />
-          <FormField
-            id='startDate'
-            inputType='date'
-            label='Start Date:'
-            onChange={this.onChange}
-            value={startDate}
-            validateForm={this.validateForm}
-          />
+          <FormField id='startDate' inputType='date' label='Start Date:' onChange={this.onChange} value={startDate} />
           <div className={styles.buttonWrapper}>
-            <Button className={styles.successButton} onClick={this.createUser}>
+            <Button disabled={!formIsValid} className={styles.successButton} onClick={this.createUser}>
               {userId !== 'newMember' ? 'Save' : 'Create'}
             </Button>
 

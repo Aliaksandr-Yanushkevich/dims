@@ -5,7 +5,7 @@ import TableHeader from '../common/TableHeader/TableHeader';
 import TasksPage from '../TaskPage/TaskPage';
 import { taskManagementTitle } from '../../constants';
 import TaskData from './TaskData';
-import firebaseTrueApi from '../../api/firebaseTrueApi';
+import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
 import dateToString from '../../helpers/dateToString';
 import Button from '../Button/Button';
@@ -18,7 +18,7 @@ class TaskManagement extends React.Component {
 
   componentDidMount() {
     const tasks = [];
-    firebaseTrueApi
+    firebaseApi
       .getTaskList()
       .then((tasksList) => {
         tasksList.forEach((task) => {
@@ -40,7 +40,7 @@ class TaskManagement extends React.Component {
 
   deleteTask = (e) => {
     const taskId = e.target.dataset.taskid;
-    firebaseTrueApi
+    firebaseApi
       .deleteTask(taskId)
       .then(() => console.log('Task is removed successfully'))
       .catch((error) => console.error('Problem with removing task', error));

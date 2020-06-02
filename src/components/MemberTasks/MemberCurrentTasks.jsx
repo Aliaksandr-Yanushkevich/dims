@@ -4,7 +4,7 @@ import dateToString from '../../helpers/dateToString';
 import styles from './MembersTasks.module.scss';
 import Button from '../Button/Button';
 import TableData from '../common/TableData/TableData';
-import firebaseTrueApi from '../../api/firebaseTrueApi';
+import firebaseApi from '../../api/firebaseApi';
 
 const MemberCurrentTasks = ({
   index,
@@ -19,13 +19,13 @@ const MemberCurrentTasks = ({
   const succesedTask = (e) => {
     e.persist();
     const currentTaskId = e.target.dataset.taskid;
-    firebaseTrueApi.completeTask(currentTaskId, 'success');
+    firebaseApi.completeTask(currentTaskId, 'success');
   };
 
   const failedTask = (e) => {
     e.persist();
     const currentTaskId = e.target.dataset.taskid;
-    firebaseTrueApi.completeTask(currentTaskId, 'fail');
+    firebaseApi.completeTask(currentTaskId, 'fail');
   };
   return (
     <tr key={userTaskId}>

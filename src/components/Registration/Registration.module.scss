@@ -15,6 +15,14 @@
   margin-bottom: 1rem;
 }
 
+.item a {
+  text-decoration: underline;
+  color: #000000;
+  &:hover {
+    color: $primaryColor;
+  }
+}
+
 .item button {
   width: 7rem;
   margin-left: auto;

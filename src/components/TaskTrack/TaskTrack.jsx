@@ -4,7 +4,7 @@ import Button from '../Button/Button';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
 import styles from './TaskTrack.module.scss';
 import FormField from '../FormField/FormField';
-import firebaseTrueApi from '../../api/firebaseTrueApi';
+import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
 import generateID from '../../helpers/generateID';
 
@@ -12,12 +12,14 @@ class TaskTrack extends React.Component {
   state = {
     taskName: null,
     trackNote: '',
+    formIsValid: false,
   };
 
   componentDidMount() {
     const { taskTrackId, taskName } = this.props;
+    this.validateForm();
     if (taskTrackId) {
-      firebaseTrueApi
+      firebaseApi
         .getTaskTrack(taskTrackId)
         .then((trackNote) => this.setState({ trackNote }))
         .catch((error) => {
@@ -30,15 +32,16 @@ class TaskTrack extends React.Component {
   onChange = (e) => {
     const { value } = e.currentTarget;
     this.setState({ trackNote: value });
+    this.validateForm();
   };
 
-  validateForm = (id, message) => {
-    switch (id) {
-      case 'note':
-        this.setState({ noteIsValid: !message });
-        break;
-      default:
-        break;
+  validateForm = () => {
+    // magic numbers here are minimal/maximum length for input fields or other special requirements
+    const { trackNote } = this.state;
+    if (trackNote.length && trackNote.length <= 1000) {
+      this.setState({ formIsValid: true });
+    } else {
+      this.setState({ formIsValid: false });
     }
   };
 
@@ -47,15 +50,15 @@ class TaskTrack extends React.Component {
     const { trackNote } = this.state;
     const trackDate = new Date();
     if (taskTrackId) {
-      firebaseTrueApi.trackTask(userTaskId, taskTrackId, trackDate, trackNote);
+      firebaseApi.trackTask(userTaskId, taskTrackId, trackDate, trackNote.trim());
     } else {
       const generatedTaskTrackId = generateID();
-      firebaseTrueApi.trackTask(userTaskId, generatedTaskTrackId, trackDate, trackNote);
+      firebaseApi.trackTask(userTaskId, generatedTaskTrackId, trackDate, trackNote.trim());
     }
   };
 
   render() {
-    const { taskName, trackNote } = this.state;
+    const { taskName, trackNote, formIsValid } = this.state;
     const { hideTaskTrackPage } = this.props;
     if (!taskName) {
       return <Preloader />;
@@ -78,9 +81,10 @@ class TaskTrack extends React.Component {
           inputType='textarea'
           validateForm={this.validateForm}
           label='Note'
+          maxLength={1000}
         />
         <div className={styles.buttonWrapper}>
-          <Button className={styles.successButton} onClick={this.trackTask}>
+          <Button disabled={!formIsValid} className={styles.successButton} onClick={this.trackTask}>
             Save
           </Button>
           <Button onClick={hideTaskTrackPage}>Back to grid</Button>

@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import Button from '../Button/Button';
 import styles from './TaskTrackManagement.module.scss';
 import TableData from '../common/TableData/TableData';
-import firebaseTrueApi from '../../api/firebaseTrueApi';
+import firebaseApi from '../../api/firebaseApi';
 
 class TasksTracksManagementRow extends React.Component {
   state = {
@@ -13,7 +13,7 @@ class TasksTracksManagementRow extends React.Component {
 
   componentDidMount() {
     const { userTaskId } = this.props;
-    firebaseTrueApi.getTaskName(userTaskId).then((taskName) => this.setState({ taskName }));
+    firebaseApi.getTaskName(userTaskId).then((taskName) => this.setState({ taskName }));
   }
 
   render() {

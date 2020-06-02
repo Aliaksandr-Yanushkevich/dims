@@ -6,7 +6,7 @@ import Preloader from '../common/Preloader/Preloader';
 import MemberProgressData from './MemberProgressData';
 import { memberProgressTitle } from '../../constants';
 import TaskPage from '../TaskPage/TaskPage';
-import firebaseTrueApi from '../../api/firebaseTrueApi';
+import firebaseApi from '../../api/firebaseApi';
 
 class MemberProgres extends Component {
   constructor() {
@@ -28,7 +28,7 @@ class MemberProgres extends Component {
     const { userId } = this.props;
     const taskData = [];
     if (userId) {
-      firebaseTrueApi
+      firebaseApi
         .getUserInfo(userId)
         .then((userInfo) => {
           const { firstName, lastName } = userInfo.data();
@@ -38,12 +38,12 @@ class MemberProgres extends Component {
           console.error(`Error receiving data: ${error}`);
         });
 
-      firebaseTrueApi
+      firebaseApi
         .getUserTaskList(userId)
         .then((taskList) => {
           taskList.forEach((task) => {
             const { taskId, userTaskId, stateId } = task;
-            firebaseTrueApi.getUserTaskData(taskId, userTaskId, stateId).then((taskInfo) => {
+            firebaseApi.getUserTaskData(taskId, userTaskId, stateId).then((taskInfo) => {
               taskData.push(taskInfo);
             });
           });

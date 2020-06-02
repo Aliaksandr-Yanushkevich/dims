@@ -6,7 +6,7 @@ import { tasksTrackTitle } from '../../constants';
 import Preloader from '../common/Preloader/Preloader';
 import TasksTracksManagementRow from './TaskTrackManagementRow';
 import TaskTrack from '../TaskTrack/TaskTrack';
-import firebaseTrueApi from '../../api/firebaseTrueApi';
+import firebaseApi from '../../api/firebaseApi';
 import dateToString from '../../helpers/dateToString';
 
 class TasksTracks extends React.Component {
@@ -22,12 +22,12 @@ class TasksTracks extends React.Component {
     const { userId } = this.props;
     const trackData = [];
     if (userId !== 'newMember') {
-      return firebaseTrueApi
+      return firebaseApi
         .getUserTaskList(userId)
         .then((tracks) => {
           tracks.forEach((track) => {
             const { userTaskId } = track;
-            return firebaseTrueApi.getTrackData(userTaskId).then((trackInfo) => {
+            return firebaseApi.getTrackData(userTaskId).then((trackInfo) => {
               if (trackInfo) {
                 trackData.push(...trackInfo);
               }
@@ -55,7 +55,7 @@ class TasksTracks extends React.Component {
   deleteNote = (e) => {
     e.persist();
     const currentTaskTrackId = e.target.dataset.taskid;
-    firebaseTrueApi
+    firebaseApi
       .deleteItemWithId('TaskTrack', currentTaskTrackId)
       .then(() => {
         console.log('Track note deleted successfully');

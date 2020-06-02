@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './FormField.module.scss';
-import { emailRegexp, latinLetterRegexp } from '../../constants';
+import { emailRegexp, latinLetterRegexp, phoneNumberRegexp } from '../../constants';
 
 class FormField extends React.Component {
   state = {
@@ -29,9 +29,15 @@ class FormField extends React.Component {
       if (!this.checkRequirement(!(required && !value.toString().length), 'Field is required')) {
         return;
       }
-      if (id === 'login') {
+      if (id === 'email') {
         // regexp for validating email
         if (!this.checkRequirement(emailRegexp.test(value), 'You have entered an invalid email address')) {
+          return;
+        }
+      }
+
+      if (id === 'mobilePhone') {
+        if (!this.checkRequirement(phoneNumberRegexp.test(value), 'Only numbers and + - ( ) symbols are allowed')) {
           return;
         }
       }
@@ -156,7 +162,7 @@ FormField.defaultProps = {
   name: '',
   required: true,
   inputType: 'text',
-  minLength: 2,
+  minLength: 1,
   maxLength: 140,
   value: '',
   min: 0,

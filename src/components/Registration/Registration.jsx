@@ -1,36 +1,42 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-// import firebaseApi from '../../api/firebaseApi';
 import styles from './Registration.module.scss';
 import Button from '../Button/Button';
 import FormField from '../FormField/FormField';
+import firebaseApi from '../../api/firebaseApi';
+import { emailRegexp } from '../../constants';
 
 class Registration extends React.Component {
   state = {
     email: '',
     password: '',
     repeatedPassword: '',
-    emailIsValid: false,
-    passwordIsValid: false,
-    paswordsMatch: false,
+    formIsValid: false,
   };
 
   register = () => {
     const { email, password } = this.state;
-    // firebaseApi.register(email, password);
+    firebaseApi.register(email, password);
   };
 
   onChange = (e) => {
     const { id, value, checked } = e.currentTarget;
     id === 'remember' ? this.setState({ [`${id}`]: checked }) : this.setState({ [`${id}`]: value });
+    this.validateForm();
   };
 
-  validateForm = (id, message) => {
-    this.setState({ [`${id}IsValid`]: !message });
+  validateForm = () => {
+    // magic numbers here are minimal/maximum length for input fields or other special requirements
+    const { email, password, repeatedPassword } = this.state;
+    if (emailRegexp.test(email) && password.length >= 4 && password.length <= 30 && password === repeatedPassword) {
+      this.setState({ formIsValid: true });
+    } else {
+      this.setState({ formIsValid: false });
+    }
   };
 
   render() {
-    const { email, password, paswordsMatch, loginIsValid, passwordIsValid } = this.state;
+    const { email, password, repeatedPassword, formIsValid } = this.state;
     return (
       <div className={styles.wrapper}>
         <h1 className={styles.title}>Registration</h1>
@@ -52,17 +58,21 @@ class Registration extends React.Component {
             inputType='password'
             id='repeatedPassword'
             label='Repeate password'
-            value={password}
+            value={repeatedPassword}
             onChange={this.onChange}
             validateForm={this.validateForm}
           />
           <div className={styles.item}>
             {/* <Button disabled={!(loginIsValid && passwordIsValid && paswordsMatch)}>Register</Button> */}
-            <Button onClick={this.register}>Register</Button>
+            <Button disabled={!formIsValid} onClick={this.register}>
+              Register
+            </Button>
           </div>
           <div className={styles.item}>
-            Do you already have a profile?
-            <NavLink to='/login'>Login</NavLink>
+            Already have a profile?
+            <NavLink className={styles.link} to='/login'>
+              Login
+            </NavLink>
           </div>
         </form>
       </div>

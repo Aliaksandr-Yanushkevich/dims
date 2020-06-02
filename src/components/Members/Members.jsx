@@ -7,7 +7,7 @@ import { membersTitle } from '../../constants';
 import Button from '../Button/Button';
 import styles from './Members.module.scss';
 import MemberPage from '../MemberPage/MemberPage';
-import firebaseTrueApi from '../../api/firebaseTrueApi';
+import firebaseApi from '../../api/firebaseApi';
 
 class Members extends React.Component {
   state = {
@@ -17,7 +17,7 @@ class Members extends React.Component {
 
   componentDidMount() {
     const members = [];
-    firebaseTrueApi
+    firebaseApi
       .getUsers()
       .then((users) =>
         users.forEach((user) => {
@@ -54,7 +54,7 @@ class Members extends React.Component {
   deleteUser = (e) => {
     e.persist();
     const userId = e.target.dataset.id;
-    firebaseTrueApi
+    firebaseApi
       .deleteUser(userId)
       .then(() => {
         console.log('User and all his data succesfully deleted');

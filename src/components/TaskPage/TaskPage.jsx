@@ -6,7 +6,7 @@ import Button from '../Button/Button';
 import styles from './TaskPage.module.scss';
 import FormField from '../FormField/FormField';
 import MemberList from './MemberList';
-import firebaseTrueApi from '../../api/firebaseTrueApi';
+import firebaseApi from '../../api/firebaseApi';
 import generateID from '../../helpers/generateID';
 
 class TaskPage extends React.Component {
@@ -19,6 +19,7 @@ class TaskPage extends React.Component {
       startDate: dateToStringForInput(new Date()),
       deadlineDate: '',
       userTasks: [],
+      formIsValid: false,
     };
     this.root = document.createElement('div');
     document.body.appendChild(this.root);
@@ -26,9 +27,11 @@ class TaskPage extends React.Component {
 
   componentDidMount() {
     const { taskId } = this.props;
+    this.validateForm();
+
     if (taskId && taskId !== 'newTask') {
       this.setState({ taskId });
-      firebaseTrueApi
+      firebaseApi
         .getTask(taskId)
         .then((task) => {
           const { name, description, startDate, deadlineDate } = task.data();
@@ -45,7 +48,7 @@ class TaskPage extends React.Component {
     } else {
       this.setState({ taskId: generateID() });
     }
-    firebaseTrueApi
+    firebaseApi
       .getNames()
       .then((members) => this.setState({ members }))
       .catch((error) => {
@@ -60,6 +63,23 @@ class TaskPage extends React.Component {
   onChange = (e) => {
     const { id, value } = e.currentTarget;
     this.setState({ [id]: value });
+    this.validateForm();
+  };
+
+  validateForm = () => {
+    const { name, description, deadlineDate } = this.state;
+    // magic numbers here are minimal/maximum length for input fields
+    if (
+      name.length &&
+      name.length <= 140 &&
+      description.length >= 1 &&
+      description.length <= 2000 &&
+      deadlineDate.length
+    ) {
+      this.setState({ formIsValid: true });
+    } else {
+      this.setState({ formIsValid: false });
+    }
   };
 
   createTask = () => {
@@ -68,15 +88,15 @@ class TaskPage extends React.Component {
     const preparedDeadlineDate = new Date(deadlineDate);
     const taskInfo = {
       taskId,
-      name,
-      description,
+      name: name.trim(),
+      description: description.trim(),
       startDate: preparedstartDate,
       deadlineDate: preparedDeadlineDate,
     };
-    firebaseTrueApi.createTask(taskInfo).then(() => {
+    firebaseApi.createTask(taskInfo).then(() => {
       userTasks.forEach((task) => {
-        firebaseTrueApi.assignTask(task);
-        firebaseTrueApi.setTaskState(task.stateId);
+        firebaseApi.assignTask(task);
+        firebaseApi.setTaskState(task.stateId);
       });
     });
   };
@@ -95,7 +115,7 @@ class TaskPage extends React.Component {
   };
 
   render() {
-    const { name, description, startDate, deadlineDate, members } = this.state;
+    const { name, description, startDate, deadlineDate, members, formIsValid } = this.state;
     const { taskId, hideMemberPage } = this.props;
 
     return ReactDom.createPortal(
@@ -118,6 +138,7 @@ class TaskPage extends React.Component {
             name='description'
             inputType='textarea'
             label='Description:'
+            maxLength='2000'
             onChange={this.onChange}
             value={description}
             placeholder='Task description'
@@ -132,7 +153,7 @@ class TaskPage extends React.Component {
           />
           {members && <MemberList members={members} asignTask={this.asignTask} />}
           <div className={styles.buttonWrapper}>
-            <Button className={styles.successButton} onClick={this.createTask}>
+            <Button disabled={!formIsValid} className={styles.successButton} onClick={this.createTask}>
               {taskId === 'newTask' ? 'Create' : 'Save'}
             </Button>
             <Button onClick={hideMemberPage}>Back to grid</Button>
@@ -146,6 +167,7 @@ class TaskPage extends React.Component {
 
 TaskPage.propTypes = {
   taskId: PropTypes.string.isRequired,
+  hideMemberPage: PropTypes.func.isRequired,
 };
 
 export default TaskPage;
