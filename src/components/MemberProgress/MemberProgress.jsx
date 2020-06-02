@@ -9,25 +9,20 @@ import TaskPage from '../TaskPage/TaskPage';
 import firebaseApi from '../../api/firebaseApi';
 
 class MemberProgres extends Component {
-  constructor() {
-    super();
-    this._isMounted = false;
-    this.state = {
-      firstName: null,
-      lastName: null,
-      taskPageIsVisible: false,
-      taskData: null,
-    };
-  }
+  state = {
+    firstName: null,
+    lastName: null,
+    taskPageIsVisible: false,
+    // here should check existing taskdata, or emprty object
+    taskData: [],
+    isFetching: false,
+  };
 
   componentDidMount() {
-    // this property is attempt to fix memory leak. there is problem with setState taskData https://qna.habr.com/q/605261
-    // setTimeout on 51 line is other workaround - but this aproach fixes problem
-    this._isMounted = true;
-
     const { userId } = this.props;
-    const taskData = [];
+    const { taskData } = this.state;
     if (userId) {
+      this.setState({ isFetching: true });
       firebaseApi
         .getUserInfo(userId)
         .then((userInfo) => {
@@ -44,28 +39,17 @@ class MemberProgres extends Component {
           taskList.forEach((task) => {
             const { taskId, userTaskId, stateId } = task;
             firebaseApi.getUserTaskData(taskId, userTaskId, stateId).then((taskInfo) => {
-              taskData.push(taskInfo);
+              if (taskInfo) {
+                this.setState(() => ({ taskData: [...taskData, taskInfo] }));
+                this.setState({ isFetching: false });
+              }
             });
           });
-        })
-        .then(() => {
-          if (this._isMounted) {
-            console.log(taskData.length);
-            setTimeout(() => {
-              // workaround
-              this.setState({ taskData });
-              console.log(taskData.length);
-            }, 2000);
-          }
         })
         .catch((error) => {
           console.error(`Error receiving data: ${error}`);
         });
     }
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
   }
 
   createTask = (e) => {
@@ -79,9 +63,9 @@ class MemberProgres extends Component {
   };
 
   render() {
-    const { firstName, lastName, taskPageIsVisible, taskData } = this.state;
+    const { firstName, lastName, taskPageIsVisible, taskData, isFetching } = this.state;
     const { userId, currentTaskId } = this.props;
-    if (!taskData) {
+    if (isFetching) {
       return <Preloader />;
     }
     const tasksArray = taskData.map((task, index) => {

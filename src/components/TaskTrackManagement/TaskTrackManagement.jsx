@@ -14,14 +14,15 @@ class TasksTracks extends React.Component {
     currentTaskTrackId: null,
     currentUserTaskId: null,
     currentTaskName: null,
-    trackData: null,
+    trackData: [],
     taskTrackPageIsVisible: false,
+    isFetching: false,
   };
 
   componentDidMount() {
     const { userId } = this.props;
-    const trackData = [];
     if (userId !== 'newMember') {
+      this.setState({ isFetching: true });
       return firebaseApi
         .getUserTaskList(userId)
         .then((tracks) => {
@@ -29,17 +30,12 @@ class TasksTracks extends React.Component {
             const { userTaskId } = track;
             return firebaseApi.getTrackData(userTaskId).then((trackInfo) => {
               if (trackInfo) {
-                trackData.push(...trackInfo);
+                this.setState(({ trackData }) => ({ trackData: [...trackData, ...trackInfo] }));
+                this.setState({ isFetching: false });
               }
             });
           });
         })
-        .then(() => {
-          setTimeout(() => {
-            this.setState({ trackData });
-          }, 1500);
-        })
-
         .catch((error) => console.error('Track info receiving error', error));
     }
   }
@@ -70,8 +66,15 @@ class TasksTracks extends React.Component {
   };
 
   render() {
-    const { trackData, taskTrackPageIsVisible, currentUserTaskId, currentTaskTrackId, currentTaskName } = this.state;
-    const tableRows = trackData
+    const {
+      trackData,
+      taskTrackPageIsVisible,
+      currentUserTaskId,
+      currentTaskTrackId,
+      currentTaskName,
+      isFetching,
+    } = this.state;
+    const tableRows = trackData.length
       ? trackData.map((task, index) => {
           return (
             <TasksTracksManagementRow
@@ -87,7 +90,7 @@ class TasksTracks extends React.Component {
           );
         })
       : null;
-    if (!trackData) {
+    if (isFetching) {
       return <Preloader />;
     }
     return (

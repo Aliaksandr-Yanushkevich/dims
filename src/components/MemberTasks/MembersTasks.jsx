@@ -12,16 +12,17 @@ class MemberTasks extends Component {
   state = {
     currentTaskName: null,
     currentUserTaskId: null,
-    taskData: null,
+    taskData: [],
     firstName: null,
     lastName: null,
     taskTrackPageIsVisible: false,
+    isFetching: false,
   };
 
   componentDidMount() {
     const { userId } = this.props;
-    const taskData = [];
     if (userId) {
+      this.setState({ isFetching: true });
       firebaseApi
         .getUserInfo(userId)
         .then((userInfo) => {
@@ -38,16 +39,12 @@ class MemberTasks extends Component {
           taskList.forEach((task) => {
             const { taskId, userTaskId, stateId } = task;
             firebaseApi.getUserTaskData(taskId, userTaskId, stateId).then((taskInfo) => {
-              taskData.push(taskInfo);
+              if (taskInfo) {
+                this.setState(({ taskData }) => ({ taskData: [...taskData, taskInfo] }));
+                this.setState({ isFetching: false });
+              }
             });
           });
-        })
-        .then(() => {
-          setTimeout(() => {
-            // workaround
-            console.log(taskData);
-            this.setState({ taskData });
-          }, 1000);
         })
         .catch((error) => {
           console.error(`Error receiving data: ${error}`);
@@ -67,8 +64,16 @@ class MemberTasks extends Component {
   };
 
   render() {
-    const { taskData, firstName, lastName, taskTrackPageIsVisible, currentTaskName, currentUserTaskId } = this.state;
-    if (!taskData) return <Preloader />;
+    const {
+      taskData,
+      firstName,
+      lastName,
+      taskTrackPageIsVisible,
+      currentTaskName,
+      currentUserTaskId,
+      isFetching,
+    } = this.state;
+    if (isFetching) return <Preloader />;
     const tasksArr = taskData.map((task, index) => (
       <MemberCurrentTasks
         key={task.userTaskId}
