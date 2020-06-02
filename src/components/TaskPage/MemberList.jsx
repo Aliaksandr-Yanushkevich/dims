@@ -8,7 +8,7 @@ const MemberList = ({ members, asignTask }) => {
     asignTask(id, checked);
   };
   const memberNames = members.map(({ firstName, lastName, userId }) => (
-    <li>
+    <li key={userId}>
       <input type='checkbox' id={userId} onChange={handleTask} />
       <label htmlFor={userId}>{`${firstName} ${lastName}`}</label>
     </li>
@@ -26,7 +26,8 @@ const MemberList = ({ members, asignTask }) => {
 };
 
 MemberList.propTypes = {
-  members: PropTypes.arrayOf(PropTypes.o).isRequired,
+  members: PropTypes.arrayOf(PropTypes.object).isRequired,
+  asignTask: PropTypes.func.isRequired,
 };
 
 export default MemberList;

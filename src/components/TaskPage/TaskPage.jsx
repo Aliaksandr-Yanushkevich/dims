@@ -138,7 +138,7 @@ class TaskPage extends React.Component {
             name='description'
             inputType='textarea'
             label='Description:'
-            maxLength='2000'
+            maxLength={2000}
             onChange={this.onChange}
             value={description}
             placeholder='Task description'
