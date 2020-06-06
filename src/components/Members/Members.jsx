@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 import TableHeader from '../common/TableHeader/TableHeader';
 import MemberData from './MemberData';
 import Preloader from '../common/Preloader/Preloader';
@@ -19,20 +20,22 @@ class Members extends React.Component {
     const members = [];
     firebaseApi
       .getUsers()
-      .then((users) =>
-        users.forEach((user) => {
-          const { firstName, lastName, birthDate, directionId, education, startDate, userId } = user.data();
-          members.push({
-            firstName,
-            lastName,
-            birthDate: birthDate.toDate(),
-            directionId,
-            education,
-            startDate: startDate.toDate(),
-            userId,
+      .then((users) => {
+        if (users.size) {
+          users.forEach((user) => {
+            const { firstName, lastName, birthDate, directionId, education, startDate, userId } = user.data();
+            members.push({
+              firstName,
+              lastName,
+              birthDate: birthDate.toDate(),
+              directionId,
+              education,
+              startDate: startDate.toDate(),
+              userId,
+            });
           });
-        }),
-      )
+        }
+      })
       .then(() => {
         this.setState({ members });
       })
@@ -66,14 +69,29 @@ class Members extends React.Component {
 
   render() {
     const { members, memberPageIsVisible } = this.state;
-    const { currentUserId, setCurrentUser } = this.props;
-    if (!members) return <Preloader />;
+    const { currentUserId, setCurrentUser, role } = this.props;
+    if (!role) {
+      return <Redirect to='/login' />;
+    }
+    if (!(role === 'admin' || role === 'mentor')) {
+      return <p>Only admininstrators and mentors have acces to this page</p>;
+    }
+
+    if (!members) {
+      return <Preloader />;
+    }
+
+    if (!members.length) {
+      return <p>Member list is empty. Administrators should create it.</p>;
+    }
+
     const memberRows = members.map((member, index) => {
       const { firstName, lastName, birthDate, directionId, education, startDate, userId } = member;
 
       return (
         <MemberData
           key={userId}
+          role={role}
           index={index + 1}
           firstName={firstName}
           lastName={lastName}
@@ -94,9 +112,12 @@ class Members extends React.Component {
         {memberPageIsVisible && <MemberPage userId={currentUserId} hideMemberPage={this.hideMemberPage} />}
         <h1 className={styles.title}>Members Manage Grid</h1>
         <div className={styles.tableWrapper}>
-          <Button id={styles.register} dataId='newMember' onClick={this.createUser}>
-            Register
-          </Button>
+          {role === 'admin' && (
+            <Button id={styles.register} dataId='newMember' onClick={this.createUser}>
+              Register
+            </Button>
+          )}
+
           <table>
             <thead>
               <tr>
@@ -112,6 +133,7 @@ class Members extends React.Component {
 }
 
 Members.propTypes = {
+  role: PropTypes.string.isRequired,
   setCurrentUser: PropTypes.func.isRequired,
   currentUserId: PropTypes.string.isRequired,
 };

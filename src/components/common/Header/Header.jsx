@@ -2,10 +2,11 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styles from './Header.module.scss';
-import logo from '../logo-white.png';
+import logo from '../logo.svg';
 import Button from '../../Button/Button';
+import UserBlock from './UserBlock';
 
-const Header = ({ isAuth, login, logout }) => {
+const Header = ({ firstName, lastName, logout }) => {
   return (
     <header className={styles.header}>
       <NavLink className={styles.link} to='/members'>
@@ -22,33 +23,14 @@ const Header = ({ isAuth, login, logout }) => {
           <Button>Task tracks</Button>
         </NavLink>
       </div>
-      <div className={styles.loginBlock}>
-        {isAuth ? (
-          <div>
-            {login}
-            <button type='button' onClick={logout}>
-              Log out
-            </button>
-          </div>
-        ) : (
-          <NavLink className={styles.link} to='/login'>
-            Login
-          </NavLink>
-        )}
-      </div>
+      {firstName && <UserBlock firstName={firstName} lastName={lastName} logout={logout} />}
     </header>
   );
 };
 
 Header.propTypes = {
-  isAuth: PropTypes.bool,
-  login: PropTypes.string,
-  logout: PropTypes.func,
-};
-Header.defaultProps = {
-  isAuth: false,
-  login: '',
-  logout: () => {},
+  firstName: PropTypes.bool.isRequired,
+  lastName: PropTypes.string.isRequired,
 };
 
 export default Header;

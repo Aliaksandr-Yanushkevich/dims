@@ -20,21 +20,25 @@ class TasksTracks extends React.Component {
   };
 
   componentDidMount() {
-    const { userId } = this.props;
-    if (userId !== 'newMember') {
+    const { userId, role } = this.props;
+    if (userId && userId !== 'newMember' && role === 'member') {
       this.setState({ isFetching: true });
       return firebaseApi
         .getUserTaskList(userId)
         .then((tracks) => {
-          tracks.forEach((track) => {
-            const { userTaskId } = track;
-            return firebaseApi.getTrackData(userTaskId).then((trackInfo) => {
-              if (trackInfo) {
-                this.setState(({ trackData }) => ({ trackData: [...trackData, ...trackInfo] }));
-                this.setState({ isFetching: false });
-              }
+          if (tracks.length) {
+            tracks.forEach((track) => {
+              const { userTaskId } = track;
+              return firebaseApi.getTrackData(userTaskId).then((trackInfo) => {
+                if (trackInfo) {
+                  this.setState(({ trackData }) => ({ trackData: [...trackData, ...trackInfo] }));
+                  this.setState({ isFetching: false });
+                }
+              });
             });
-          });
+          } else {
+            this.setState({ isFetching: false });
+          }
         })
         .catch((error) => console.error('Track info receiving error', error));
     }
@@ -66,6 +70,7 @@ class TasksTracks extends React.Component {
   };
 
   render() {
+    const { role } = this.props;
     const {
       trackData,
       taskTrackPageIsVisible,
@@ -90,8 +95,21 @@ class TasksTracks extends React.Component {
           );
         })
       : null;
+
+    if (role !== 'member') {
+      return (
+        <p>
+          You do not have permission to view this page. This page is only available to users with the &apos;member&apos;
+          role.
+        </p>
+      );
+    }
+
     if (isFetching) {
       return <Preloader />;
+    }
+    if (!trackData.length && !isFetching) {
+      return <p>You haven&apos;t track notes</p>;
     }
     return (
       <>

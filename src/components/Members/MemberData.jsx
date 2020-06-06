@@ -14,7 +14,19 @@ class MemberData extends React.Component {
   };
 
   componentDidMount() {
+    const { role } = this.props;
     const directions = [];
+    const buttonWrappers = document.querySelectorAll(`.${styles.buttonWrapper}`);
+    if (role === 'admin') {
+      buttonWrappers.forEach((wrapper) => {
+        wrapper.style.gridTemplateRows = '1fr 1fr';
+      });
+    } else {
+      buttonWrappers.forEach((wrapper) => {
+        wrapper.style.gridTemplateRows = '1fr';
+      });
+    }
+
     firebaseApi
       .getDirections()
       .then((courseDirections) => {
@@ -44,6 +56,7 @@ class MemberData extends React.Component {
       setCurrentUser,
       deleteUser,
       createUser,
+      role,
     } = this.props;
     const { directions } = this.state;
 
@@ -78,13 +91,16 @@ class MemberData extends React.Component {
                 Tasks
               </Button>
             </NavLink>
-            <Button dataId={userId} onClick={createUser}>
-              Edit
-            </Button>
-
-            <Button dataId={userId} onClick={deleteUser} className={styles.dangerousButton}>
-              Delete
-            </Button>
+            {role === 'admin' && (
+              <Button dataId={userId} onClick={createUser}>
+                Edit
+              </Button>
+            )}
+            {role === 'admin' && (
+              <Button dataId={userId} onClick={deleteUser} className={styles.dangerousButton}>
+                Delete
+              </Button>
+            )}
           </div>
         </TableData>
       </tr>
@@ -93,9 +109,9 @@ class MemberData extends React.Component {
 }
 
 MemberData.propTypes = {
-  index: PropTypes.number,
-  firstName: PropTypes.string,
-  lastName: PropTypes.string,
+  index: PropTypes.number.isRequired,
+  firstName: PropTypes.string.isRequired,
+  lastName: PropTypes.string.isRequired,
   directionId: PropTypes.number.isRequired,
   education: PropTypes.string.isRequired,
   startDate: PropTypes.instanceOf(Date).isRequired,
@@ -104,11 +120,7 @@ MemberData.propTypes = {
   setCurrentUser: PropTypes.func.isRequired,
   deleteUser: PropTypes.func.isRequired,
   createUser: PropTypes.func.isRequired,
-};
-MemberData.defaultProps = {
-  index: 1,
-  firstName: 'Ivan',
-  lastName: 'Ivanov',
+  role: PropTypes.string.isRequired,
 };
 
 export default MemberData;

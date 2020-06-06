@@ -10,9 +10,70 @@ const firebaseApi = {
       .set({
         ...userInfo,
       })
+      .then(() => {
+        const { email } = userInfo;
+        this.register(email, 'incubator');
+        return email;
+      })
+      .then((userEmail) => {
+        const { firstName, lastName } = userInfo;
+        firestore
+          .collection('Roles')
+          .doc(userId)
+          .set({ userId, email: userEmail, role: 'member', firstName, lastName });
+      })
+      .then(() => {
+        console.log('User created successfully');
+      })
       .catch((error) => {
-        console.error('Something went wrong', error);
+        console.error('Something went wrong when user creation', error);
       });
+  },
+
+  register(email, password) {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .catch((error) => {
+        console.error(`${error.message} ${error.code}`);
+      });
+  },
+
+  login(email, password) {
+    return firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        console.log('Successfully logged in');
+      });
+  },
+
+  logout() {
+    return firebase.auth().signOut();
+  },
+
+  updatePassword(newPassword) {
+    const user = firebase.auth().currentUser;
+    return user.updatePassword(newPassword);
+  },
+
+  getRole(email) {
+    const userData = {};
+    return firestore
+      .collection('Roles')
+      .where('email', '==', email)
+      .get()
+      .then((users) => {
+        users.forEach((user) => {
+          const { role, userId, firstName, lastName } = user.data();
+          userData.role = role;
+          userData.userId = userId;
+          userData.firstName = firstName;
+          userData.lastName = lastName;
+          userData.email = email;
+        });
+      })
+      .then(() => userData);
   },
 
   getUsers() {
@@ -118,7 +179,7 @@ const firebaseApi = {
   },
 
   getUserTaskData(taskId, userTaskId, stateId) {
-    // func returns composite object from two collection (Task and TaskTrack)
+    // func returns composite object from different collection
     const taskData = {};
     return firestore
       .collection('Task')
@@ -298,24 +359,6 @@ const firebaseApi = {
         .doc(docId)
         .delete();
     }
-  },
-
-  register(email, password) {
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .catch((error) => {
-        console.error(`${error.message} ${error.code}`);
-      });
-  },
-
-  login(email, password) {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .catch((error) => {
-        console.error(`${error.message} ${error.code}`);
-      });
   },
 };
 

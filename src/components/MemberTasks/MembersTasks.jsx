@@ -4,7 +4,7 @@ import styles from './MembersTasks.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
 import MemberCurrentTasks from './MemberCurrentTasks';
-import { membersTasksTitle } from '../../constants';
+import { membersTasksTitle, membersTasksTitleForMembers } from '../../constants';
 import TaskTrack from '../TaskTrack/TaskTrack';
 import firebaseApi from '../../api/firebaseApi';
 
@@ -36,15 +36,19 @@ class MemberTasks extends Component {
       firebaseApi
         .getUserTaskList(userId)
         .then((taskList) => {
-          taskList.forEach((task) => {
-            const { taskId, userTaskId, stateId } = task;
-            firebaseApi.getUserTaskData(taskId, userTaskId, stateId).then((taskInfo) => {
-              if (taskInfo) {
-                this.setState(({ taskData }) => ({ taskData: [...taskData, taskInfo] }));
-                this.setState({ isFetching: false });
-              }
+          if (taskList.length) {
+            taskList.forEach((task) => {
+              const { taskId, userTaskId, stateId } = task;
+              firebaseApi.getUserTaskData(taskId, userTaskId, stateId).then((taskInfo) => {
+                if (taskInfo) {
+                  this.setState(({ taskData }) => ({ taskData: [...taskData, taskInfo] }));
+                  this.setState({ isFetching: false });
+                }
+              });
             });
-          });
+          } else {
+            this.setState({ isFetching: false });
+          }
         })
         .catch((error) => {
           console.error(`Error receiving data: ${error}`);
@@ -64,6 +68,7 @@ class MemberTasks extends Component {
   };
 
   render() {
+    const { role } = this.props;
     const {
       taskData,
       firstName,
@@ -73,7 +78,18 @@ class MemberTasks extends Component {
       currentUserTaskId,
       isFetching,
     } = this.state;
+
     if (isFetching) return <Preloader />;
+
+    if (!taskData.length) {
+      return (
+        <p>
+          {role === 'member' && 'You '}
+          {(role === 'admin' || role === 'mentor') && `${firstName} ${lastName} `}
+          haven&apos;t tasks
+        </p>
+      );
+    }
     const tasksArr = taskData.map((task, index) => (
       <MemberCurrentTasks
         key={task.userTaskId}
@@ -85,6 +101,7 @@ class MemberTasks extends Component {
         stateName={task.stateName}
         trackTask={this.trackTask}
         stateId={task.stateId}
+        role={role}
       />
     ));
 
@@ -98,11 +115,18 @@ class MemberTasks extends Component {
           />
         )}
         <h1 className={styles.title}>Member&apos;s Task Manage Grid</h1>
-        <h2 className={styles.subtitle}>{`Hi, dear ${firstName} ${lastName}! This is your current tasks:`}</h2>
+        {role === 'member' && (
+          <h2 className={styles.subtitle}>{`Hi, dear ${firstName} ${lastName}! This is your current tasks:`}</h2>
+        )}
+        {(role === 'admin' || role === 'mentor') && (
+          <h2 className={styles.subtitle}>{`Сurrent tasks of ${firstName} ${lastName}:`}</h2>
+        )}
         <table>
           <thead>
             <tr>
-              <TableHeader titleArray={membersTasksTitle} />
+              <TableHeader
+                titleArray={role === 'admin' || role === 'admin' ? membersTasksTitle : membersTasksTitleForMembers}
+              />
             </tr>
           </thead>
           <tbody>{tasksArr}</tbody>

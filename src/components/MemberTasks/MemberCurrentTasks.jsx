@@ -15,6 +15,7 @@ const MemberCurrentTasks = ({
   stateName,
   trackTask,
   stateId,
+  role,
 }) => {
   const succesedTask = (e) => {
     e.persist();
@@ -39,17 +40,19 @@ const MemberCurrentTasks = ({
           Track
         </Button>
       </TableData>
-      <TableData>
-        <div className={styles.buttonWrapper}>
-          <Button className={styles.successButton} taskId={stateId} onClick={succesedTask}>
-            Success
-          </Button>
+      {(role === 'admin' || role === 'mentor') && (
+        <TableData>
+          <div className={styles.buttonWrapper}>
+            <Button className={styles.successButton} taskId={stateId} onClick={succesedTask}>
+              Success
+            </Button>
 
-          <Button className={styles.dangerousButton} taskId={stateId} onClick={failedTask}>
-            Fail
-          </Button>
-        </div>
-      </TableData>
+            <Button className={styles.dangerousButton} taskId={stateId} onClick={failedTask}>
+              Fail
+            </Button>
+          </div>
+        </TableData>
+      )}
     </tr>
   );
 };

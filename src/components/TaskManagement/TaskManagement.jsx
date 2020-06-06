@@ -17,19 +17,22 @@ class TaskManagement extends React.Component {
   };
 
   componentDidMount() {
-    const tasks = [];
-    firebaseApi
-      .getTaskList()
-      .then((tasksList) => {
-        tasksList.forEach((task) => {
-          const { name, startDate, deadlineDate, taskId } = task.data();
-          tasks.push({ name, startDate: startDate.toDate(), deadlineDate: deadlineDate.toDate(), taskId });
+    const { role } = this.props;
+    if (role === 'admin' || role === 'mentor') {
+      const tasks = [];
+      firebaseApi
+        .getTaskList()
+        .then((tasksList) => {
+          tasksList.forEach((task) => {
+            const { name, startDate, deadlineDate, taskId } = task.data();
+            tasks.push({ name, startDate: startDate.toDate(), deadlineDate: deadlineDate.toDate(), taskId });
+          });
+          this.setState({ tasks });
+        })
+        .catch((error) => {
+          console.error(`Error receiving data: ${error}`);
         });
-        this.setState({ tasks });
-      })
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
+    }
   }
 
   newTask = (e) => {
@@ -52,7 +55,11 @@ class TaskManagement extends React.Component {
 
   render() {
     const { tasks, taskPageIsVisible } = this.state;
-    const { currentTaskId } = this.props;
+    const { currentTaskId, role } = this.props;
+
+    if (!(role === 'admin' || role === 'mentor')) {
+      return <p>Only admininstrators and mentors have acces to this page</p>;
+    }
     if (!tasks) {
       return <Preloader />;
     }

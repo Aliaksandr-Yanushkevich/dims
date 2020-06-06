@@ -1,5 +1,6 @@
 export const membersTitle = ['#', 'full name', 'direction', 'education', 'start', 'age', ''];
 export const membersTasksTitle = ['#', 'name', 'start', 'deadline', 'status', '', 'available only for admin'];
+export const membersTasksTitleForMembers = ['#', 'name', 'start', 'deadline', 'status', ''];
 export const memberProgressTitle = ['#', 'task', 'note', 'date'];
 export const taskManagementTitle = ['#', 'name', 'start', 'deadline', ''];
 export const tasksTrackTitle = ['#', 'task', 'note', 'date', ''];

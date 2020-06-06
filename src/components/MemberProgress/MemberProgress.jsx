@@ -13,15 +13,14 @@ class MemberProgres extends Component {
     firstName: null,
     lastName: null,
     taskPageIsVisible: false,
-    // here should check existing taskdata, or emprty object
     taskData: [],
     isFetching: false,
   };
 
   componentDidMount() {
-    const { userId } = this.props;
+    const { userId, role } = this.props;
     const { taskData } = this.state;
-    if (userId) {
+    if (userId && role !== 'member') {
       this.setState({ isFetching: true });
       firebaseApi
         .getUserInfo(userId)
@@ -36,15 +35,18 @@ class MemberProgres extends Component {
       firebaseApi
         .getUserTaskList(userId)
         .then((taskList) => {
-          taskList.forEach((task) => {
-            const { taskId, userTaskId, stateId } = task;
-            firebaseApi.getUserTaskData(taskId, userTaskId, stateId).then((taskInfo) => {
-              if (taskInfo) {
-                this.setState(() => ({ taskData: [...taskData, taskInfo] }));
-                this.setState({ isFetching: false });
-              }
+          if (taskList.length) {
+            taskList.forEach((task) => {
+              const { taskId, userTaskId, stateId } = task;
+              firebaseApi.getUserTaskData(taskId, userTaskId, stateId).then((taskInfo) => {
+                if (taskInfo) {
+                  this.setState(() => ({ taskData: [...taskData, taskInfo], isFetching: false }));
+                }
+              });
             });
-          });
+          } else {
+            this.setState({ isFetching: false });
+          }
         })
         .catch((error) => {
           console.error(`Error receiving data: ${error}`);
@@ -64,9 +66,17 @@ class MemberProgres extends Component {
 
   render() {
     const { firstName, lastName, taskPageIsVisible, taskData, isFetching } = this.state;
-    const { userId, currentTaskId } = this.props;
+    const { userId, currentTaskId, role } = this.props;
+
+    if (!(role === 'admin' || role === 'mentor')) {
+      return <p>Only admininstrators and mentors have acces to this page</p>;
+    }
+
     if (isFetching) {
       return <Preloader />;
+    }
+    if (!taskData.length && !isFetching) {
+      return <p>Member hasn&apos;t tracked tasks. </p>;
     }
     const tasksArray = taskData.map((task, index) => {
       return (

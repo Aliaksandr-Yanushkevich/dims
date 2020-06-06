@@ -10,6 +10,7 @@
   background-color: $primaryColor;
 
   grid-area: h;
+  color: #ffffff;
 }
 
 .header img {
@@ -17,7 +18,18 @@
   padding-top: 5px;
 }
 
+.header svg path {
+  cursor: pointer;
+  &:hover {
+    fill: #f0bb0c;
+  }
+}
+
 .header a {
   text-decoration: none;
   color: #fff;
+}
+
+.loginBlock svg {
+  margin-left: 1rem;
 }

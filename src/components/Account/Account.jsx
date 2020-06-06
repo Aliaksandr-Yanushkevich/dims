@@ -1,22 +1,33 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import styles from './Registration.module.scss';
+import styles from './Account.module.scss';
 import Button from '../Button/Button';
 import FormField from '../FormField/FormField';
 import firebaseApi from '../../api/firebaseApi';
-import { emailRegexp } from '../../constants';
 
-class Registration extends React.Component {
+class Account extends React.Component {
   state = {
-    email: '',
+    oldPassword: '',
     password: '',
     repeatedPassword: '',
     formIsValid: false,
+    message: null,
   };
 
-  register = () => {
-    const { email, password } = this.state;
-    firebaseApi.register(email, password);
+  updatePassword = () => {
+    const { email } = this.props;
+    const { oldPassword, password, repeatedPassword } = this.state;
+    if (password === repeatedPassword) {
+      firebaseApi
+        .login(email, oldPassword)
+        .then(() => {
+          firebaseApi.updatePassword(password);
+        })
+        .then(() => {
+          console.log('Password was successfully changed');
+        })
+        .catch((error) => console.error('Password change failure', error));
+    }
   };
 
   onChange = (e) => {
@@ -27,8 +38,8 @@ class Registration extends React.Component {
 
   validateForm = () => {
     // magic numbers here are minimal/maximum length for input fields or other special requirements
-    const { email, password, repeatedPassword } = this.state;
-    if (emailRegexp.test(email) && password.length >= 4 && password.length <= 30 && password === repeatedPassword) {
+    const { password, repeatedPassword } = this.state;
+    if (password.length >= 4 && password.length <= 30 && password === repeatedPassword) {
       this.setState({ formIsValid: true });
     } else {
       this.setState({ formIsValid: false });
@@ -36,12 +47,23 @@ class Registration extends React.Component {
   };
 
   render() {
-    const { email, password, repeatedPassword, formIsValid } = this.state;
+    const { firstName, lastName, role } = this.props;
+    const { oldPassword, password, repeatedPassword, formIsValid } = this.state;
     return (
       <div className={styles.wrapper}>
-        <h1 className={styles.title}>Registration</h1>
+        <h1 className={styles.title}>{`${firstName} ${lastName} account`}</h1>
+        Role: {role}
         <form action=''>
-          <FormField id='email' label='Email' value={email} onChange={this.onChange} validateForm={this.validateForm} />
+          <FormField
+            minLength={4}
+            maxLength={30}
+            inputType='password'
+            id='oldPassword'
+            label='Old password'
+            value={oldPassword}
+            onChange={this.onChange}
+            validateForm={this.validateForm}
+          />
           <FormField
             minLength={4}
             maxLength={30}
@@ -64,15 +86,12 @@ class Registration extends React.Component {
           />
           <div className={styles.item}>
             {/* <Button disabled={!(loginIsValid && passwordIsValid && paswordsMatch)}>Register</Button> */}
-            <Button disabled={!formIsValid} onClick={this.register}>
-              Register
+            <Button disabled={!formIsValid} onClick={this.updatePassword}>
+              Change password
             </Button>
           </div>
           <div className={styles.item}>
-            Already have a profile?
-            <NavLink className={styles.link} to='/login'>
-              Login
-            </NavLink>
+            <Button>Back to grid</Button>
           </div>
         </form>
       </div>
@@ -80,4 +99,4 @@ class Registration extends React.Component {
   }
 }
 
-export default Registration;
+export default Account;

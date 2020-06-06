@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Redirect } from 'react-router-dom';
 import firebaseApi from '../../api/firebaseApi';
 import styles from './Login.module.scss';
 import Button from '../Button/Button';
@@ -12,15 +12,34 @@ class Login extends React.Component {
     password: '',
     remember: false,
     formIsValid: false,
+    isAuth: false,
   };
 
+  componentDidMount() {
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    if (user) {
+      const { role } = user;
+      this.setState({ role, isAuth: true });
+    }
+  }
+
   login = () => {
-    const { login, password } = this.state;
-    firebaseApi.login(login, password);
+    const { setUser } = this.props;
+    const { email, password, remember } = this.state;
+    firebaseApi.login(email, password).then(() => {
+      firebaseApi.getRole(email).then((result) => {
+        const { role, userId, firstName, lastName, email } = result;
+        setUser(userId, role, firstName, lastName, email);
+        this.setState({ isAuth: true, role });
+        if (remember) {
+          const user = JSON.stringify(result);
+          sessionStorage.setItem('user', user);
+        }
+      });
+    });
   };
 
   onChange = (e) => {
-    debugger;
     const { id, value, checked } = e.currentTarget;
     id === 'remember' ? this.setState({ [id]: checked }) : this.setState({ [id]: value });
     this.validateForm();
@@ -37,7 +56,13 @@ class Login extends React.Component {
   };
 
   render() {
-    const { email, password, remember, formIsValid } = this.state;
+    const { email, password, remember, formIsValid, isAuth, role } = this.state;
+
+    if (isAuth) {
+      if (role === 'admin' || role === 'mentor') return <Redirect to='/members' />;
+      if (role === 'member') return <Redirect to='/member_tasks' />;
+    }
+
     return (
       <div className={styles.wrapper}>
         <h1 className={styles.title}>Login</h1>

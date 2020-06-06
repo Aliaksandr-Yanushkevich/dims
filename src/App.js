@@ -9,18 +9,43 @@ import Footer from './components/common/Footer/Footer';
 import styles from './App.module.scss';
 import TaskManagement from './components/TaskManagement/TaskManagement';
 import Login from './components/Login/Login';
-import Registration from './components/Registration/Registration';
+import Account from './components/Account/Account';
+import firebaseApi from './api/firebaseApi';
 
 class App extends Component {
   state = {
-    // currentUserId: 'newMember',
-    currentUserId: 'pu7f8c6lk',
+    currentUserId: null,
+    role: null,
     currentTaskId: 'newTask',
+    firstName: null,
+    lastName: null,
   };
 
   componentDidMount() {
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    if (user) {
+      const { role, userId, firstName, lastName } = user;
+      this.setState({ role, currentUserId: userId, firstName, lastName });
+    }
     document.title = 'DIMS';
   }
+
+  setUser = (userId, role, firstName, lastName, email) => {
+    this.setState({ currentUserId: userId, role, firstName, lastName, email });
+  };
+
+  logout = () => {
+    firebaseApi
+      .logout()
+      .then(() => {
+        sessionStorage.removeItem('user');
+        this.setState({ currentUserId: null, role: null, currentTaskId: 'newTask', firstName: null, lastName: null });
+        console.log('Logged out');
+      })
+      .catch((error) => {
+        console.error('Logout error', error);
+      });
+  };
 
   setCurrentUser = (e) => {
     e.persist();
@@ -38,25 +63,27 @@ class App extends Component {
   };
 
   render() {
-    const { currentUserId, currentTaskId } = this.state;
+    const { currentUserId, currentTaskId, role, firstName, lastName, email } = this.state;
+
     return (
       <BrowserRouter>
         <div className={styles.wrapper}>
-          <Header />
+          <Header firstName={firstName} lastName={lastName} logout={this.logout} />
           <div className={styles.contentWrapper}>
-            <Redirect from='/' to='/members' />
+            {!currentUserId && <Redirect from='/' to='/login' />}
             <Route path='/members'>
-              <Members currentUserId={currentUserId} setCurrentUser={this.setCurrentUser} />
+              <Members currentUserId={currentUserId} setCurrentUser={this.setCurrentUser} role={role} />
             </Route>
             <Route path='/member_progress:userId?'>
               <MemberProgress
                 userId={currentUserId}
                 currentTaskId={currentTaskId}
                 setCurrentTask={this.setCurrentTask}
+                role={role}
               />
             </Route>
             <Route path='/member_tasks:userId?'>
-              <MemberTasks userId={currentUserId} taskId={currentTaskId} />
+              <MemberTasks userId={currentUserId} taskId={currentTaskId} role={role} />
             </Route>
             <Route path='/task_management'>
               <TaskManagement
@@ -64,16 +91,17 @@ class App extends Component {
                 currentTaskId={currentTaskId}
                 setCurrentTask={this.setCurrentTask}
                 setCurrentUser={this.setCurrentUser}
+                role={role}
               />
             </Route>
             <Route path='/task_track_management'>
-              <TaskTrackManagement userId={currentUserId} />
+              <TaskTrackManagement userId={currentUserId} role={role} />
             </Route>
             <Route path='/login'>
-              <Login />
+              <Login setUser={this.setUser} />
             </Route>
-            <Route path='/registration'>
-              <Registration />
+            <Route path='/account'>
+              <Account role={role} firstName={firstName} lastName={lastName} email={email} />
             </Route>
           </div>
           <Footer />
