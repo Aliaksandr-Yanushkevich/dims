@@ -66,6 +66,7 @@ MemberCurrentTasks.propTypes = {
   taskName: PropTypes.string.isRequired,
   startDate: PropTypes.instanceOf(Date).isRequired,
   deadlineDate: PropTypes.instanceOf(Date).isRequired,
+  role: PropTypes.string.isRequired,
 };
 
 export default MemberCurrentTasks;

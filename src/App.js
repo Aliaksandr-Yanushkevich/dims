@@ -68,7 +68,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div className={styles.wrapper}>
-          <Header firstName={firstName} lastName={lastName} logout={this.logout} />
+          <Header firstName={firstName} lastName={lastName} logout={this.logout} role={role} />
           <div className={styles.contentWrapper}>
             {!currentUserId && <Redirect from='/' to='/login' />}
             <Route path='/members'>

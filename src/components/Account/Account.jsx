@@ -52,14 +52,14 @@ class Account extends React.Component {
     return (
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{`${firstName} ${lastName} account`}</h1>
-        Role: {role}
+        <p>{`Role: ${role}`}</p>
         <form action=''>
           <FormField
             minLength={4}
             maxLength={30}
             inputType='password'
             id='oldPassword'
-            label='Old password'
+            label='Old password:'
             value={oldPassword}
             onChange={this.onChange}
             validateForm={this.validateForm}
@@ -69,7 +69,7 @@ class Account extends React.Component {
             maxLength={30}
             inputType='password'
             id='password'
-            label='Password'
+            label='Password:'
             value={password}
             onChange={this.onChange}
             validateForm={this.validateForm}
@@ -79,19 +79,18 @@ class Account extends React.Component {
             maxLength={30}
             inputType='password'
             id='repeatedPassword'
-            label='Repeate password'
+            label='Repeate password:'
             value={repeatedPassword}
             onChange={this.onChange}
             validateForm={this.validateForm}
           />
-          <div className={styles.item}>
-            {/* <Button disabled={!(loginIsValid && passwordIsValid && paswordsMatch)}>Register</Button> */}
+          <div className={styles.buttonWrapper}>
             <Button disabled={!formIsValid} onClick={this.updatePassword}>
-              Change password
+              Change
             </Button>
-          </div>
-          <div className={styles.item}>
-            <Button>Back to grid</Button>
+            <NavLink to={role === 'admin' || role === 'admin' ? '/members' : '/member_tasks'}>
+              <Button>Back to grid</Button>
+            </NavLink>
           </div>
         </form>
       </div>

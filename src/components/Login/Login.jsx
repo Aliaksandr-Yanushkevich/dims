@@ -80,12 +80,6 @@ class Login extends React.Component {
               Login
             </Button>
           </div>
-          <div className={styles.item}>
-            Don&apos;t have an account yet?
-            <NavLink to='/registration'>
-              <Button id='register'>Register</Button>
-            </NavLink>
-          </div>
         </form>
       </div>
     );

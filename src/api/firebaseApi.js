@@ -152,7 +152,7 @@ const firebaseApi = {
     return firestore
       .collection('TaskState')
       .doc(stateId)
-      .set({ stateId, stateName: '' });
+      .set({ stateId, stateName: 'Active' });
   },
 
   getTask(taskId) {

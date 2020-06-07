@@ -34,6 +34,7 @@ class TasksTracks extends React.Component {
                   this.setState(({ trackData }) => ({ trackData: [...trackData, ...trackInfo] }));
                   this.setState({ isFetching: false });
                 }
+                this.setState({ isFetching: false });
               });
             });
           } else {

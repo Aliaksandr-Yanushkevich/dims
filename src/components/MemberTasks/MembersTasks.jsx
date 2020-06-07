@@ -125,7 +125,7 @@ class MemberTasks extends Component {
           <thead>
             <tr>
               <TableHeader
-                titleArray={role === 'admin' || role === 'admin' ? membersTasksTitle : membersTasksTitleForMembers}
+                titleArray={role === 'admin' || role === 'mentor' ? membersTasksTitle : membersTasksTitleForMembers}
               />
             </tr>
           </thead>
