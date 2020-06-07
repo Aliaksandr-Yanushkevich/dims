@@ -108,11 +108,12 @@ class TaskManagement extends React.Component {
 TaskManagement.propTypes = {
   setCurrentTask: PropTypes.func.isRequired,
   currentTaskId: PropTypes.string,
-  role: PropTypes.string.isRequired,
+  role: PropTypes.string,
 };
 
 TaskManagement.defaultProps = {
   currentTaskId: '',
+  role: '',
 };
 
 export default TaskManagement;

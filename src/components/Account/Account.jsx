@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import styles from './Account.module.scss';
 import Button from '../Button/Button';
@@ -17,16 +18,19 @@ class Account extends React.Component {
   updatePassword = () => {
     const { email } = this.props;
     const { oldPassword, password, repeatedPassword } = this.state;
-    if (password === repeatedPassword) {
+    if (oldPassword === password) {
+      this.setState({ message: 'Old and new password match' });
+    } else if (password === repeatedPassword) {
       firebaseApi
         .login(email, oldPassword)
         .then(() => {
           firebaseApi.updatePassword(password);
         })
         .then(() => {
+          this.setState({ message: '' });
           console.log('Password was successfully changed');
         })
-        .catch((error) => console.error('Password change failure', error));
+        .catch(({ message }) => this.setState({ message }));
     }
   };
 
@@ -39,7 +43,7 @@ class Account extends React.Component {
   validateForm = () => {
     // magic numbers here are minimal/maximum length for input fields or other special requirements
     const { password, repeatedPassword } = this.state;
-    if (password.length >= 4 && password.length <= 30 && password === repeatedPassword) {
+    if (password.length >= 6 && password.length <= 30 && password === repeatedPassword) {
       this.setState({ formIsValid: true });
     } else {
       this.setState({ formIsValid: false });
@@ -48,14 +52,15 @@ class Account extends React.Component {
 
   render() {
     const { firstName, lastName, role } = this.props;
-    const { oldPassword, password, repeatedPassword, formIsValid } = this.state;
+    const { oldPassword, password, repeatedPassword, formIsValid, message } = this.state;
     return (
       <div className={styles.wrapper}>
-        <h1 className={styles.title}>{`${firstName} ${lastName} account`}</h1>
+        <h1 className={styles.title}>Account</h1>
+        <p>{`Name: ${firstName} ${lastName}`}</p>
         <p>{`Role: ${role}`}</p>
-        <form action=''>
+        <form>
           <FormField
-            minLength={4}
+            minLength={6}
             maxLength={30}
             inputType='password'
             id='oldPassword'
@@ -65,7 +70,7 @@ class Account extends React.Component {
             validateForm={this.validateForm}
           />
           <FormField
-            minLength={4}
+            minLength={6}
             maxLength={30}
             inputType='password'
             id='password'
@@ -75,7 +80,7 @@ class Account extends React.Component {
             validateForm={this.validateForm}
           />
           <FormField
-            minLength={4}
+            minLength={6}
             maxLength={30}
             inputType='password'
             id='repeatedPassword'
@@ -84,12 +89,15 @@ class Account extends React.Component {
             onChange={this.onChange}
             validateForm={this.validateForm}
           />
+          <div className={styles.message}>
+            <p>{message}</p>
+          </div>
           <div className={styles.buttonWrapper}>
-            <Button disabled={!formIsValid} onClick={this.updatePassword}>
+            <Button id='change' disabled={!formIsValid} onClick={this.updatePassword}>
               Change
             </Button>
             <NavLink to={role === 'admin' || role === 'admin' ? '/members' : '/member_tasks'}>
-              <Button>Back to grid</Button>
+              <Button id='backToGrid'>Back to grid</Button>
             </NavLink>
           </div>
         </form>
@@ -97,5 +105,19 @@ class Account extends React.Component {
     );
   }
 }
+
+Account.propTypes = {
+  firstName: PropTypes.string,
+  lastName: PropTypes.string,
+  role: PropTypes.string,
+  email: PropTypes.string,
+};
+
+Account.defaultProps = {
+  firstName: '',
+  lastName: '',
+  role: '',
+  email: '',
+};
 
 export default Account;

@@ -133,9 +133,14 @@ class Members extends React.Component {
 }
 
 Members.propTypes = {
-  role: PropTypes.string.isRequired,
+  role: PropTypes.string,
   setCurrentUser: PropTypes.func.isRequired,
-  currentUserId: PropTypes.string.isRequired,
+  currentUserId: PropTypes.string,
+};
+
+Members.defaultProps = {
+  role: '',
+  currentUserId: '',
 };
 
 export default Members;

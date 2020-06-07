@@ -9,7 +9,7 @@ import TaskTrack from '../TaskTrack/TaskTrack';
 import firebaseApi from '../../api/firebaseApi';
 import dateToString from '../../helpers/dateToString';
 
-class TasksTracks extends React.Component {
+class TaskTrackManagement extends React.Component {
   state = {
     currentTaskTrackId: null,
     currentUserTaskId: null,
@@ -136,9 +136,14 @@ class TasksTracks extends React.Component {
   }
 }
 
-TasksTracks.propTypes = {
-  userId: PropTypes.string.isRequired,
-  role: PropTypes.string.isRequired,
+TaskTrackManagement.propTypes = {
+  userId: PropTypes.string,
+  role: PropTypes.string,
 };
 
-export default TasksTracks;
+TaskTrackManagement.defaultProps = {
+  userId: '',
+  role: '',
+};
+
+export default TaskTrackManagement;

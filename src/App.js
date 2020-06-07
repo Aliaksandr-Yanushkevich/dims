@@ -24,8 +24,8 @@ class App extends Component {
   componentDidMount() {
     const user = JSON.parse(sessionStorage.getItem('user'));
     if (user) {
-      const { role, userId, firstName, lastName } = user;
-      this.setState({ role, currentUserId: userId, firstName, lastName });
+      const { role, userId, firstName, lastName, email } = user;
+      this.setState({ role, currentUserId: userId, firstName, lastName, email });
     }
     document.title = 'DIMS';
   }

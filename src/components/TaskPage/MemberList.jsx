@@ -33,7 +33,11 @@ const MemberList = ({ members, asignTask, usersWithTaskLocal }) => {
 MemberList.propTypes = {
   members: PropTypes.arrayOf(PropTypes.object).isRequired,
   asignTask: PropTypes.func.isRequired,
-  usersWithTaskLocal: PropTypes.arrayOf(PropTypes.string).isRequired,
+  usersWithTaskLocal: PropTypes.arrayOf(PropTypes.string),
+};
+
+MemberList.defaultProps = {
+  usersWithTaskLocal: [],
 };
 
 export default MemberList;

@@ -89,6 +89,7 @@ class FormField extends React.Component {
       step,
       cols,
       rows,
+      autoComplete,
     } = this.props;
     const { touched, message } = this.state;
     if (inputType === 'textarea') {
@@ -131,6 +132,7 @@ class FormField extends React.Component {
             max={max}
             step={step}
             required={required}
+            autoComplete={autoComplete}
           />
         </div>
         <p className={styles.message}>{message}</p>
@@ -155,6 +157,7 @@ FormField.propTypes = {
   placeholder: PropTypes.string,
   cols: PropTypes.number,
   rows: PropTypes.number,
+  autoComplete: PropTypes.string,
 };
 
 FormField.defaultProps = {
@@ -171,6 +174,7 @@ FormField.defaultProps = {
   placeholder: '',
   cols: 30,
   rows: 10,
+  autoComplete: 'on',
 };
 
 export default FormField;

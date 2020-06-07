@@ -110,9 +110,15 @@ class MemberProgres extends Component {
 }
 
 MemberProgres.propTypes = {
-  userId: PropTypes.string.isRequired,
+  role: PropTypes.string,
+  userId: PropTypes.string,
   currentTaskId: PropTypes.string.isRequired,
   setCurrentTask: PropTypes.func.isRequired,
+};
+
+MemberProgres.defaultProps = {
+  role: '',
+  userId: '',
 };
 
 export default MemberProgres;

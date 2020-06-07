@@ -1,5 +1,6 @@
 import React from 'react';
-import { NavLink, Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 import firebaseApi from '../../api/firebaseApi';
 import styles from './Login.module.scss';
 import Button from '../Button/Button';
@@ -13,6 +14,7 @@ class Login extends React.Component {
     remember: false,
     formIsValid: false,
     isAuth: false,
+    message: '',
   };
 
   componentDidMount() {
@@ -26,17 +28,22 @@ class Login extends React.Component {
   login = () => {
     const { setUser } = this.props;
     const { email, password, remember } = this.state;
-    firebaseApi.login(email, password).then(() => {
-      firebaseApi.getRole(email).then((result) => {
-        const { role, userId, firstName, lastName, email } = result;
-        setUser(userId, role, firstName, lastName, email);
-        this.setState({ isAuth: true, role });
-        if (remember) {
-          const user = JSON.stringify(result);
-          sessionStorage.setItem('user', user);
-        }
+    firebaseApi
+      .login(email, password)
+      .then(() => {
+        firebaseApi.getRole(email).then((result) => {
+          const { role, userId, firstName, lastName } = result;
+          setUser(userId, role, firstName, lastName, email);
+          this.setState({ isAuth: true, role });
+          if (remember) {
+            const user = JSON.stringify(result);
+            sessionStorage.setItem('user', user);
+          }
+        });
+      })
+      .catch(({ message }) => {
+        this.setState({ message });
       });
-    });
   };
 
   onChange = (e) => {
@@ -56,7 +63,7 @@ class Login extends React.Component {
   };
 
   render() {
-    const { email, password, remember, formIsValid, isAuth, role } = this.state;
+    const { email, password, remember, formIsValid, isAuth, role, message } = this.state;
 
     if (isAuth) {
       if (role === 'admin' || role === 'mentor') return <Redirect to='/members' />;
@@ -67,8 +74,8 @@ class Login extends React.Component {
       <div className={styles.wrapper}>
         <h1 className={styles.title}>Login</h1>
         <form action=''>
-          <FormField id='email' label='Login' value={email} onChange={this.onChange} />
-          <FormField inputType='password' id='password' label='Password' value={password} onChange={this.onChange} />
+          <FormField id='email' label='Email:' value={email} onChange={this.onChange} />
+          <FormField inputType='password' id='password' label='Password:' value={password} onChange={this.onChange} />
           <div className={styles.item}>
             <div className={styles.remember}>
               <label htmlFor='remember'>
@@ -81,9 +88,16 @@ class Login extends React.Component {
             </Button>
           </div>
         </form>
+        <div className={styles.message}>
+          <p>{message}</p>
+        </div>
       </div>
     );
   }
 }
+
+Login.propTypes = {
+  setUser: PropTypes.func.isRequired,
+};
 
 export default Login;

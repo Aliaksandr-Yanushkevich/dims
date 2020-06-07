@@ -40,8 +40,17 @@ const Header = ({ firstName, lastName, logout, role }) => {
 };
 
 Header.propTypes = {
-  firstName: PropTypes.bool.isRequired,
-  lastName: PropTypes.string.isRequired,
+  firstName: PropTypes.string,
+  lastName: PropTypes.string,
+  logout: PropTypes.func,
+  role: PropTypes.string,
+};
+
+Header.defaultProps = {
+  firstName: '',
+  lastName: '',
+  logout: () => {},
+  role: '',
 };
 
 export default Header;
