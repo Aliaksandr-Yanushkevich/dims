@@ -137,6 +137,7 @@ class MemberTasks extends Component {
 }
 
 MemberTasks.propTypes = {
+  role: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
 };
 

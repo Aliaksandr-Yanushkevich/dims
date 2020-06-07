@@ -111,6 +111,35 @@ const firebaseApi = {
       });
   },
 
+  removeTaskFromUsers(usersWithTaskFromDB, usersWithTaskLocal, taskId) {
+    const difference = usersWithTaskFromDB.filter((user) => !usersWithTaskLocal.includes(user));
+    return firestore
+      .collection('UserTask')
+      .where('taskId', '==', taskId)
+      .get()
+      .then((userTasks) => {
+        userTasks.forEach((userTask) => {
+          const { userId, userTaskId, stateId } = userTask.data();
+          if (difference.includes(userId)) {
+            this.deleteItemWithId('UserTask', userTaskId).then(() => {
+              this.deleteItemWithId('TaskState', stateId).then(() => {
+                firestore
+                  .collection('TaskTrack')
+                  .where('userTaskId', '==', userTaskId)
+                  .get()
+                  .then((taskStates) => {
+                    taskStates.forEach((taskState) => {
+                      const { taskTrackId } = taskState.data();
+                      this.deleteItemWithId('TaskTrack', taskTrackId);
+                    });
+                  });
+              });
+            });
+          }
+        });
+      });
+  },
+
   assignTask(task) {
     const { userId, taskId, userTaskId, stateId } = task;
     return firestore
@@ -152,6 +181,24 @@ const firebaseApi = {
           ];
         });
         return members;
+      });
+  },
+
+  getUsersWithTask(taskId) {
+    // func returns array of userIds which have current task
+    const usersWithTask = [];
+    return firestore
+      .collection('UserTask')
+      .where('taskId', '==', taskId)
+      .get()
+      .then((users) => {
+        users.forEach((user) => {
+          const { userId } = user.data();
+          usersWithTask.push(userId);
+        });
+      })
+      .then(() => {
+        return usersWithTask;
       });
   },
 

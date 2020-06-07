@@ -18,6 +18,8 @@ class TaskPage extends React.Component {
       description: '',
       startDate: dateToStringForInput(new Date()),
       deadlineDate: '',
+      usersWithTaskFromDB: null,
+      usersWithTaskLocal: null,
       userTasks: [],
       formIsValid: false,
     };
@@ -48,12 +50,17 @@ class TaskPage extends React.Component {
     } else {
       this.setState({ taskId: generateID() });
     }
+
     firebaseApi
       .getNames()
       .then((members) => this.setState({ members }))
       .catch((error) => {
         console.error(`Error receiving data: ${error}`);
       });
+
+    firebaseApi
+      .getUsersWithTask(taskId)
+      .then((usersWithTaskFromDB) => this.setState({ usersWithTaskFromDB, usersWithTaskLocal: usersWithTaskFromDB }));
   }
 
   componentWillUnmount() {
@@ -83,7 +90,16 @@ class TaskPage extends React.Component {
   };
 
   createTask = () => {
-    const { name, description, startDate, deadlineDate, userTasks, taskId } = this.state;
+    const {
+      name,
+      description,
+      startDate,
+      deadlineDate,
+      userTasks,
+      taskId,
+      usersWithTaskFromDB,
+      usersWithTaskLocal,
+    } = this.state;
     const preparedstartDate = new Date(startDate);
     const preparedDeadlineDate = new Date(deadlineDate);
     const taskInfo = {
@@ -93,29 +109,40 @@ class TaskPage extends React.Component {
       startDate: preparedstartDate,
       deadlineDate: preparedDeadlineDate,
     };
-    firebaseApi.createTask(taskInfo).then(() => {
-      userTasks.forEach((task) => {
-        firebaseApi.assignTask(task);
-        firebaseApi.setTaskState(task.stateId);
-      });
+    firebaseApi.removeTaskFromUsers(usersWithTaskFromDB, usersWithTaskLocal, taskId).then(() => {
+      firebaseApi
+        .createTask(taskInfo)
+        .then(() => {
+          userTasks.forEach((task) => {
+            firebaseApi.assignTask(task);
+            firebaseApi.setTaskState(task.stateId);
+          });
+        })
+        .catch((error) => {
+          console.error('Error with assigning task', error);
+        });
     });
   };
 
   asignTask = (userId, checked) => {
-    const { userTasks, taskId } = this.state;
+    const { userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal } = this.state;
     const stateId = generateID();
     const userTaskId = generateID();
     let memberTasks = userTasks;
     if (checked) {
-      memberTasks = [...memberTasks, { userId, taskId, stateId, userTaskId }];
+      if (!usersWithTaskFromDB.includes(userId)) {
+        memberTasks = [...memberTasks, { userId, taskId, stateId, userTaskId }];
+      }
+      this.setState(() => ({ usersWithTaskLocal: [...usersWithTaskLocal, userId] }));
     } else {
       memberTasks = memberTasks.filter((member) => member.userId !== userId);
+      this.setState(() => ({ usersWithTaskLocal: [...usersWithTaskLocal.filter((memberId) => memberId !== userId)] }));
     }
     this.setState({ userTasks: memberTasks });
   };
 
   render() {
-    const { name, description, startDate, deadlineDate, members, formIsValid } = this.state;
+    const { name, description, startDate, deadlineDate, members, formIsValid, usersWithTaskLocal } = this.state;
     const { taskId, hideMemberPage } = this.props;
 
     return ReactDom.createPortal(
@@ -151,7 +178,9 @@ class TaskPage extends React.Component {
             onChange={this.onChange}
             value={deadlineDate}
           />
-          {members && <MemberList members={members} asignTask={this.asignTask} />}
+          {members && (
+            <MemberList members={members} asignTask={this.asignTask} usersWithTaskLocal={usersWithTaskLocal} />
+          )}
           <div className={styles.buttonWrapper}>
             <Button disabled={!formIsValid} className={styles.successButton} onClick={this.createTask}>
               {taskId === 'newTask' ? 'Create' : 'Save'}

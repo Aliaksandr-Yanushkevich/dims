@@ -137,6 +137,7 @@ class TasksTracks extends React.Component {
 
 TasksTracks.propTypes = {
   userId: PropTypes.string.isRequired,
+  role: PropTypes.string.isRequired,
 };
 
 export default TasksTracks;
