@@ -1,39 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import styles from './Header.module.scss';
 import logo from '../logo.svg';
-import Button from '../../Button/Button';
+
 import UserBlock from './UserBlock';
 
 const Header = ({ firstName, lastName, logout, role }) => {
+  const [activeTab, setActiveTab] = useState('1');
+  const toggle = (tab) => {
+    if (activeTab !== tab) setActiveTab(tab);
+  };
   return (
     <header className={styles.header}>
       <NavLink className={styles.link} to='/members'>
         <img src={logo} alt='logo' />
       </NavLink>
-      <div className='nav'>
-        {(role === 'admin' || role === 'mentor') && (
-          <NavLink className={styles.link} to='/members'>
-            <Button>Members</Button>
+      {role && (
+        <div className={styles.nav}>
+          <NavLink
+            className={styles.navTab}
+            onClick={() => {
+              toggle('1');
+            }}
+            to={role === 'admin' || role === 'mentor' ? '/members' : '/member_tasks'}
+          >
+            <div className={classnames({ [styles.active]: activeTab === '1' }, styles.navItem)}>
+              {role === 'admin' || role === 'mentor' ? 'Members' : 'My tasks'}
+            </div>
           </NavLink>
-        )}
-        {role === 'member' && (
-          <NavLink className={styles.link} to='/member_tasks'>
-            <Button>My tasks</Button>
+          <NavLink
+            className={styles.navTab}
+            onClick={() => {
+              toggle('2');
+            }}
+            to={role === 'admin' || role === 'mentor' ? '/task_management' : '/task_track_management'}
+          >
+            <div className={classnames({ [styles.active]: activeTab === '2' }, styles.navItem)}>
+              {role === 'admin' || role === 'mentor' ? 'Tasks' : 'Track notes'}
+            </div>
           </NavLink>
-        )}
-        {(role === 'admin' || role === 'mentor') && (
-          <NavLink className={styles.link} to='/task_management'>
-            <Button>Tasks</Button>
-          </NavLink>
-        )}
-        {role === 'member' && (
-          <NavLink className={styles.link} to='/task_track_management'>
-            <Button>Track notes</Button>
-          </NavLink>
-        )}
-      </div>
+        </div>
+      )}
+
       {firstName && <UserBlock firstName={firstName} lastName={lastName} logout={logout} />}
     </header>
   );
