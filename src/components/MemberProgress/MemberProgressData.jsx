@@ -23,6 +23,10 @@ const MemberProgressData = ({ index, taskId, taskName, trackNote, trackDate, cre
 MemberProgressData.propTypes = {
   taskId: PropTypes.string.isRequired,
   taskName: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
+  trackNote: PropTypes.string.isRequired,
+  trackDate: PropTypes.string.isRequired,
+  createTask: PropTypes.func.isRequired,
 };
 
 export default MemberProgressData;

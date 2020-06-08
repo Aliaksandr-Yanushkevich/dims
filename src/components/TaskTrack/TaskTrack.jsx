@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from '../Button/Button';
+import { Button } from 'reactstrap';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
 import styles from './TaskTrack.module.scss';
 import FormField from '../FormField/FormField';

@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDom from 'react-dom';
+import { Button } from 'reactstrap';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
-import Button from '../Button/Button';
 import styles from './TaskPage.module.scss';
 import FormField from '../FormField/FormField';
 import MemberList from './MemberList';

@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Button } from 'reactstrap';
 import dateToString from '../../helpers/dateToString';
 import styles from './MembersTasks.module.scss';
-import Button from '../Button/Button';
 import TableData from '../common/TableData/TableData';
 import firebaseApi from '../../api/firebaseApi';
 
@@ -36,18 +36,18 @@ const MemberCurrentTasks = ({
       <TableData>{dateToString(deadlineDate)}</TableData>
       <TableData>{stateName}</TableData>
       <TableData>
-        <Button taskId={userTaskId} dataId={taskName} onClick={trackTask}>
+        <Button data-taskid={userTaskId} data-id={taskName} onClick={trackTask}>
           Track
         </Button>
       </TableData>
       {(role === 'admin' || role === 'mentor') && (
         <TableData>
           <div className={styles.buttonWrapper}>
-            <Button className={styles.successButton} taskId={stateId} onClick={succesedTask}>
+            <Button className={styles.successButton} data-taskid={stateId} onClick={succesedTask}>
               Success
             </Button>
 
-            <Button className={styles.dangerousButton} taskId={stateId} onClick={failedTask}>
+            <Button className={styles.dangerousButton} data-taskid={stateId} onClick={failedTask}>
               Fail
             </Button>
           </div>

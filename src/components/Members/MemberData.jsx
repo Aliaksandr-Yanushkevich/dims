@@ -1,9 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { Button } from 'reactstrap';
 import dateToString from '../../helpers/dateToString';
 import styles from './Members.module.scss';
-import Button from '../Button/Button';
 import TableData from '../common/TableData/TableData';
 import firebaseApi from '../../api/firebaseApi';
 import getAge from '../../helpers/getAge';
@@ -82,22 +82,22 @@ class MemberData extends React.Component {
         <TableData>
           <div className={styles.buttonWrapper}>
             <NavLink className={styles.link} to='/member_progress'>
-              <Button dataId={userId} onClick={setCurrentUser}>
+              <Button data-id={userId} onClick={setCurrentUser}>
                 Progress
               </Button>
             </NavLink>
             <NavLink className={styles.link} to='/member_tasks'>
-              <Button dataId={userId} onClick={setCurrentUser}>
+              <Button data-id={userId} onClick={setCurrentUser}>
                 Tasks
               </Button>
             </NavLink>
             {role === 'admin' && (
-              <Button dataId={userId} onClick={createUser}>
+              <Button data-id={userId} onClick={createUser}>
                 Edit
               </Button>
             )}
             {role === 'admin' && (
-              <Button dataId={userId} onClick={deleteUser} className={styles.dangerousButton}>
+              <Button data-id={userId} onClick={deleteUser} className={styles.dangerousButton}>
                 Delete
               </Button>
             )}

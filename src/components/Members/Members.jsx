@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
+import { Button } from 'reactstrap';
 import TableHeader from '../common/TableHeader/TableHeader';
 import MemberData from './MemberData';
 import Preloader from '../common/Preloader/Preloader';
 import { membersTitle } from '../../constants';
-import Button from '../Button/Button';
 import styles from './Members.module.scss';
 import MemberPage from '../MemberPage/MemberPage';
 import firebaseApi from '../../api/firebaseApi';
@@ -113,7 +113,7 @@ class Members extends React.Component {
         <h1 className={styles.title}>Members Manage Grid</h1>
         <div className={styles.tableWrapper}>
           {role === 'admin' && (
-            <Button id={styles.register} dataId='newMember' onClick={this.createUser}>
+            <Button id={styles.register} data-id='newMember' onClick={this.createUser}>
               Register
             </Button>
           )}

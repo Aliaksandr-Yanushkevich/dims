@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDom from 'react-dom';
+import { Button } from 'reactstrap';
 import Preloader from '../common/Preloader/Preloader';
-import Button from '../Button/Button';
 import styles from './MemberPage.module.scss';
 import FormField from '../FormField/FormField';
 import Select from '../common/Select/Select';

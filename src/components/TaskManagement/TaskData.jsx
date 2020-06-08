@@ -1,8 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { Button } from 'reactstrap';
 import styles from './TaskManagement.module.scss';
-import Button from '../Button/Button';
 import TableData from '../common/TableData/TableData';
 
 const TaskData = ({ index, taskName, startDate, deadline, taskId, newTask, deleteTask }) => {
@@ -18,12 +18,12 @@ const TaskData = ({ index, taskName, startDate, deadline, taskId, newTask, delet
       <TableData>{deadline}</TableData>
       <TableData>
         <div className={styles.buttonWrapper}>
-          <Button taskId={taskId} onClick={newTask}>
+          <Button data-taskid={taskId} onClick={newTask}>
             Edit
           </Button>
 
           <NavLink className={styles.link} to='/task_management'>
-            <Button className={styles.dangerousButton} taskId={taskId} onClick={deleteTask}>
+            <Button className={styles.dangerousButton} data-taskid={taskId} onClick={deleteTask}>
               Delete
             </Button>
           </NavLink>

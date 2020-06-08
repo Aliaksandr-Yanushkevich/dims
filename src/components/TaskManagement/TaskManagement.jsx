@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Button } from 'reactstrap';
 import styles from './TaskManagement.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import TasksPage from '../TaskPage/TaskPage';
@@ -8,7 +9,6 @@ import TaskData from './TaskData';
 import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
 import dateToString from '../../helpers/dateToString';
-import Button from '../Button/Button';
 
 class TaskManagement extends React.Component {
   state = {
@@ -88,7 +88,7 @@ class TaskManagement extends React.Component {
         <h1 className={styles.title}>Task management</h1>
         <div className={styles.tableWrapper}>
           {taskPageIsVisible && <TasksPage taskId={currentTaskId} hideMemberPage={this.hideMemberPage} />}
-          <Button id={styles.createTask} taskId='newTask' onClick={this.newTask}>
+          <Button id={styles.createTask} data-taskid='newTask' onClick={this.newTask}>
             Create task
           </Button>
           <table>

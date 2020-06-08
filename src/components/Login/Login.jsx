@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
+import { Button } from 'reactstrap';
 import firebaseApi from '../../api/firebaseApi';
 import styles from './Login.module.scss';
-import Button from '../Button/Button';
 import FormField from '../FormField/FormField';
 import { emailRegexp } from '../../constants';
 

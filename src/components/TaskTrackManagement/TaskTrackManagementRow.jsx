@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
-import Button from '../Button/Button';
+import { Button } from 'reactstrap';
 import styles from './TaskTrackManagement.module.scss';
 import TableData from '../common/TableData/TableData';
 import firebaseApi from '../../api/firebaseApi';
@@ -31,11 +31,11 @@ class TasksTracksManagementRow extends React.Component {
         <TableData>{trackDate}</TableData>
         <TableData>
           <div className={styles.buttonWrapper}>
-            <Button taskId={taskTrackId} dataName={taskName} dataId={userTaskId} onClick={editTask}>
+            <Button data-taskid={taskTrackId} dataName={taskName} data-id={userTaskId} onClick={editTask}>
               Edit
             </Button>
             <NavLink className={styles.link} to='/task_track_management'>
-              <Button className={styles.dangerousButton} taskId={taskTrackId} onClick={deleteNote}>
+              <Button className={styles.dangerousButton} data-taskid={taskTrackId} onClick={deleteNote}>
                 Delete
               </Button>
             </NavLink>

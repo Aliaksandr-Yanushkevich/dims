@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
+import { Button } from 'reactstrap';
 import styles from './Account.module.scss';
-import Button from '../Button/Button';
 import FormField from '../FormField/FormField';
 import firebaseApi from '../../api/firebaseApi';
 
@@ -19,7 +19,7 @@ class Account extends React.Component {
     const { email } = this.props;
     const { oldPassword, password, repeatedPassword } = this.state;
     if (oldPassword === password) {
-      this.setState({ message: 'Old and new password match' });
+      this.setState({ message: 'Old and new password match. Enter another password and try again' });
     } else if (password === repeatedPassword) {
       firebaseApi
         .login(email, oldPassword)
