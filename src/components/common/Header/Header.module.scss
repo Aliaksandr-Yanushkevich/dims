@@ -38,6 +38,12 @@
   margin-left: 1rem;
 }
 
+.loginBlock {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .nav {
   width: 30%;
   height: 100%;
@@ -68,4 +74,25 @@
   background-color: $secondaryColor;
   color: $primaryColor;
   font-weight: bold;
+}
+
+.tip {
+  margin-top: 10px;
+  max-width: 150px;
+  background-color: $secondaryColor;
+  color: $primaryColor;
+  border: 1px solid $primaryColor;
+  border-top: none;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.tip::after,
+.tip::after {
+  content: '';
+  position: absolute;
+  left: calc(50% - 10px);
+  top: -10px;
+  border: 10px solid transparent;
+  border-bottom: 10px solid $secondaryColor;
 }

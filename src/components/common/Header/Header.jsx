@@ -9,9 +9,11 @@ import UserBlock from './UserBlock';
 
 const Header = ({ firstName, lastName, logout, role }) => {
   const [activeTab, setActiveTab] = useState('1');
+
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
+
   return (
     <header className={styles.header}>
       <NavLink className={styles.link} to='/members'>
