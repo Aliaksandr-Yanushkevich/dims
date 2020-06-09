@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import styles from './Header.module.scss';
 import logo from '../logo.svg';
-
 import UserBlock from './UserBlock';
 
 const Header = ({ firstName, lastName, logout, role }) => {

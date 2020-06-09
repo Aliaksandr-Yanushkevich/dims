@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@availity/reactstrap-validation-select": "^5.3.26",
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
     "@fortawesome/free-brands-svg-icons": "^5.13.0",
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
@@ -10,6 +11,7 @@
     "@testing-library/jest-dom": "4.2.4",
     "@testing-library/react": "9.5.0",
     "@testing-library/user-event": "7.1.2",
+    "availity-reactstrap-validation": "^2.6.1",
     "classnames": "^2.2.6",
     "faker": "^4.1.0",
     "firebase": "^7.14.2",

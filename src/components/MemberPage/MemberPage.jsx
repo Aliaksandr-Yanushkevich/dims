@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDom from 'react-dom';
-import { Button } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { AvForm, AvField, AvGroup, AvFeedback } from 'availity-reactstrap-validation';
+// import AvSelect, { AvSelectField } from '@availity/reactstrap-validation-select';
 import Preloader from '../common/Preloader/Preloader';
 import styles from './MemberPage.module.scss';
-import FormField from '../FormField/FormField';
-import Select from '../common/Select/Select';
 import firebaseApi from '../../api/firebaseApi';
-import directionsToOptions from '../../helpers/directionsToOptions';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
 import generateID from '../../helpers/generateID';
 import { latinLetterRegexp, phoneNumberRegexp, emailRegexp } from '../../constants';
@@ -220,11 +219,28 @@ class MemberPage extends React.Component {
       formIsValid,
     } = this.state;
 
-    const preparedDIrections = directions ? directionsToOptions(directions) : '';
-    const preparedGenders = [
-      { value: 'male', title: 'Male' },
-      { value: 'female', title: 'Female' },
+    const directionOptions = directions
+      ? directions.map((direction) => {
+          return (
+            <option key={direction.directionId} value={direction.directionId}>
+              {direction.name}
+            </option>
+          );
+        })
+      : '';
+
+    const genders = [
+      { label: 'Male', value: 'male' },
+      { label: 'Female', value: 'female' },
     ];
+
+    const genderOptions = genders
+      ? genders.map((gender) => (
+          <option key={gender.value} value={gender.value}>
+            {gender.label}
+          </option>
+        ))
+      : '';
 
     if (isFetching) {
       return <Preloader />;
@@ -233,7 +249,7 @@ class MemberPage extends React.Component {
     return ReactDom.createPortal(
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{userId === 'newMember' ? 'Register Member' : 'Edit Member'}</h1>
-        <form>
+        {/* <form>
           <FormField
             id='firstName'
             label='First Name:'
@@ -314,7 +330,172 @@ class MemberPage extends React.Component {
 
             <Button onClick={hideMemberPage}>Back to grid</Button>
           </div>
-        </form>
+        </form> */}
+        <AvForm>
+          <AvField
+            className={styles.item}
+            id='firstName'
+            name='firstName'
+            type='text'
+            label='First Name:'
+            placeholder='First Name'
+            validate={{
+              required: { value: true, errorMessage: 'Please enter a name' },
+              pattern: {
+                value: `${latinLetterRegexp}`,
+                errorMessage: 'Your name must be composed only with latin letters',
+              },
+              minLength: { value: 2, errorMessage: 'Your name must be between 2 and 40 characters' },
+              maxLength: { value: 40, errorMessage: 'Your name must be between 2 and 40 characters' },
+            }}
+          />
+
+          <AvField
+            className={styles.item}
+            id='lastName'
+            name='lastName'
+            type='text'
+            label='Last Name:'
+            placeholder='Last Name'
+            validate={{
+              required: { value: true, errorMessage: 'Please enter a name' },
+              pattern: {
+                value: `${latinLetterRegexp}`,
+                errorMessage: 'Your name must be composed only with latin letters',
+              },
+              minLength: { value: 2, errorMessage: 'Your name must be between 2 and 40 characters' },
+              maxLength: { value: 40, errorMessage: 'Your name must be between 2 and 40 characters' },
+            }}
+          />
+
+          <FormGroup className={styles.item}>
+            <Label for='sex'>Sex:</Label>
+            <Input type='select' id='sex' onChange={this.onChange} value={sex}>
+              {genderOptions}
+            </Input>
+          </FormGroup>
+
+          <FormGroup className={styles.item}>
+            <Label for='directionId'>Direction:</Label>
+            <Input type='select' id='directionId' onChange={this.onChange} value={directionId}>
+              {directionOptions}
+            </Input>
+          </FormGroup>
+
+          <AvField
+            className={styles.item}
+            id='mobilePhone'
+            name='mobilePhone'
+            type='text'
+            label='Phone:'
+            placeholder='Phone number'
+            validate={{
+              required: { value: true, errorMessage: 'Please enter a number' },
+              pattern: {
+                value: `${phoneNumberRegexp}`,
+                errorMessage: 'Only numbers and + - ( ) symbols are allowed',
+              },
+              minLength: { value: 7, errorMessage: 'Phone number must have at least 7 characters' },
+              maxLength: { value: 30, errorMessage: 'Phone number must have no more than 30 characters' },
+            }}
+          />
+
+          <AvField
+            className={styles.item}
+            id='email'
+            name='email'
+            type='text'
+            label='Email:'
+            placeholder='Email'
+            validate={{
+              required: { value: true, errorMessage: 'Please enter an email' },
+              pattern: {
+                value: `${emailRegexp}`,
+                errorMessage: 'You have entered an invalid email address',
+              },
+            }}
+          />
+
+          <AvField
+            className={styles.item}
+            id='skype'
+            name='skype'
+            type='text'
+            label='Skype:'
+            placeholder='Skype account'
+            validate={{
+              required: { value: true, errorMessage: 'Please enter a skype account' },
+              maxLength: { value: 50, errorMessage: 'Skype account must have no more than 50 characters' },
+            }}
+          />
+
+          <AvField id='birthDate' name='birthDate' label='Birthday:' type='date' required />
+
+          <AvField
+            className={styles.item}
+            id='address'
+            name='address'
+            type='text'
+            label='Address:'
+            placeholder='City:'
+            validate={{
+              required: { value: true, errorMessage: 'Please enter your city' },
+              maxLength: { value: 50, errorMessage: 'City must have no more than 50 characters' },
+            }}
+          />
+
+          <AvField
+            className={styles.item}
+            id='mathScore'
+            name='mathScore'
+            type='number'
+            label='Math score:'
+            placeholder='Math test score'
+            validate={{
+              required: { value: true, errorMessage: 'Please enter your city' },
+              min: { value: 0, errorMessage: 'Score must must be between 0 and 100' },
+              max: { value: 100, errorMessage: 'Score must must be between 0 and 100' },
+            }}
+          />
+
+          <AvField
+            className={styles.item}
+            id='universityAverageScore'
+            name='universityAverageScore'
+            type='number'
+            label='Average score:'
+            placeholder='Diploma average score'
+            step={0.1}
+            validate={{
+              required: { value: true, errorMessage: 'Please enter your city' },
+              min: { value: 0, errorMessage: 'Score must must be between 0 and 10' },
+              max: { value: 10, errorMessage: 'Score must must be between 0 and 10' },
+            }}
+          />
+
+          <AvField
+            className={styles.item}
+            id='education'
+            name='education'
+            type='text'
+            label='Education:'
+            placeholder='University Name:'
+            validate={{
+              required: { value: true, errorMessage: 'Please enter your university' },
+              maxLength: { value: 50, errorMessage: 'University name must have no more than 50 characters' },
+            }}
+          />
+
+          <AvField id='startDate' name='startDate' label='Start Date:' type='date' required />
+
+          <div className={styles.buttonWrapper}>
+            <Button className={styles.successButton} onClick={this.createUser}>
+              {userId !== 'newMember' ? 'Save' : 'Create'}
+            </Button>
+
+            <Button onClick={hideMemberPage}>Back to grid</Button>
+          </div>
+        </AvForm>
       </div>,
       this.root,
     );
