@@ -12,6 +12,7 @@
     "@testing-library/react": "9.5.0",
     "@testing-library/user-event": "7.1.2",
     "availity-reactstrap-validation": "^2.6.1",
+    "bootstrap": "^4.5.0",
     "classnames": "^2.2.6",
     "faker": "^4.1.0",
     "firebase": "^7.14.2",

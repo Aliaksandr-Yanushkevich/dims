@@ -19,8 +19,8 @@
 .wrapper form {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 3rem 3rem 3rem 3rem 3rem 3rem 3rem;
-  grid-column-gap: 3rem;
+  grid-template-rows: 6rem 6rem 6rem 6rem 6rem 6rem 6rem;
+  grid-column-gap: 6rem;
 }
 
 .item {
@@ -42,10 +42,10 @@
   width: 100%;
 }
 
-input {
-  width: 10rem;
-  height: 1rem;
-}
+// input {
+//   width: 10rem;
+//   height: 1rem;
+// }
 
 select {
   width: calc(10rem + 5px);

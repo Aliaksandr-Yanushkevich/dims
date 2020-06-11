@@ -2,14 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDom from 'react-dom';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import { AvForm, AvField, AvGroup, AvFeedback } from 'availity-reactstrap-validation';
+import { AvForm, AvField, AvGroup, AvFeedback, AvRadio, AvRadioGroup } from 'availity-reactstrap-validation';
 // import AvSelect, { AvSelectField } from '@availity/reactstrap-validation-select';
 import Preloader from '../common/Preloader/Preloader';
 import styles from './MemberPage.module.scss';
 import firebaseApi from '../../api/firebaseApi';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
 import generateID from '../../helpers/generateID';
-import { latinLetterRegexp, phoneNumberRegexp, emailRegexp } from '../../constants';
+import {
+  latinLetterRegexp,
+  phoneNumberRegexp,
+  emailRegexp,
+  numberRange0To100,
+  userNameRegexp,
+  addresseRegexp,
+  numberRange0To10,
+} from '../../constants';
+import directionsToOptions from '../../helpers/directionsToOptions';
 
 class MemberPage extends React.Component {
   constructor() {
@@ -17,7 +26,7 @@ class MemberPage extends React.Component {
     this.state = {
       firstName: '',
       lastName: '',
-      sex: 'male',
+      sex: '',
       mobilePhone: '',
       email: '',
       startDate: dateToStringForInput(new Date()),
@@ -189,6 +198,7 @@ class MemberPage extends React.Component {
   };
 
   onChange = (e) => {
+    debugger;
     const { id, value } = e.currentTarget;
     let preparedValue = value;
     if (id === 'directionId' || id === 'mathScore') {
@@ -219,28 +229,155 @@ class MemberPage extends React.Component {
       formIsValid,
     } = this.state;
 
-    const directionOptions = directions
-      ? directions.map((direction) => {
-          return (
-            <option key={direction.directionId} value={direction.directionId}>
-              {direction.name}
-            </option>
-          );
-        })
-      : '';
-
-    const genders = [
-      { label: 'Male', value: 'male' },
-      { label: 'Female', value: 'female' },
+    const fields = [
+      {
+        id: 'firstName',
+        value: firstName,
+        name: 'firstName',
+        type: 'text',
+        label: 'First Name:',
+        placeholder: 'First Name',
+        regexp: latinLetterRegexp,
+        errorMessage: 'Field must be composed only with latin letters',
+      },
+      {
+        id: 'lastName',
+        value: lastName,
+        name: 'lastName',
+        type: 'text',
+        label: 'Last Name:',
+        placeholder: 'Last Name',
+        regexp: latinLetterRegexp,
+        errorMessage: 'Field must be composed only with latin letters',
+      },
+      {
+        id: 'mobilePhone',
+        value: mobilePhone,
+        name: 'mobilePhone',
+        type: 'text',
+        label: 'Phone:',
+        placeholder: 'Phone number',
+        regexp: phoneNumberRegexp,
+        errorMessage: 'Only numbers and + - ( ) symbols are allowed',
+      },
+      {
+        id: 'email',
+        value: email,
+        name: 'email',
+        type: 'text',
+        label: 'Email:',
+        placeholder: 'Email',
+        regexp: emailRegexp,
+        errorMessage: 'You have entered an invalid email address',
+      },
+      {
+        id: 'skype',
+        value: skype,
+        name: 'skype',
+        type: 'text',
+        label: 'Skype:',
+        placeholder: 'Skype account',
+        regexp: userNameRegexp,
+        errorMessage: 'The username must be letters, numbers, hyphens, and underscores',
+      },
+      {
+        id: 'address',
+        value: address,
+        name: 'address',
+        type: 'text',
+        label: 'Address:',
+        placeholder: 'Address',
+        regexp: addresseRegexp,
+        errorMessage: 'Characters & (% # $ ^) are not allowed',
+      },
+      {
+        id: 'mathScore',
+        value: mathScore,
+        name: 'address',
+        type: 'number',
+        label: 'Math score:',
+        placeholder: 'Math test score',
+        regexp: numberRange0To100,
+        errorMessage: 'Test mark must be between 0 and 100',
+      },
+      {
+        id: 'universityAverageScore',
+        value: universityAverageScore,
+        name: 'universityAverageScore',
+        type: 'number',
+        label: 'Average score:',
+        placeholder: 'Diploma average score',
+        regexp: numberRange0To10,
+        errorMessage: 'Average score must be between 0 and 10',
+      },
+      {
+        id: 'education',
+        value: education,
+        name: 'education',
+        type: 'text',
+        label: 'Education:',
+        placeholder: 'University Name:',
+        regexp: latinLetterRegexp,
+        errorMessage: 'Field must be composed only with latin letters',
+      },
+      {
+        id: 'sex',
+        value: sex,
+        name: 'sex',
+        type: 'radio',
+        label: 'Sex:',
+        options: [
+          { label: 'Male', value: 'male' },
+          { label: 'Female', value: 'female' },
+        ],
+      },
+      {
+        id: 'directionId',
+        value: directionId,
+        name: 'directionId',
+        type: 'radio',
+        label: 'Direction:',
+        options: directionsToOptions(directions),
+      },
+      { id: 'startDate', value: startDate, name: 'startDate', type: 'date', label: 'Start Date:' },
+      { id: 'birthDate', value: birthDate, name: 'birthDate', type: 'date', label: 'Birthday:' },
     ];
 
-    const genderOptions = genders
-      ? genders.map((gender) => (
-          <option key={gender.value} value={gender.value}>
-            {gender.label}
-          </option>
-        ))
-      : '';
+    const formFields = fields.map(({ id, value, name, type, label, placeholder, regexp, errorMessage, options }) => {
+      if (type === 'radio') {
+        return (
+          <AvRadioGroup id={id} name={name} label={label} required value={value} onChange={this.onChange}>
+            {options &&
+              options.map((option) => {
+                return <AvRadio label={option.label} value={option.value} />;
+              })}
+          </AvRadioGroup>
+        );
+      }
+
+      if (type === 'date') {
+        return <AvField name={name} label={label} type={type} />;
+      }
+
+      return (
+        <AvField
+          id={id}
+          value={value}
+          name={name}
+          type={type}
+          label={label}
+          placeholder={placeholder}
+          onChange={this.onChange}
+          validate={{
+            required: { value: true, errorMessage: 'Field is required' },
+            pattern: {
+              value: `${regexp}`,
+              errorMessage,
+            },
+          }}
+        />
+      );
+    });
 
     if (isFetching) {
       return <Preloader />;
@@ -249,92 +386,12 @@ class MemberPage extends React.Component {
     return ReactDom.createPortal(
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{userId === 'newMember' ? 'Register Member' : 'Edit Member'}</h1>
-        {/* <form>
-          <FormField
-            id='firstName'
-            label='First Name:'
-            onChange={this.onChange}
-            value={firstName}
-            placeholder='First Name'
-          />
-
-          <FormField
-            id='lastName'
-            label='Last Name:'
-            onChange={this.onChange}
-            value={lastName}
-            placeholder='Last Name'
-          />
-
-          <Select id='sex' name='Sex' onChange={this.onChange} value={sex} options={preparedGenders} />
-
-          <Select
-            id='directionId'
-            name='Direction'
-            onChange={this.onChange}
-            value={directionId}
-            options={preparedDIrections}
-          />
-
-          <FormField
-            id='mobilePhone'
-            label='Phone:'
-            onChange={this.onChange}
-            value={mobilePhone}
-            placeholder='Phone number'
-          />
-
-          <FormField id='email' label='Email:' onChange={this.onChange} value={email} placeholder='Email' />
-
-          <FormField id='skype' label='Skype:' onChange={this.onChange} value={skype} placeholder='Skype account' />
-
-          <FormField id='birthDate' inputType='date' label='Birthday:' onChange={this.onChange} value={birthDate} />
-
-          <FormField id='address' label='Address:' onChange={this.onChange} value={address} placeholder='City' />
-
-          <FormField
-            id='mathScore'
-            inputType='number'
-            min={0}
-            max={100}
-            label='Math score:'
-            onChange={this.onChange}
-            value={mathScore}
-            placeholder='Math test score'
-          />
-
-          <FormField
-            id='universityAverageScore'
-            inputType='number'
-            min={0}
-            max={10}
-            step={0.1}
-            label='Average score:'
-            onChange={this.onChange}
-            value={universityAverageScore}
-            placeholder='Diploma average score'
-          />
-
-          <FormField
-            id='education'
-            label='Education:'
-            onChange={this.onChange}
-            value={education}
-            placeholder='University Name'
-          />
-          <FormField id='startDate' inputType='date' label='Start Date:' onChange={this.onChange} value={startDate} />
-          <div className={styles.buttonWrapper}>
-            <Button disabled={!formIsValid} className={styles.successButton} onClick={this.createUser}>
-              {userId !== 'newMember' ? 'Save' : 'Create'}
-            </Button>
-
-            <Button onClick={hideMemberPage}>Back to grid</Button>
-          </div>
-        </form> */}
         <AvForm>
-          <AvField
-            className={styles.item}
+          {/* <AvField
+            // className={styles.item}
             id='firstName'
+            value={firstName}
+            onChange={this.onChange}
             name='firstName'
             type='text'
             label='First Name:'
@@ -486,8 +543,8 @@ class MemberPage extends React.Component {
             }}
           />
 
-          <AvField id='startDate' name='startDate' label='Start Date:' type='date' required />
-
+          <AvField id='startDate' name='startDate' label='Start Date:' type='date' required /> */}
+          {formFields}
           <div className={styles.buttonWrapper}>
             <Button className={styles.successButton} onClick={this.createUser}>
               {userId !== 'newMember' ? 'Save' : 'Create'}

@@ -11,23 +11,23 @@ $dangerousColor: #d04b31;
   color: $primaryColor;
 }
 
-button {
-  font-weight: 800;
-  padding: 1px 16px;
-  height: 1.5rem;
-  color: $primaryColor;
-  border: 1px solid $primaryColor;
-  background-color: $secondaryColor;
-  &:hover {
-    color: $secondaryColor;
-    background-color: $primaryColor;
-  }
-  &:disabled {
-    border: 1px solid #9d9d9d;
-    color: #9d9d9d;
-    background-color: #fff;
-  }
-}
+// button {
+//   font-weight: 800;
+//   padding: 1px 16px;
+//   height: 1.5rem;
+//   color: $primaryColor;
+//   border: 1px solid $primaryColor;
+//   background-color: $secondaryColor;
+//   &:hover {
+//     color: $secondaryColor;
+//     background-color: $primaryColor;
+//   }
+//   &:disabled {
+//     border: 1px solid #9d9d9d;
+//     color: #9d9d9d;
+//     background-color: #fff;
+//   }
+// }
 
 .dangerousButton {
   color: $dangerousColor;
