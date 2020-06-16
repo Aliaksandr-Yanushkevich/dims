@@ -31,7 +31,13 @@ class TasksTracksManagementRow extends React.Component {
         <TableData>{trackDate}</TableData>
         <TableData>
           <div className={styles.buttonWrapper}>
-            <Button data-taskid={taskTrackId} dataName={taskName} data-id={userTaskId} onClick={editTask}>
+            <Button
+              className={styles.defaultButton}
+              data-taskid={taskTrackId}
+              dataName={taskName}
+              data-id={userTaskId}
+              onClick={editTask}
+            >
               Edit
             </Button>
             <NavLink className={styles.link} to='/task_track_management'>

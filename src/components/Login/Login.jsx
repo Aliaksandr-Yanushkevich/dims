@@ -83,7 +83,7 @@ class Login extends React.Component {
                 <input id='remember' type='checkbox' checked={remember} onChange={this.onChange} />
               </label>
             </div>
-            <Button id='login' disabled={!formIsValid} onClick={this.login}>
+            <Button className={styles.defaultButton} id='login' disabled={!formIsValid} onClick={this.login}>
               Login
             </Button>
           </div>

@@ -33,13 +33,13 @@
 .buttonWrapper {
   margin-top: 0.5rem;
   display: grid;
-  grid-template-rows: 1fr;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
 
 .buttonWrapper button {
   width: 100%;
+  height: 3rem;
 }
 
 // input {

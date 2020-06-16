@@ -1,7 +1,7 @@
 @import './styleguide/styleguide.scss';
 
 body {
-  font-family: $font;
+  font-family: $font !important;
   margin: 0;
   box-sizing: border-box;
 }

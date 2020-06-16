@@ -82,17 +82,17 @@ class MemberData extends React.Component {
         <TableData>
           <div className={styles.buttonWrapper}>
             <NavLink className={styles.link} to='/member_progress'>
-              <Button data-id={userId} onClick={setCurrentUser}>
+              <Button className={styles.defaultButton} data-id={userId} onClick={setCurrentUser}>
                 Progress
               </Button>
             </NavLink>
             <NavLink className={styles.link} to='/member_tasks'>
-              <Button data-id={userId} onClick={setCurrentUser}>
+              <Button className={styles.defaultButton} data-id={userId} onClick={setCurrentUser}>
                 Tasks
               </Button>
             </NavLink>
             {role === 'admin' && (
-              <Button data-id={userId} onClick={createUser}>
+              <Button className={styles.defaultButton} data-id={userId} onClick={createUser}>
                 Edit
               </Button>
             )}

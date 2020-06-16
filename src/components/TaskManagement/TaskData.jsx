@@ -18,7 +18,7 @@ const TaskData = ({ index, taskName, startDate, deadline, taskId, newTask, delet
       <TableData>{deadline}</TableData>
       <TableData>
         <div className={styles.buttonWrapper}>
-          <Button data-taskid={taskId} onClick={newTask}>
+          <Button className={styles.defaultButton} data-taskid={taskId} onClick={newTask}>
             Edit
           </Button>
 

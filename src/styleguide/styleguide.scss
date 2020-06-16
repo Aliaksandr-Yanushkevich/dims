@@ -11,49 +11,51 @@ $dangerousColor: #d04b31;
   color: $primaryColor;
 }
 
-// button {
-//   font-weight: 800;
-//   padding: 1px 16px;
-//   height: 1.5rem;
-//   color: $primaryColor;
-//   border: 1px solid $primaryColor;
-//   background-color: $secondaryColor;
-//   &:hover {
-//     color: $secondaryColor;
-//     background-color: $primaryColor;
-//   }
-//   &:disabled {
-//     border: 1px solid #9d9d9d;
-//     color: #9d9d9d;
-//     background-color: #fff;
-//   }
-// }
-
-.dangerousButton {
-  color: $dangerousColor;
-  border: 1px solid $dangerousColor;
+.defaultButton {
+  font-weight: 600 !important;
+  color: $primaryColor !important;
+  border: 1px solid $primaryColor !important;
+  background-color: $secondaryColor !important;
   &:hover {
-    color: $secondaryColor;
-    background-color: $dangerousColor;
+    color: $secondaryColor !important;
+    background-color: $primaryColor !important;
   }
   &:disabled {
-    border: 1px solid #9d9d9d;
-    color: #9d9d9d;
-    background-color: #fff;
+    border: 1px solid #9d9d9d !important;
+    color: #9d9d9d !important;
+    background-color: #fff !important;
+  }
+}
+
+.dangerousButton {
+  font-weight: 600 !important;
+  color: $dangerousColor !important;
+  border: 1px solid $dangerousColor !important;
+  background-color: #fff !important;
+  &:hover {
+    color: $secondaryColor !important;
+    background-color: $dangerousColor !important;
+  }
+  &:disabled {
+    border: 1px solid #9d9d9d !important;
+    color: #9d9d9d !important;
+    background-color: #fff !important;
   }
 }
 
 .successButton {
-  color: #227447;
-  border: 1px solid #227447;
+  font-weight: 600 !important;
+  color: #227447 !important;
+  border: 1px solid #227447 !important;
+  background-color: $secondaryColor !important;
   &:hover {
-    color: $secondaryColor;
-    background-color: #227447;
+    color: $secondaryColor !important;
+    background-color: #227447 !important;
   }
   &:disabled {
-    border: 1px solid #9d9d9d;
-    color: #9d9d9d;
-    background-color: #fff;
+    border: 1px solid #9d9d9d !important;
+    color: #9d9d9d !important;
+    background-color: #fff !important;
   }
 }
 
@@ -121,4 +123,8 @@ td .link {
 
 textarea {
   overflow: auto;
+}
+
+legend {
+  font-size: 1rem;
 }
