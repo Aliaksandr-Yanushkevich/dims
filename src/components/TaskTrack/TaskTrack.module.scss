@@ -15,15 +15,14 @@
   background-color: $secondaryColor;
 }
 
-.dateItem {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
-  margin-bottom: 1rem;
+.wrapper form {
+  display: grid;
+  // grid-template-columns: 1fr 1fr;
+  grid-template-rows: 6rem 10rem 3rem;
+  grid-column-gap: 6rem;
 }
 
 .buttonWrapper {
-  margin-top: 0.5rem;
   display: grid;
   grid-template-rows: 1fr;
   grid-template-columns: 1fr 1fr;

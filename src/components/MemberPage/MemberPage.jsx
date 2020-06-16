@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDom from 'react-dom';
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import { AvForm, AvField, AvGroup, AvFeedback, AvRadio, AvRadioGroup } from 'availity-reactstrap-validation';
+import { Button } from 'reactstrap';
+import { AvForm, AvField, AvRadio, AvRadioGroup } from 'availity-reactstrap-validation';
 import Preloader from '../common/Preloader/Preloader';
 import styles from './MemberPage.module.scss';
 import firebaseApi from '../../api/firebaseApi';

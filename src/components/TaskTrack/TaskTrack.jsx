@@ -1,23 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
+import AvField from 'availity-reactstrap-validation/lib/AvField';
+import AvForm from 'availity-reactstrap-validation/lib/AvForm';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
 import styles from './TaskTrack.module.scss';
-import FormField from '../FormField/FormField';
 import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
 import generateID from '../../helpers/generateID';
+import { textMaxLength1000 } from '../../constants';
 
 class TaskTrack extends React.Component {
   state = {
     taskName: null,
     trackNote: '',
-    formIsValid: false,
   };
 
   componentDidMount() {
     const { taskTrackId, taskName } = this.props;
-    this.validateForm();
     if (taskTrackId) {
       firebaseApi
         .getTaskTrack(taskTrackId)
@@ -30,35 +30,26 @@ class TaskTrack extends React.Component {
   }
 
   onChange = (e) => {
-    const { value } = e.currentTarget;
+    const { value } = e.target;
     this.setState({ trackNote: value });
-    this.validateForm();
   };
 
-  validateForm = () => {
-    // magic numbers here are minimal/maximum length for input fields or other special requirements
-    const { trackNote } = this.state;
-    if (trackNote.length && trackNote.length <= 1000) {
-      this.setState({ formIsValid: true });
-    } else {
-      this.setState({ formIsValid: false });
-    }
-  };
-
-  trackTask = () => {
-    const { userTaskId, taskTrackId } = this.props;
-    const { trackNote } = this.state;
-    const trackDate = new Date();
-    if (taskTrackId) {
-      firebaseApi.trackTask(userTaskId, taskTrackId, trackDate, trackNote.trim());
-    } else {
-      const generatedTaskTrackId = generateID();
-      firebaseApi.trackTask(userTaskId, generatedTaskTrackId, trackDate, trackNote.trim());
+  trackTask = (event, errors) => {
+    if (!errors.length) {
+      const { userTaskId, taskTrackId } = this.props;
+      const { trackNote } = this.state;
+      const trackDate = new Date();
+      if (taskTrackId) {
+        firebaseApi.trackTask(userTaskId, taskTrackId, trackDate, trackNote.trim());
+      } else {
+        const generatedTaskTrackId = generateID();
+        firebaseApi.trackTask(userTaskId, generatedTaskTrackId, trackDate, trackNote.trim());
+      }
     }
   };
 
   render() {
-    const { taskName, trackNote, formIsValid } = this.state;
+    const { taskName, trackNote } = this.state;
     const { hideTaskTrackPage } = this.props;
     if (!taskName) {
       return <Preloader />;
@@ -68,27 +59,31 @@ class TaskTrack extends React.Component {
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{`Task Track - ${taskName}`}</h1>
 
-        <div className={styles.dateItem}>
-          <label htmlFor='date'>Date </label>
-          <input id='date' type='date' value={dateToStringForInput(new Date())} disabled />
-        </div>
-        <FormField
-          id='note'
-          name='note'
-          value={trackNote}
-          placeholder='Type your note here'
-          onChange={this.onChange}
-          inputType='textarea'
-          validateForm={this.validateForm}
-          label='Note'
-          maxLength={1000}
-        />
-        <div className={styles.buttonWrapper}>
-          <Button disabled={!formIsValid} className={styles.successButton} onClick={this.trackTask}>
-            Save
-          </Button>
-          <Button onClick={hideTaskTrackPage}>Back to grid</Button>
-        </div>
+        <AvForm onSubmit={this.trackTask}>
+          <AvField name='date' label='Date:' type='date' value={dateToStringForInput(new Date())} required disabled />
+          <AvField
+            id='note'
+            value={trackNote}
+            name='note'
+            type='textarea'
+            label='Note:'
+            placeholder='Type your note here'
+            onChange={this.onChange}
+            validate={{
+              required: { value: true, errorMessage: 'Field is required' },
+              pattern: {
+                value: `${textMaxLength1000}`,
+                errorMessage: 'Field must be short than 1000 symbols',
+              },
+            }}
+          />
+          <div className={styles.buttonWrapper}>
+            <Button className={styles.successButton}>Save</Button>
+            <Button className={styles.defaultButton} onClick={hideTaskTrackPage}>
+              Back to grid
+            </Button>
+          </div>
+        </AvForm>
       </div>
     );
   }
