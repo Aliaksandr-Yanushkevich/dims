@@ -8,6 +8,9 @@ import FormField from '../FormField/FormField';
 import MemberList from './MemberList';
 import firebaseApi from '../../api/firebaseApi';
 import generateID from '../../helpers/generateID';
+import AvForm from 'availity-reactstrap-validation/lib/AvForm';
+import AvField from 'availity-reactstrap-validation/lib/AvField';
+import { titleMaxLength140, textMaxLength1000 } from '../../constants';
 
 class TaskPage extends React.Component {
   constructor() {
@@ -29,7 +32,6 @@ class TaskPage extends React.Component {
 
   componentDidMount() {
     const { taskId } = this.props;
-    this.validateForm();
 
     if (taskId && taskId !== 'newTask') {
       this.setState({ taskId });
@@ -70,58 +72,43 @@ class TaskPage extends React.Component {
   onChange = (e) => {
     const { id, value } = e.currentTarget;
     this.setState({ [id]: value });
-    this.validateForm();
   };
 
-  validateForm = () => {
-    const { name, description, deadlineDate } = this.state;
-    // magic numbers here are minimal/maximum length for input fields
-    if (
-      name.length &&
-      name.length <= 140 &&
-      description.length >= 1 &&
-      description.length <= 2000 &&
-      deadlineDate.length
-    ) {
-      this.setState({ formIsValid: true });
-    } else {
-      this.setState({ formIsValid: false });
-    }
-  };
-
-  createTask = () => {
-    const {
-      name,
-      description,
-      startDate,
-      deadlineDate,
-      userTasks,
-      taskId,
-      usersWithTaskFromDB,
-      usersWithTaskLocal,
-    } = this.state;
-    const preparedstartDate = new Date(startDate);
-    const preparedDeadlineDate = new Date(deadlineDate);
-    const taskInfo = {
-      taskId,
-      name: name.trim(),
-      description: description.trim(),
-      startDate: preparedstartDate,
-      deadlineDate: preparedDeadlineDate,
-    };
-    firebaseApi.removeTaskFromUsers(usersWithTaskFromDB, usersWithTaskLocal, taskId).then(() => {
-      firebaseApi
-        .createTask(taskInfo)
-        .then(() => {
-          userTasks.forEach((task) => {
-            firebaseApi.assignTask(task);
-            firebaseApi.setTaskState(task.stateId);
+  createTask = (event, errors) => {
+    if (!errors.length) {
+      const {
+        name,
+        description,
+        startDate,
+        deadlineDate,
+        userTasks,
+        taskId,
+        usersWithTaskFromDB,
+        usersWithTaskLocal,
+      } = this.state;
+      const preparedstartDate = new Date(startDate);
+      const preparedDeadlineDate = new Date(deadlineDate);
+      const taskInfo = {
+        taskId,
+        name: name.trim(),
+        description: description.trim(),
+        startDate: preparedstartDate,
+        deadlineDate: preparedDeadlineDate,
+      };
+      firebaseApi.removeTaskFromUsers(usersWithTaskFromDB, usersWithTaskLocal, taskId).then(() => {
+        firebaseApi
+          .createTask(taskInfo)
+          .then(() => {
+            userTasks.forEach((task) => {
+              firebaseApi.assignTask(task);
+              firebaseApi.setTaskState(task.stateId);
+            });
+          })
+          .catch((error) => {
+            console.error('Error with assigning task', error);
           });
-        })
-        .catch((error) => {
-          console.error('Error with assigning task', error);
-        });
-    });
+      });
+    }
   };
 
   asignTask = (userId, checked) => {
@@ -145,49 +132,79 @@ class TaskPage extends React.Component {
     const { name, description, startDate, deadlineDate, members, formIsValid, usersWithTaskLocal } = this.state;
     const { taskId, hideMemberPage } = this.props;
 
+    const fields = [
+      {
+        id: 'name',
+        value: name,
+        name: 'taskName',
+        type: 'textarea',
+        label: 'Task name:',
+        placeholder: 'Task name',
+        regexp: titleMaxLength140,
+        errorMessage: 'Task name must be shorter than 140 characters',
+        cols: 30,
+        rows: 2,
+      },
+      {
+        id: 'description',
+        value: name,
+        name: 'description',
+        type: 'textarea',
+        label: 'Description:',
+        placeholder: 'Task description',
+        regexp: textMaxLength1000,
+        errorMessage: 'Task description must be shorter than 1000 characters',
+        cols: 30,
+        rows: 8,
+      },
+      { id: 'startDate', value: startDate, name: 'startDate', type: 'date', label: 'Start:' },
+      { id: 'deadlineDate', value: deadlineDate, name: 'deadlineDate', type: 'date', label: 'Deadline:' },
+    ];
+
+    const formFields = fields.map(({ id, value, name, type, label, placeholder, regexp, errorMessage, cols, rows }) => {
+      if (type === 'date') {
+        return <AvField name={name} label={label} type={type} onChange={this.onChange} value={value} required />;
+      }
+
+      return (
+        <AvField
+          id={id}
+          value={value}
+          name={name}
+          type={type}
+          label={label}
+          placeholder={placeholder}
+          onChange={this.onChange}
+          cols={cols}
+          rows={rows}
+          validate={{
+            required: { value: true, errorMessage: 'Field is required' },
+            pattern: {
+              value: `${regexp}`,
+              errorMessage,
+            },
+          }}
+        />
+      );
+    });
+
     return ReactDom.createPortal(
       <div className={styles.wrapper}>
-        <form action=''>
-          <h1 className={styles.title}>{taskId === 'newTask' ? 'New task' : `Edit task`}</h1>
-          <FormField
-            id='name'
-            name='taskName'
-            inputType='textarea'
-            label='Task name:'
-            onChange={this.onChange}
-            value={name}
-            placeholder='Task name'
-            cols={30}
-            rows={2}
-          />
-          <FormField
-            id='description'
-            name='description'
-            inputType='textarea'
-            label='Description:'
-            maxLength={2000}
-            onChange={this.onChange}
-            value={description}
-            placeholder='Task description'
-          />
-          <FormField id='startDate' inputType='date' label='Start:' onChange={this.onChange} value={startDate} />
-          <FormField
-            id='deadlineDate'
-            inputType='date'
-            label='Deadline:'
-            onChange={this.onChange}
-            value={deadlineDate}
-          />
+        <h1 className={styles.title}>{taskId === 'newTask' ? 'New task' : `Edit task`}</h1>
+        <div className={styles.left}>
+          <AvForm onSubmit={this.createTask}>
+            {formFields}
+            <div className={styles.buttonWrapper}>
+              <Button className={styles.successButton}>{taskId === 'newTask' ? 'Create' : 'Save'}</Button>
+              <Button onClick={hideMemberPage}>Back to grid</Button>
+            </div>
+          </AvForm>
+        </div>
+        <div className={styles.right}>
           {members && (
             <MemberList members={members} asignTask={this.asignTask} usersWithTaskLocal={usersWithTaskLocal} />
           )}
-          <div className={styles.buttonWrapper}>
-            <Button disabled={!formIsValid} className={styles.successButton} onClick={this.createTask}>
-              {taskId === 'newTask' ? 'Create' : 'Save'}
-            </Button>
-            <Button onClick={hideMemberPage}>Back to grid</Button>
-          </div>
-        </form>
+        </div>
       </div>,
       this.root,
     );

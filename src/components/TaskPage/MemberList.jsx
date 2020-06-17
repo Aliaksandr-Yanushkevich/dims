@@ -21,7 +21,7 @@ const MemberList = ({ members, asignTask, usersWithTaskLocal }) => {
   return (
     <>
       <div className={styles.members}>
-        <div className={styles.membersTitle}>Members</div>
+        <div className={styles.membersTitle}>Members:</div>
         <div className={styles.membersItems}>
           <ul>{memberNames}</ul>
         </div>

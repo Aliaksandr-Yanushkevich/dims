@@ -12,3 +12,4 @@ export const addresseRegexp = /[A-Za-z0-9'.\-\s,]/;
 export const numberRange0To100 = /^0*(?:[1-9][0-9]?|100)$/;
 export const numberRange0To10 = /\b([0-9]|10)\b/;
 export const textMaxLength1000 = /^.{1,1000}$/;
+export const titleMaxLength140 = /^.{1,140}$/;
