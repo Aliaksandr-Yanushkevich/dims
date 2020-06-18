@@ -153,7 +153,7 @@ class TaskPage extends React.Component {
         regexp: textMaxLength1000,
         errorMessage: 'Task description must be shorter than 1000 characters',
         cols: 30,
-        rows: 8,
+        rows: 5,
       },
       { id: 'startDate', value: startDate, name: 'startDate', type: 'date', label: 'Start:' },
       { id: 'deadlineDate', value: deadlineDate, name: 'deadlineDate', type: 'date', label: 'Deadline:' },
@@ -161,11 +161,23 @@ class TaskPage extends React.Component {
 
     const formFields = fields.map(({ id, value, name, type, label, placeholder, regexp, errorMessage, cols, rows }) => {
       if (type === 'date') {
-        return <AvField name={name} label={label} type={type} onChange={this.onChange} value={value} required />;
+        return (
+          <AvField
+            key={id}
+            id={id}
+            name={name}
+            label={label}
+            type={type}
+            onChange={this.onChange}
+            value={value}
+            required
+          />
+        );
       }
 
       return (
         <AvField
+          key={id}
           id={id}
           value={value}
           name={name}
@@ -190,18 +202,21 @@ class TaskPage extends React.Component {
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{taskId === 'newTask' ? 'New task' : `Edit task`}</h1>
         <div className={styles.left}>
-          <AvForm onSubmit={this.createTask}>
-            {formFields}
-            <div className={styles.buttonWrapper}>
-              <Button className={styles.successButton}>{taskId === 'newTask' ? 'Create' : 'Save'}</Button>
-              <Button onClick={hideMemberPage}>Back to grid</Button>
-            </div>
-          </AvForm>
+          <AvForm id='form'>{formFields}</AvForm>
         </div>
+
         <div className={styles.right}>
           {members && (
             <MemberList members={members} asignTask={this.asignTask} usersWithTaskLocal={usersWithTaskLocal} />
           )}
+          <div className={styles.buttonWrapper}>
+            <Button className={styles.successButton} form='form'>
+              {taskId === 'newTask' ? 'Create' : 'Save'}
+            </Button>
+            <Button className={styles.defaultButton} onClick={hideMemberPage}>
+              Back to grid
+            </Button>
+          </div>
         </div>
       </div>,
       this.root,

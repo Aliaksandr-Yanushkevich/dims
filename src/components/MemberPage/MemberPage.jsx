@@ -305,15 +305,16 @@ class MemberPage extends React.Component {
       ({ id, value, name, type, label, placeholder, regexp, errorMessage, options = [], step }) => {
         if (type === 'radio') {
           return (
-            <AvRadioGroup inline id={id} name={name} label={label} required>
+            <AvRadioGroup key={id} inline id={id} name={name} label={label} required>
               {options.map((option) => {
                 console.log(option.value === sex);
                 return (
                   <AvRadio
+                    key={label}
                     label={option.label}
                     value={option.value}
                     onChange={this.onChange}
-                    checked={id === 'sex' ? option.value === sex : false}
+                    checked={id === 'sex' ? option.value === sex : false} // doesn't work
                   />
                 );
               })}

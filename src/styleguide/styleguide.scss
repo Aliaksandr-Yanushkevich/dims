@@ -16,6 +16,7 @@ $dangerousColor: #d04b31;
   color: $primaryColor !important;
   border: 1px solid $primaryColor !important;
   background-color: $secondaryColor !important;
+  height: 2rem !important;
   &:hover {
     color: $secondaryColor !important;
     background-color: $primaryColor !important;
@@ -32,6 +33,7 @@ $dangerousColor: #d04b31;
   color: $dangerousColor !important;
   border: 1px solid $dangerousColor !important;
   background-color: #fff !important;
+  height: 2rem !important;
   &:hover {
     color: $secondaryColor !important;
     background-color: $dangerousColor !important;
@@ -48,6 +50,7 @@ $dangerousColor: #d04b31;
   color: #227447 !important;
   border: 1px solid #227447 !important;
   background-color: $secondaryColor !important;
+  height: 2rem !important;
   &:hover {
     color: $secondaryColor !important;
     background-color: #227447 !important;

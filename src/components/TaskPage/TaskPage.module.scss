@@ -5,7 +5,6 @@
   border: 1px solid $primaryColor;
   margin: 0 auto;
   padding: 1.5rem;
-  padding-bottom: 5rem;
   position: fixed;
   left: 0;
   right: 0;
@@ -16,11 +15,10 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 3rem 1fr;
-  gap: 10px;
+  grid-column-gap: 6rem;
   grid-template-areas:
     't t'
     'l r';
-  // position: relative;
 }
 
 .left,
@@ -28,12 +26,16 @@
   width: 100%;
 }
 
-.left {
+.left form {
   grid-area: l;
+  display: grid;
+  grid-template-rows: 8rem 1fr 6rem 8rem;
 }
 
 .right {
   grid-area: r;
+  display: grid;
+  grid-template-rows: 1fr 2rem;
 }
 
 .title {
@@ -54,7 +56,7 @@ textarea {
 
 .membersItems {
   width: 100%;
-  height: 21.3rem;
+  height: 88.5%;
   margin: 0 auto;
   overflow: auto;
   border: 1px solid #ced4da;
@@ -81,9 +83,6 @@ textarea {
   grid-template-rows: 1fr;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  position: absolute;
-  right: 1.5rem;
-  bottom: 1.5rem;
 }
 
 .buttonWrapper button {
