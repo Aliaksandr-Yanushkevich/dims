@@ -2,9 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import { Button } from 'reactstrap';
+import AvForm from 'availity-reactstrap-validation/lib/AvForm';
+import AvGroup from 'availity-reactstrap-validation/lib/AvGroup';
+import AvField from 'availity-reactstrap-validation/lib/AvField';
 import firebaseApi from '../../api/firebaseApi';
 import styles from './Login.module.scss';
-import FormField from '../FormField/FormField';
 import { emailRegexp } from '../../constants';
 
 class Login extends React.Component {
@@ -12,9 +14,7 @@ class Login extends React.Component {
     email: '',
     password: '',
     remember: false,
-    formIsValid: false,
     isAuth: false,
-    message: '',
   };
 
   componentDidMount() {
@@ -25,45 +25,97 @@ class Login extends React.Component {
     }
   }
 
-  login = () => {
-    const { setUser } = this.props;
-    const { email, password, remember } = this.state;
-    firebaseApi
-      .login(email, password)
-      .then(() => {
-        firebaseApi.getRole(email).then((result) => {
-          const { role, userId, firstName, lastName } = result;
-          setUser(userId, role, firstName, lastName, email);
-          this.setState({ isAuth: true, role });
-          if (remember) {
-            const user = JSON.stringify(result);
-            sessionStorage.setItem('user', user);
-          }
+  login = (event, errors) => {
+    if (!errors.length) {
+      const { setUser } = this.props;
+      const { email, password, remember } = this.state;
+      firebaseApi
+        .login(email, password)
+        .then(() => {
+          firebaseApi.getRole(email).then((result) => {
+            const { role, userId, firstName, lastName } = result;
+            setUser(userId, role, firstName, lastName, email);
+            this.setState({ isAuth: true, role });
+            if (remember) {
+              const user = JSON.stringify(result);
+              sessionStorage.setItem('user', user);
+            }
+          });
+        })
+        .catch(({ message }) => {
+          console.error(message);
         });
-      })
-      .catch(({ message }) => {
-        this.setState({ message });
-      });
+    }
   };
 
   onChange = (e) => {
     const { id, value, checked } = e.currentTarget;
     id === 'remember' ? this.setState({ [id]: checked }) : this.setState({ [id]: value });
-    this.validateForm();
-  };
-
-  validateForm = () => {
-    // magic numbers here are minimal/maximum length for input fields or other special requirements
-    const { email, password } = this.state;
-    if (emailRegexp.test(email) && password.length) {
-      this.setState({ formIsValid: true });
-    } else {
-      this.setState({ formIsValid: false });
-    }
   };
 
   render() {
-    const { email, password, remember, formIsValid, isAuth, role, message } = this.state;
+    const { email, password, isAuth, role, remember } = this.state;
+    const fields = [
+      {
+        id: 'email',
+        value: email,
+        name: 'email',
+        type: 'text',
+        label: 'Email:',
+        placeholder: 'Email',
+        regexp: emailRegexp,
+        errorMessage: 'You have entered an invalid email address',
+        reguired: true,
+      },
+      {
+        id: 'password',
+        value: password,
+        name: 'password',
+        type: 'password',
+        label: 'Password:',
+        placeholder: 'Password',
+        reguired: true,
+      },
+    ];
+
+    const formFields = fields.map(({ id, value, name, type, label, placeholder, regexp, errorMessage, required }) => {
+      if (type === 'password') {
+        return (
+          <AvField
+            key={id}
+            id={id}
+            value={value}
+            name={name}
+            type={type}
+            label={label}
+            placeholder={placeholder}
+            onChange={this.onChange}
+            validate={{
+              required: { value: required, errorMessage: 'Field is required' },
+            }}
+          />
+        );
+      }
+
+      return (
+        <AvField
+          id={id}
+          value={value}
+          name={name}
+          type={type}
+          label={label}
+          placeholder={placeholder}
+          onChange={this.onChange}
+          validate={{
+            required: { value: required, errorMessage: 'Field is required' },
+            pattern: {
+              value: `${regexp}`,
+              errorMessage,
+            },
+          }}
+        />
+      );
+    });
 
     if (isAuth) {
       if (role === 'admin' || role === 'mentor') return <Redirect to='/members' />;
@@ -73,24 +125,18 @@ class Login extends React.Component {
     return (
       <div className={styles.wrapper}>
         <h1 className={styles.title}>Login</h1>
-        <form action=''>
-          <FormField id='email' label='Email:' value={email} onChange={this.onChange} />
-          <FormField inputType='password' id='password' label='Password:' value={password} onChange={this.onChange} />
+
+        <AvForm onSubmit={this.login}>
+          {formFields}
           <div className={styles.item}>
-            <div className={styles.remember}>
-              <label htmlFor='remember'>
-                Remember me
-                <input id='remember' type='checkbox' checked={remember} onChange={this.onChange} />
-              </label>
-            </div>
-            <Button className={styles.defaultButton} id='login' disabled={!formIsValid} onClick={this.login}>
+            <AvGroup>
+              <AvField name='remember' label='Remember me' type='checkbox' onChange={this.onChange} value={remember} />
+            </AvGroup>
+            <Button className={styles.defaultButton} id='login'>
               Login
             </Button>
           </div>
-        </form>
-        <div className={styles.message}>
-          <p>{message}</p>
-        </div>
+        </AvForm>
       </div>
     );
   }

@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDom from 'react-dom';
 import { Button } from 'reactstrap';
+import AvForm from 'availity-reactstrap-validation/lib/AvForm';
+import AvField from 'availity-reactstrap-validation/lib/AvField';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
 import styles from './TaskPage.module.scss';
-import FormField from '../FormField/FormField';
 import MemberList from './MemberList';
 import firebaseApi from '../../api/firebaseApi';
 import generateID from '../../helpers/generateID';
-import AvForm from 'availity-reactstrap-validation/lib/AvForm';
-import AvField from 'availity-reactstrap-validation/lib/AvField';
 import { titleMaxLength140, textMaxLength1000 } from '../../constants';
 
 class TaskPage extends React.Component {
@@ -17,14 +16,13 @@ class TaskPage extends React.Component {
     super();
     this.state = {
       members: null,
-      name: '',
+      taskName: '',
       description: '',
       startDate: dateToStringForInput(new Date()),
       deadlineDate: '',
       usersWithTaskFromDB: null,
       usersWithTaskLocal: null,
       userTasks: [],
-      formIsValid: false,
     };
     this.root = document.createElement('div');
     document.body.appendChild(this.root);
@@ -40,7 +38,7 @@ class TaskPage extends React.Component {
         .then((task) => {
           const { name, description, startDate, deadlineDate } = task.data();
           this.setState({
-            name,
+            taskName: name,
             description,
             startDate: dateToStringForInput(startDate.toDate()),
             deadlineDate: dateToStringForInput(deadlineDate.toDate()),
@@ -77,7 +75,7 @@ class TaskPage extends React.Component {
   createTask = (event, errors) => {
     if (!errors.length) {
       const {
-        name,
+        taskName,
         description,
         startDate,
         deadlineDate,
@@ -90,7 +88,7 @@ class TaskPage extends React.Component {
       const preparedDeadlineDate = new Date(deadlineDate);
       const taskInfo = {
         taskId,
-        name: name.trim(),
+        name: taskName.trim(),
         description: description.trim(),
         startDate: preparedstartDate,
         deadlineDate: preparedDeadlineDate,
@@ -129,13 +127,13 @@ class TaskPage extends React.Component {
   };
 
   render() {
-    const { name, description, startDate, deadlineDate, members, formIsValid, usersWithTaskLocal } = this.state;
+    const { taskName, description, startDate, deadlineDate, members, usersWithTaskLocal } = this.state;
     const { taskId, hideMemberPage } = this.props;
 
     const fields = [
       {
         id: 'name',
-        value: name,
+        value: taskName,
         name: 'taskName',
         type: 'textarea',
         label: 'Task name:',
@@ -147,7 +145,7 @@ class TaskPage extends React.Component {
       },
       {
         id: 'description',
-        value: name,
+        value: description,
         name: 'description',
         type: 'textarea',
         label: 'Description:',
