@@ -1,107 +1,147 @@
 import React from 'react';
+import ReactDom from 'react-dom';
 import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
 import { Button } from 'reactstrap';
+import AvForm from 'availity-reactstrap-validation/lib/AvForm';
+import AvField from 'availity-reactstrap-validation/lib/AvField';
 import styles from './Account.module.scss';
-import FormField from '../FormField/FormField';
 import firebaseApi from '../../api/firebaseApi';
+import { passwordRegexp } from '../../constants';
 
 class Account extends React.Component {
-  state = {
-    oldPassword: '',
-    password: '',
-    repeatedPassword: '',
-    formIsValid: false,
-    message: null,
-  };
+  constructor() {
+    super();
+    this.state = {
+      oldPassword: '',
+      password: '',
+      repeatedPassword: '',
+    };
+    this.root = document.createElement('div');
+    document.body.appendChild(this.root);
+  }
 
-  updatePassword = () => {
-    const { email } = this.props;
-    const { oldPassword, password, repeatedPassword } = this.state;
-    if (oldPassword === password) {
-      this.setState({ message: 'Old and new password match. Enter another password and try again' });
-    } else if (password === repeatedPassword) {
+  componentWillUnmount() {
+    document.body.removeChild(this.root);
+  }
+
+  updatePassword = (event, errors) => {
+    if (!errors.length) {
+      const { email } = this.props;
+      const { oldPassword, password } = this.state;
+
       firebaseApi
         .login(email, oldPassword)
         .then(() => {
           firebaseApi.updatePassword(password);
         })
         .then(() => {
-          this.setState({ message: '' });
           console.log('Password was successfully changed');
         })
-        .catch(({ message }) => this.setState({ message }));
+        .catch(({ message }) => {
+          console.error({ message });
+        });
     }
   };
 
   onChange = (e) => {
-    const { id, value, checked } = e.currentTarget;
-    id === 'remember' ? this.setState({ [`${id}`]: checked }) : this.setState({ [`${id}`]: value });
-    this.validateForm();
-  };
-
-  validateForm = () => {
-    // magic numbers here are minimal/maximum length for input fields or other special requirements
-    const { password, repeatedPassword } = this.state;
-    if (password.length >= 6 && password.length <= 30 && password === repeatedPassword) {
-      this.setState({ formIsValid: true });
-    } else {
-      this.setState({ formIsValid: false });
-    }
+    const { id, value } = e.currentTarget;
+    this.setState({ [`${id}`]: value });
   };
 
   render() {
-    const { firstName, lastName, role } = this.props;
-    const { oldPassword, password, repeatedPassword, formIsValid, message } = this.state;
-    return (
+    const { firstName, lastName, role, hideAccountPage } = this.props;
+    const { oldPassword, password, repeatedPassword } = this.state;
+    const fields = [
+      {
+        id: 'oldPassword',
+        value: oldPassword,
+        name: 'oldPassword',
+        type: 'password',
+        label: 'Old password:',
+        placeholder: 'Old password',
+      },
+      {
+        id: 'password',
+        value: password,
+        name: 'password',
+        type: 'password',
+        label: 'Password:',
+        placeholder: 'Password:',
+        regexp: passwordRegexp,
+        errorMessage:
+          'Password must be a minimum of eight characters and contain lowercase letters, uppercase letters and numbers',
+      },
+      {
+        id: 'repeatedPassword',
+        value: repeatedPassword,
+        name: 'repeatedPassword',
+        type: 'password',
+        label: 'Repeate password:',
+        placeholder: 'Repeate password',
+        regexp: `/^${password}$/`,
+        errorMessage: 'Password mismatch',
+      },
+    ];
+
+    const formFields = fields.map(({ id, value, name, type, label, placeholder, regexp, errorMessage }) => {
+      if (id === 'oldPassword') {
+        return (
+          <AvField
+            key={id}
+            id={id}
+            value={value}
+            name={name}
+            type={type}
+            label={label}
+            placeholder={placeholder}
+            onChange={this.onChange}
+            validate={{
+              required: { value: true, errorMessage: 'Field is required' },
+            }}
+          />
+        );
+      }
+      return (
+        <AvField
+          key={id}
+          id={id}
+          value={value}
+          name={name}
+          type={type}
+          label={label}
+          placeholder={placeholder}
+          onChange={this.onChange}
+          validate={{
+            required: { value: true, errorMessage: 'Field is required' },
+            pattern: {
+              value: `${regexp}`,
+              errorMessage,
+            },
+          }}
+        />
+      );
+    });
+
+    return ReactDom.createPortal(
       <div className={styles.wrapper}>
         <h1 className={styles.title}>Account</h1>
         <p>{`Name: ${firstName} ${lastName}`}</p>
         <p>{`Role: ${role}`}</p>
-        <form>
-          <FormField
-            minLength={6}
-            maxLength={30}
-            inputType='password'
-            id='oldPassword'
-            label='Old password:'
-            value={oldPassword}
-            onChange={this.onChange}
-            validateForm={this.validateForm}
-          />
-          <FormField
-            minLength={6}
-            maxLength={30}
-            inputType='password'
-            id='password'
-            label='Password:'
-            value={password}
-            onChange={this.onChange}
-            validateForm={this.validateForm}
-          />
-          <FormField
-            minLength={6}
-            maxLength={30}
-            inputType='password'
-            id='repeatedPassword'
-            label='Repeate password:'
-            value={repeatedPassword}
-            onChange={this.onChange}
-            validateForm={this.validateForm}
-          />
-          <div className={styles.message}>
-            <p>{message}</p>
-          </div>
+        <AvForm className={styles.form} onSubmit={this.updatePassword}>
+          {formFields}
+
           <div className={styles.buttonWrapper}>
-            <Button id='change' disabled={!formIsValid} onClick={this.updatePassword}>
+            <Button className={styles.successButton} id='change'>
               Change
             </Button>
-            <NavLink to={role === 'admin' || role === 'admin' ? '/members' : '/member_tasks'}>
-              <Button id='backToGrid'>Back to grid</Button>
-            </NavLink>
+
+            <Button className={styles.defaultButton} id='backToGrid' onClick={hideAccountPage}>
+              Back to grid
+            </Button>
           </div>
-        </form>
-      </div>
+        </AvForm>
+      </div>,
+      this.root,
     );
   }
 }
@@ -111,6 +151,7 @@ Account.propTypes = {
   lastName: PropTypes.string,
   role: PropTypes.string,
   email: PropTypes.string,
+  hideAccountPage: PropTypes.func,
 };
 
 Account.defaultProps = {
@@ -118,6 +159,7 @@ Account.defaultProps = {
   lastName: '',
   role: '',
   email: '',
+  hideAccountPage: () => {},
 };
 
 export default Account;

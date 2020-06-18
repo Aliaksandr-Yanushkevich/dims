@@ -99,6 +99,7 @@ class Login extends React.Component {
 
       return (
         <AvField
+          key={id}
           id={id}
           value={value}
           name={name}
@@ -126,7 +127,7 @@ class Login extends React.Component {
       <div className={styles.wrapper}>
         <h1 className={styles.title}>Login</h1>
 
-        <AvForm onSubmit={this.login}>
+        <AvForm className={styles.form} onSubmit={this.login}>
           {formFields}
           <div className={styles.item}>
             <AvGroup>

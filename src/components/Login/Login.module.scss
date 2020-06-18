@@ -8,6 +8,11 @@
   padding: 1.5rem;
 }
 
+.form {
+  display: grid;
+  grid-template-rows: 6rem 6rem 3rem;
+}
+
 .item {
   display: flex;
   justify-content: space-between;
@@ -15,15 +20,6 @@
   margin-bottom: 1rem;
 }
 
-.remember input {
-  width: 1rem;
-}
-
 .item button {
   width: 7rem;
-}
-
-.message {
-  height: 4rem;
-  color: $dangerousColor;
 }

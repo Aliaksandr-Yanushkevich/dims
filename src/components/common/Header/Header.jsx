@@ -6,7 +6,7 @@ import styles from './Header.module.scss';
 import logo from '../logo.svg';
 import UserBlock from './UserBlock';
 
-const Header = ({ firstName, lastName, logout, role }) => {
+const Header = ({ firstName, lastName, logout, role, showAccountPage }) => {
   const [activeTab, setActiveTab] = useState('1');
 
   const toggle = (tab) => {
@@ -45,7 +45,9 @@ const Header = ({ firstName, lastName, logout, role }) => {
         </div>
       )}
 
-      {firstName && <UserBlock firstName={firstName} lastName={lastName} logout={logout} />}
+      {firstName && (
+        <UserBlock firstName={firstName} lastName={lastName} logout={logout} showAccountPage={showAccountPage} />
+      )}
     </header>
   );
 };
@@ -54,6 +56,7 @@ Header.propTypes = {
   firstName: PropTypes.string,
   lastName: PropTypes.string,
   logout: PropTypes.func,
+  showAccountPage: PropTypes.func,
   role: PropTypes.string,
 };
 
@@ -61,6 +64,7 @@ Header.defaultProps = {
   firstName: '',
   lastName: '',
   logout: () => {},
+  showAccountPage: () => {},
   role: '',
 };
 

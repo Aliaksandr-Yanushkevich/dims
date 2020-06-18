@@ -19,6 +19,7 @@ class App extends Component {
     currentTaskId: 'newTask',
     firstName: null,
     lastName: null,
+    accountPageIsVisible: false,
   };
 
   componentDidMount() {
@@ -62,13 +63,37 @@ class App extends Component {
     });
   };
 
+  showAccountPage = () => {
+    this.setState({ accountPageIsVisible: true });
+  };
+
+  hideAccountPage = () => {
+    this.setState({ accountPageIsVisible: false });
+  };
+
   render() {
-    const { currentUserId, currentTaskId, role, firstName, lastName, email } = this.state;
+    const { currentUserId, currentTaskId, role, firstName, lastName, email, accountPageIsVisible } = this.state;
 
     return (
       <BrowserRouter>
+        {accountPageIsVisible && (
+          <Account
+            role={role}
+            firstName={firstName}
+            lastName={lastName}
+            email={email}
+            hideAccountPage={this.hideAccountPage}
+          />
+        )}
         <div className={styles.wrapper}>
-          <Header firstName={firstName} lastName={lastName} logout={this.logout} role={role} />
+          <Header
+            firstName={firstName}
+            lastName={lastName}
+            logout={this.logout}
+            role={role}
+            showAccountPage={this.showAccountPage}
+            hideAccountPage={this.hideAccountPage}
+          />
           <div className={styles.contentWrapper}>
             {!currentUserId && <Redirect from='/' to='/login' />}
             <Route path='/members'>
@@ -99,9 +124,6 @@ class App extends Component {
             </Route>
             <Route path='/login'>
               <Login setUser={this.setUser} />
-            </Route>
-            <Route path='/account'>
-              <Account role={role} firstName={firstName} lastName={lastName} email={email} />
             </Route>
           </div>
           <Footer />

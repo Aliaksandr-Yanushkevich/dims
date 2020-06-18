@@ -6,6 +6,18 @@
   border: 1px solid $primaryColor;
   margin: 0 auto;
   padding: 1.5rem;
+  overflow: auto;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translate(0, -50%);
+  background-color: $secondaryColor;
+}
+
+.form {
+  display: grid;
+  grid-template-rows: 6rem 6rem 6rem 3rem;
 }
 
 .buttonWrapper {
