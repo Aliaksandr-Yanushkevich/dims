@@ -314,7 +314,8 @@ class MemberPage extends React.Component {
                     label={option.label}
                     value={option.value}
                     onChange={this.onChange}
-                    checked={id === 'sex' ? option.value === sex : false} // doesn't work
+                    // doesn't work. After rendering checkboxes are not checked
+                    checked={id === 'sex' ? option.value === sex : false}
                   />
                 );
               })}
