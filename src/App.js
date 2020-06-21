@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Route, Redirect } from 'react-router-dom';
 import Header from './components/common/Header/Header';
 import Members from './components/Members/Members';
 import MemberProgress from './components/MemberProgress/MemberProgress';
@@ -10,43 +11,18 @@ import styles from './App.module.scss';
 import TaskManagement from './components/TaskManagement/TaskManagement';
 import Login from './components/Login/Login';
 import Account from './components/Account/Account';
-import firebaseApi from './api/firebaseApi';
+import { setRole, loginSuccess } from './redux/reducers/authReducer';
 
 class App extends Component {
-  state = {
-    currentUserId: null,
-    role: null,
-    currentTaskId: 'newTask',
-    firstName: null,
-    lastName: null,
-    accountPageIsVisible: false,
-  };
-
   componentDidMount() {
+    const { setRole } = this.props;
     const user = JSON.parse(sessionStorage.getItem('user'));
     if (user) {
       const { role, userId, firstName, lastName, email } = user;
-      this.setState({ role, currentUserId: userId, firstName, lastName, email });
+      setRole({ role, currentUserId: userId, firstName, lastName, email });
     }
     document.title = 'DIMS';
   }
-
-  setUser = (userId, role, firstName, lastName, email) => {
-    this.setState({ currentUserId: userId, role, firstName, lastName, email });
-  };
-
-  logout = () => {
-    firebaseApi
-      .logout()
-      .then(() => {
-        sessionStorage.removeItem('user');
-        this.setState({ currentUserId: null, role: null, currentTaskId: 'newTask', firstName: null, lastName: null });
-        console.log('Logged out');
-      })
-      .catch((error) => {
-        console.error('Logout error', error);
-      });
-  };
 
   setCurrentUser = (e) => {
     e.persist();
@@ -63,19 +39,12 @@ class App extends Component {
     });
   };
 
-  showAccountPage = () => {
-    this.setState({ accountPageIsVisible: true });
-  };
-
-  hideAccountPage = () => {
-    this.setState({ accountPageIsVisible: false });
-  };
-
   render() {
-    const { currentUserId, currentTaskId, role, firstName, lastName, email, accountPageIsVisible } = this.state;
+    const { isAuth, currentUserId, currentTaskId, role, firstName, lastName, email, accountPageIsVisible } = this.props;
+    const savedUserData = sessionStorage.getItem('user');
 
     return (
-      <BrowserRouter>
+      <>
         {accountPageIsVisible && (
           <Account
             role={role}
@@ -86,16 +55,10 @@ class App extends Component {
           />
         )}
         <div className={styles.wrapper}>
-          <Header
-            firstName={firstName}
-            lastName={lastName}
-            logout={this.logout}
-            role={role}
-            showAccountPage={this.showAccountPage}
-            hideAccountPage={this.hideAccountPage}
-          />
+          <Header />
           <div className={styles.contentWrapper}>
-            {!currentUserId && <Redirect from='/' to='/login' />}
+            {!isAuth && !savedUserData && <Redirect from='/' to='/login' />}
+            {role === 'admin' || (role === 'mentor' && <Redirect from='/' to='/members' />)}
             <Route path='/members'>
               <Members currentUserId={currentUserId} setCurrentUser={this.setCurrentUser} role={role} />
             </Route>
@@ -123,14 +86,20 @@ class App extends Component {
               <TaskTrackManagement userId={currentUserId} role={role} />
             </Route>
             <Route path='/login'>
-              <Login setUser={this.setUser} />
+              <Login />
             </Route>
           </div>
           <Footer />
         </div>
-      </BrowserRouter>
+      </>
     );
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  const { currentTaskId, currentUserId, accountPageIsVisible } = state.app;
+  const { isAuth, role, userId, firstName, lastName } = state.auth;
+  return { currentTaskId, currentUserId, isAuth, role, userId, firstName, lastName };
+};
+
+export default connect(mapStateToProps, { setRole, loginSuccess })(App);

@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import styles from './Header.module.scss';
 import logo from '../logo.svg';
 import UserBlock from './UserBlock';
+import { showAccountPage } from '../../../redux/reducers/appReducer';
+import { logout } from '../../../redux/reducers/authReducer';
 
-const Header = ({ firstName, lastName, logout, role, showAccountPage }) => {
+const Header = ({ firstName, lastName, role, logout }) => {
   const [activeTab, setActiveTab] = useState('1');
 
   const toggle = (tab) => {
@@ -52,20 +55,21 @@ const Header = ({ firstName, lastName, logout, role, showAccountPage }) => {
   );
 };
 
+const mapStateToProps = (state) => {
+  const { firstName, lastName, role } = state.auth;
+  return { firstName, lastName, role };
+};
+
 Header.propTypes = {
   firstName: PropTypes.string,
   lastName: PropTypes.string,
-  logout: PropTypes.func,
-  showAccountPage: PropTypes.func,
   role: PropTypes.string,
 };
 
 Header.defaultProps = {
   firstName: '',
   lastName: '',
-  logout: () => {},
-  showAccountPage: () => {},
   role: '',
 };
 
-export default Header;
+export default connect(mapStateToProps, { showAccountPage, logout })(Header);
