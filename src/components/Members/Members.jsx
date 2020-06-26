@@ -17,31 +17,9 @@ class Members extends React.Component {
   };
 
   componentDidMount() {
-    const members = [];
-    firebaseApi
-      .getUsers()
-      .then((users) => {
-        if (users.size) {
-          users.forEach((user) => {
-            const { firstName, lastName, birthDate, directionId, education, startDate, userId } = user.data();
-            members.push({
-              firstName,
-              lastName,
-              birthDate: birthDate.toDate(),
-              directionId,
-              education,
-              startDate: startDate.toDate(),
-              userId,
-            });
-          });
-        }
-      })
-      .then(() => {
-        this.setState({ members });
-      })
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
+    firebaseApi.getUsers().then((members) => {
+      this.setState({ members });
+    });
   }
 
   createUser = (e) => {
@@ -57,14 +35,7 @@ class Members extends React.Component {
   deleteUser = (e) => {
     e.persist();
     const userId = e.target.dataset.id;
-    firebaseApi
-      .deleteUser(userId)
-      .then(() => {
-        console.log('User and all his data succesfully deleted');
-      })
-      .catch((error) => {
-        console.error(`Error removing member: ${error}`);
-      });
+    firebaseApi.deleteUser(userId);
   };
 
   render() {

@@ -15,7 +15,6 @@ class MemberData extends React.Component {
 
   componentDidMount() {
     const { role } = this.props;
-    const directions = [];
     const buttonWrappers = document.querySelectorAll(`.${styles.buttonWrapper}`);
     if (role === 'admin') {
       buttonWrappers.forEach((wrapper) => {
@@ -27,20 +26,9 @@ class MemberData extends React.Component {
       });
     }
 
-    firebaseApi
-      .getDirections()
-      .then((courseDirections) => {
-        courseDirections.forEach((direction) => {
-          const { directionId, name } = direction.data();
-          directions.push({ directionId, name });
-        });
-      })
-      .then(() => {
-        this.setState({ directions });
-      })
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
+    firebaseApi.getDirections().then((directions) => {
+      this.setState({ directions });
+    });
   }
 
   render() {

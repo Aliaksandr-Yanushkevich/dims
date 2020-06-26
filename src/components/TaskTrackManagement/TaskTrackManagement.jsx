@@ -14,7 +14,7 @@ class TaskTrackManagement extends React.Component {
     currentTaskTrackId: null,
     currentUserTaskId: null,
     currentTaskName: null,
-    trackData: [],
+    trackData: null,
     taskTrackPageIsVisible: false,
     isFetching: false,
   };
@@ -23,25 +23,14 @@ class TaskTrackManagement extends React.Component {
     const { userId, role } = this.props;
     if (userId && userId !== 'newMember' && role === 'member') {
       this.setState({ isFetching: true });
-      return firebaseApi
-        .getUserTaskList(userId)
-        .then((tracks) => {
-          if (tracks.length) {
-            tracks.forEach((track) => {
-              const { userTaskId } = track;
-              return firebaseApi.getTrackData(userTaskId).then((trackInfo) => {
-                if (trackInfo) {
-                  this.setState(({ trackData }) => ({ trackData: [...trackData, ...trackInfo] }));
-                  this.setState({ isFetching: false });
-                }
-                this.setState({ isFetching: false });
-              });
-            });
-          } else {
-            this.setState({ isFetching: false });
-          }
+      firebaseApi
+        .getTrackDataArray(userId)
+        .then((trackData) => {
+          this.setState({ trackData });
         })
-        .catch((error) => console.error('Track info receiving error', error));
+        .then(() => {
+          this.setState({ isFetching: false });
+        });
     }
   }
 
@@ -56,14 +45,7 @@ class TaskTrackManagement extends React.Component {
   deleteNote = (e) => {
     e.persist();
     const currentTaskTrackId = e.target.dataset.taskid;
-    firebaseApi
-      .deleteItemWithId('TaskTrack', currentTaskTrackId)
-      .then(() => {
-        console.log('Track note deleted successfully');
-      })
-      .catch((error) => {
-        console.error('Problem with note removing', error);
-      });
+    firebaseApi.deleteItemWithId('TaskTrack', currentTaskTrackId);
   };
 
   hideTaskTrackPage = () => {
@@ -80,12 +62,13 @@ class TaskTrackManagement extends React.Component {
       currentTaskName,
       isFetching,
     } = this.state;
-    const tableRows = trackData.length
+    const tableRows = trackData
       ? trackData.map((task, index) => {
           return (
             <TasksTracksManagementRow
               key={task.taskTrackId}
               index={index + 1}
+              taskName={task.taskName}
               userTaskId={task.userTaskId}
               taskTrackId={task.taskTrackId}
               trackNote={task.trackNote}
@@ -109,7 +92,7 @@ class TaskTrackManagement extends React.Component {
     if (isFetching) {
       return <Preloader />;
     }
-    if (!trackData.length && !isFetching) {
+    if (!trackData && !isFetching) {
       return <p>You haven&apos;t track notes</p>;
     }
     return (

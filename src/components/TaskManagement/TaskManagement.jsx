@@ -19,19 +19,9 @@ class TaskManagement extends React.Component {
   componentDidMount() {
     const { role } = this.props;
     if (role === 'admin' || role === 'mentor') {
-      const tasks = [];
-      firebaseApi
-        .getTaskList()
-        .then((tasksList) => {
-          tasksList.forEach((task) => {
-            const { name, startDate, deadlineDate, taskId } = task.data();
-            tasks.push({ name, startDate: startDate.toDate(), deadlineDate: deadlineDate.toDate(), taskId });
-          });
-          this.setState({ tasks });
-        })
-        .catch((error) => {
-          console.error(`Error receiving data: ${error}`);
-        });
+      firebaseApi.getTaskList().then((tasks) => {
+        this.setState({ tasks });
+      });
     }
   }
 
@@ -43,10 +33,7 @@ class TaskManagement extends React.Component {
 
   deleteTask = (e) => {
     const taskId = e.target.dataset.taskid;
-    firebaseApi
-      .deleteTask(taskId)
-      .then(() => console.log('Task is removed successfully'))
-      .catch((error) => console.error('Problem with removing task', error));
+    firebaseApi.deleteTask(taskId);
   };
 
   hideMemberPage = () => {

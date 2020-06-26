@@ -121,6 +121,7 @@ class FormField extends React.Component {
           <label htmlFor={id}>{label}</label>
           <input
             id={id}
+            name={name}
             type={inputType}
             value={value}
             onChange={onChange}

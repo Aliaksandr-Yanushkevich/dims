@@ -33,34 +33,20 @@ class TaskPage extends React.Component {
 
     if (taskId && taskId !== 'newTask') {
       this.setState({ taskId });
-      firebaseApi
-        .getTask(taskId)
-        .then((task) => {
-          const { name, description, startDate, deadlineDate } = task.data();
-          this.setState({
-            name,
-            description,
-            startDate: dateToStringForInput(startDate.toDate()),
-            deadlineDate: dateToStringForInput(deadlineDate.toDate()),
-          });
-        })
-        .catch((error) => {
-          console.error(`Error receiving data: ${error}`);
-        });
+      firebaseApi.getTask(taskId).then((task) => {
+        this.setState({ ...task });
+      });
     } else {
       this.setState({ taskId: generateID() });
     }
 
-    firebaseApi
-      .getNames()
-      .then((members) => this.setState({ members }))
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
+    firebaseApi.getNames().then((members) => {
+      this.setState({ members });
+    });
 
-    firebaseApi
-      .getUsersWithTask(taskId)
-      .then((usersWithTaskFromDB) => this.setState({ usersWithTaskFromDB, usersWithTaskLocal: usersWithTaskFromDB }));
+    firebaseApi.getUsersWithTask(taskId).then((usersWithTaskFromDB) => {
+      this.setState({ usersWithTaskFromDB, usersWithTaskLocal: usersWithTaskFromDB });
+    });
   }
 
   componentWillUnmount() {
@@ -109,19 +95,7 @@ class TaskPage extends React.Component {
       startDate: preparedstartDate,
       deadlineDate: preparedDeadlineDate,
     };
-    firebaseApi.removeTaskFromUsers(usersWithTaskFromDB, usersWithTaskLocal, taskId).then(() => {
-      firebaseApi
-        .createTask(taskInfo)
-        .then(() => {
-          userTasks.forEach((task) => {
-            firebaseApi.assignTask(task);
-            firebaseApi.setTaskState(task.stateId);
-          });
-        })
-        .catch((error) => {
-          console.error('Error with assigning task', error);
-        });
-    });
+    firebaseApi.assignTaskToUsers(usersWithTaskFromDB, usersWithTaskLocal, taskId, userTasks, taskInfo);
   };
 
   asignTask = (userId, checked) => {

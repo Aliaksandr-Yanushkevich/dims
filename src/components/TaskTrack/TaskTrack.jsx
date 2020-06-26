@@ -19,12 +19,7 @@ class TaskTrack extends React.Component {
     const { taskTrackId, taskName } = this.props;
     this.validateForm();
     if (taskTrackId) {
-      firebaseApi
-        .getTaskTrack(taskTrackId)
-        .then((trackNote) => this.setState({ trackNote }))
-        .catch((error) => {
-          console.error(`Error receiving data: ${error}`);
-        });
+      firebaseApi.getTaskTrack(taskTrackId).then((trackNote) => this.setState({ trackNote }));
     }
     this.setState({ taskName });
   }

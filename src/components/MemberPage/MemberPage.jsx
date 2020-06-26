@@ -38,66 +38,25 @@ class MemberPage extends React.Component {
 
   componentDidMount() {
     const { userId } = this.props;
-    const directions = [];
 
     this.validateForm();
 
     if (userId && userId !== 'newMember') {
       this.setState({ isFetching: true });
-      firebaseApi
-        .getUserInfo(userId)
-        .then((userInfo) => {
-          const {
-            firstName,
-            lastName,
-            sex,
-            mobilePhone,
-            email,
-            startDate,
-            skype,
-            birthDate,
-            directionId,
-            address,
-            education,
-            mathScore,
-            universityAverageScore,
-          } = userInfo.data();
-
-          this.setState({
-            firstName,
-            lastName,
-            sex,
-            mobilePhone,
-            email,
-            startDate: dateToStringForInput(startDate.toDate()),
-            skype,
-            birthDate: dateToStringForInput(birthDate.toDate()),
-            directionId,
-            address,
-            education,
-            mathScore,
-            universityAverageScore,
-            isFetching: false,
-          });
-        })
-        .catch((error) => {
-          console.error(`Error receiving data: ${error}`);
+      firebaseApi.getUserInfo(userId).then((userInfo) => {
+        const { startDate, birthDate } = userInfo;
+        this.setState({
+          ...userInfo,
+          startDate: dateToStringForInput(startDate.toDate()),
+          birthDate: dateToStringForInput(birthDate.toDate()),
+          isFetching: false,
         });
-    }
-    firebaseApi
-      .getDirections()
-      .then((courseDirections) => {
-        courseDirections.forEach((direction) => {
-          const { directionId, name } = direction.data();
-          directions.push({ directionId, name });
-        });
-      })
-      .then(() => {
-        this.setState({ directions });
-      })
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
       });
+    }
+
+    firebaseApi.getDirections().then((directions) => {
+      this.setState({ directions });
+    });
   }
 
   componentWillUnmount() {
@@ -143,9 +102,7 @@ class MemberPage extends React.Component {
       universityAverageScore,
     };
 
-    firebaseApi.createUser(userId, userInfo).catch((error) => {
-      console.error(`User creation error: ${error}`);
-    });
+    firebaseApi.createUser(userId, userInfo);
   };
 
   validateForm = () => {

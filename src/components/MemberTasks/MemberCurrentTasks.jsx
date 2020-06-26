@@ -6,17 +6,7 @@ import Button from '../Button/Button';
 import TableData from '../common/TableData/TableData';
 import firebaseApi from '../../api/firebaseApi';
 
-const MemberCurrentTasks = ({
-  index,
-  userTaskId,
-  taskName,
-  startDate,
-  deadlineDate,
-  stateName,
-  trackTask,
-  stateId,
-  role,
-}) => {
+const MemberCurrentTasks = ({ index, userTaskId, taskName, startDate, deadlineDate, stateName, stateId, role }) => {
   const succesedTask = (e) => {
     e.persist();
     const currentTaskId = e.target.dataset.taskid;
@@ -28,6 +18,7 @@ const MemberCurrentTasks = ({
     const currentTaskId = e.target.dataset.taskid;
     firebaseApi.completeTask(currentTaskId, 'fail');
   };
+
   return (
     <tr key={userTaskId}>
       <TableData>{index + 1}</TableData>
@@ -35,11 +26,6 @@ const MemberCurrentTasks = ({
       <TableData>{dateToString(startDate)}</TableData>
       <TableData>{dateToString(deadlineDate)}</TableData>
       <TableData>{stateName}</TableData>
-      <TableData>
-        <Button taskId={userTaskId} dataId={taskName} onClick={trackTask}>
-          Track
-        </Button>
-      </TableData>
       {(role === 'admin' || role === 'mentor') && (
         <TableData>
           <div className={styles.buttonWrapper}>
@@ -59,7 +45,6 @@ const MemberCurrentTasks = ({
 
 MemberCurrentTasks.propTypes = {
   stateName: PropTypes.string.isRequired,
-  trackTask: PropTypes.func.isRequired,
   stateId: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   userTaskId: PropTypes.string.isRequired,

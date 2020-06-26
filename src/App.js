@@ -35,16 +35,9 @@ class App extends Component {
   };
 
   logout = () => {
-    firebaseApi
-      .logout()
-      .then(() => {
-        sessionStorage.removeItem('user');
-        this.setState({ currentUserId: null, role: null, currentTaskId: 'newTask', firstName: null, lastName: null });
-        console.log('Logged out');
-      })
-      .catch((error) => {
-        console.error('Logout error', error);
-      });
+    firebaseApi.logout().then(() => {
+      this.setState({ currentUserId: null, role: null, currentTaskId: 'newTask', firstName: null, lastName: null });
+    });
   };
 
   setCurrentUser = (e) => {
@@ -83,7 +76,7 @@ class App extends Component {
               />
             </Route>
             <Route path='/member_tasks:userId?'>
-              <MemberTasks userId={currentUserId} taskId={currentTaskId} role={role} />
+              <MemberTasks userId={currentUserId} role={role} />
             </Route>
             <Route path='/task_management'>
               <TaskManagement

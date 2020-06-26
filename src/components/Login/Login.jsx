@@ -28,22 +28,12 @@ class Login extends React.Component {
   login = () => {
     const { setUser } = this.props;
     const { email, password, remember } = this.state;
-    firebaseApi
-      .login(email, password)
-      .then(() => {
-        firebaseApi.getRole(email).then((result) => {
-          const { role, userId, firstName, lastName } = result;
-          setUser(userId, role, firstName, lastName, email);
-          this.setState({ isAuth: true, role });
-          if (remember) {
-            const user = JSON.stringify(result);
-            sessionStorage.setItem('user', user);
-          }
-        });
-      })
-      .catch(({ message }) => {
-        this.setState({ message });
-      });
+
+    firebaseApi.login(email, password, remember).then((result) => {
+      const { role, userId, firstName, lastName } = result;
+      setUser(userId, role, firstName, lastName, email);
+      this.setState({ isAuth: true, role });
+    });
   };
 
   onChange = (e) => {
