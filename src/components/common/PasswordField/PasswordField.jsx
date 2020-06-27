@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import checkRequirements from '../../../helpers/checkRequirements';
+import checkRequirements from '../../../helpers/validators/checkRequirements';
 import styles from './PasswordField.module.scss';
-import { passwordRegexp, requiredMessage } from '../../../constants';
+import { requiredMessage } from '../../../constants';
 
 class PasswordField extends React.Component {
   state = {
@@ -15,12 +15,10 @@ class PasswordField extends React.Component {
   };
 
   checkField = () => {
-    const { value } = this.props;
+    const { value, regexp, errorMessage } = this.props;
     const { touched } = this.state;
     if (touched) {
-      const fieldIsValid = checkRequirements(passwordRegexp, value);
-      const errorMessage =
-        'Password must be a minimum of eight characters and contain lowercase letters, uppercase letters and numbers';
+      const fieldIsValid = checkRequirements(regexp, value);
 
       if (!value.length) {
         this.setState({ message: requiredMessage });
@@ -62,6 +60,7 @@ PasswordField.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  regexp: PropTypes.string,
   name: PropTypes.string,
   value: PropTypes.string,
 };
@@ -69,6 +68,7 @@ PasswordField.propTypes = {
 PasswordField.defaultProps = {
   name: '',
   value: '',
+  regexp: null,
 };
 
 export default PasswordField;

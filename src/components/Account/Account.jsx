@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import styles from './Account.module.scss';
 import Button from '../Button/Button';
-import FormField from '../FormField/FormField';
 import firebaseApi from '../../api/firebaseApi';
+import PasswordField from '../common/PasswordField/PasswordField';
+import { passwordRegexp } from '../../constants';
+import validateAccountForm from '../../helpers/validators/validateAccountForm';
 
 class Account extends React.Component {
   state = {
@@ -17,18 +19,15 @@ class Account extends React.Component {
 
   updatePassword = () => {
     const { email } = this.props;
-    const { oldPassword, password, repeatedPassword } = this.state;
+    const { oldPassword, password, repeatedPassword, formIsValid } = this.state;
 
-    firebaseApi.updatePassword(email, oldPassword, password, repeatedPassword).then(({ message }) => {
-      this.setState({ message });
-    });
-  };
+    this.validateForm();
 
-  isPasswordValid = (password, repeatedPassword, minLength, maxLength) => {
-    if (password.length >= minLength && password.length <= maxLength && password === repeatedPassword) {
-      return true;
+    if (formIsValid) {
+      firebaseApi.updatePassword(email, oldPassword, password, repeatedPassword).then(({ message }) => {
+        this.setState({ message });
+      });
     }
-    return false;
   };
 
   onChange = (e) => {
@@ -38,65 +37,55 @@ class Account extends React.Component {
       this.setState({ message: null });
     }
     this.setState({ [name]: value });
-    this.validateForm();
   };
 
   validateForm = () => {
     const { password, repeatedPassword } = this.state;
-    // magic numbers here are minimal/maximum length for password
-    if (this.isPasswordValid(password, repeatedPassword, 6, 30)) {
-      this.setState({ formIsValid: true });
-    } else {
-      this.setState({ formIsValid: false });
-    }
+    const formIsValid = validateAccountForm(password, repeatedPassword);
+    this.setState(formIsValid);
   };
 
   render() {
     const { firstName, lastName, role } = this.props;
-    const { oldPassword, password, repeatedPassword, formIsValid, message } = this.state;
+    const { oldPassword, password, repeatedPassword, message } = this.state;
     const fields = [
       {
-        minLength: 6,
-        maxLength: 30,
-        inputType: 'password',
         id: 'oldPassword',
         name: 'oldPassword',
         label: 'Old password:',
         value: oldPassword,
       },
       {
-        minLength: 6,
-        maxLength: 30,
-        inputType: 'password',
         id: 'password',
         name: 'password',
         label: 'Password:',
         value: password,
+        regexp: passwordRegexp,
+        errorMessage:
+          'Password must be a minimum of eight characters and contain lowercase letters, uppercase letters and numbers',
       },
       {
-        minLength: 6,
-        maxLength: 30,
-        inputType: 'password',
         id: 'repeatedPassword',
         name: 'repeatedPassword',
         label: 'Repeate password:',
         value: repeatedPassword,
+        regexp: passwordRegexp,
+        errorMessage:
+          'Password must be a minimum of eight characters and contain lowercase letters, uppercase letters and numbers',
       },
     ];
     const formFields = fields.map((field) => {
-      const { minLength, maxLength, inputType, id, name, label, value } = field;
+      const { id, name, label, value, regexp, errorMessage } = field;
       return (
-        <FormField
+        <PasswordField
           key={id}
-          minLength={minLength}
-          maxLength={maxLength}
-          inputType={inputType}
           id={id}
-          name={name}
           label={label}
-          value={value}
           onChange={this.onChange}
-          validateForm={this.validateForm}
+          name={name}
+          value={value}
+          regexp={regexp}
+          errorMessage={errorMessage}
         />
       );
     });
@@ -109,10 +98,10 @@ class Account extends React.Component {
         <form>
           {formFields}
           <div className={styles.message}>
-            <p>{message}</p>
+            <p className={styles.formMessage}>{message}</p>
           </div>
           <div className={styles.buttonWrapper}>
-            <Button id='change' disabled={!formIsValid} onClick={this.updatePassword}>
+            <Button id='change' onClick={this.updatePassword}>
               Change
             </Button>
             <NavLink to={role === 'admin' || role === 'admin' ? '/members' : '/member_tasks'}>
