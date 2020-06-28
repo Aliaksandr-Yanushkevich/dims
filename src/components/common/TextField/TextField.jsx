@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import checkRequirements from '../../../helpers/validators/checkRequirements';
 import styles from './TextField.module.scss';
 import { requiredMessage } from '../../../constants';
+import FormMessage from '../FormMessage/FormMessage';
 
 class TextField extends React.Component {
   state = {
@@ -35,7 +36,7 @@ class TextField extends React.Component {
     const { touched, message } = this.state;
 
     return (
-      <div className={styles.gridItem}>
+      <div className={styles.inputGroup}>
         <div className={styles.item}>
           <label htmlFor={id}>{label}</label>
           <input
@@ -52,7 +53,7 @@ class TextField extends React.Component {
             disabled={disabled}
           />
         </div>
-        <p className={styles.message}>{message}</p>
+        <FormMessage messageType='warning'>{message}</FormMessage>
       </div>
     );
   }

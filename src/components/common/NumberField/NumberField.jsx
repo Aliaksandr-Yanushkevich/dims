@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import checkRequirements from '../../../helpers/validators/checkRequirements';
 import styles from './NumberField.module.scss';
 import { requiredMessage } from '../../../constants';
+import FormMessage from '../FormMessage/FormMessage';
 
 class NumberField extends React.Component {
   state = {
@@ -35,7 +36,7 @@ class NumberField extends React.Component {
     const { touched, message } = this.state;
 
     return (
-      <div className={styles.gridItem}>
+      <div className={styles.inputGroup}>
         <div className={styles.item}>
           <label htmlFor={id}>{label}</label>
           <input
@@ -51,7 +52,7 @@ class NumberField extends React.Component {
             required
           />
         </div>
-        <p className={styles.message}>{message}</p>
+        <FormMessage messageType='warning'>{message}</FormMessage>
       </div>
     );
   }

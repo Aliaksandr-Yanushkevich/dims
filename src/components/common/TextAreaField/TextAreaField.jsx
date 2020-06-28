@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import checkRequirements from '../../../helpers/validators/checkRequirements';
-import styles from './PasswordField.module.scss';
+import styles from './TextAreaField.module.scss';
 import { requiredMessage } from '../../../constants';
 import FormMessage from '../FormMessage/FormMessage';
 
-class PasswordField extends React.Component {
+class TextAreaField extends React.Component {
   state = {
     touched: false,
     message: null,
@@ -21,7 +21,7 @@ class PasswordField extends React.Component {
     if (touched) {
       const fieldIsValid = checkRequirements(regexp, value);
 
-      if (!value.length) {
+      if (!value) {
         this.setState({ message: requiredMessage });
       } else if (!fieldIsValid) {
         this.setState({ message: errorMessage });
@@ -32,23 +32,25 @@ class PasswordField extends React.Component {
   };
 
   render() {
-    const { id, name, label, onChange, value } = this.props;
+    const { id, name, label, value, onChange, cols, rows, placeholder } = this.props;
     const { touched, message } = this.state;
 
     return (
       <div className={styles.inputGroup}>
-        <div className={styles.item}>
+        <div className={styles.textareaItem}>
           <label htmlFor={id}>{label}</label>
-          <input
+          <textarea
             id={id}
             name={name}
-            type='password'
+            cols={cols}
+            rows={rows}
             value={value}
             onChange={onChange}
             onFocus={this.onFocus}
             onBlur={this.checkField}
-            className={message && touched ? styles.error : null}
             required
+            className={message && touched ? styles.error : null}
+            placeholder={placeholder}
           />
         </div>
         <FormMessage messageType='warning'>{message}</FormMessage>
@@ -57,21 +59,27 @@ class PasswordField extends React.Component {
   }
 }
 
-PasswordField.propTypes = {
+TextAreaField.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  regexp: PropTypes.string,
-  errorMessage: PropTypes.string,
+  cols: PropTypes.number,
+  rows: PropTypes.number,
+  placeholder: PropTypes.string,
   name: PropTypes.string,
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  regexp: PropTypes.instanceOf(RegExp),
+  errorMessage: PropTypes.string,
 };
 
-PasswordField.defaultProps = {
+TextAreaField.defaultProps = {
   name: '',
   value: '',
   regexp: null,
-  errorMessage: '',
+  errorMessage: null,
+  cols: 30,
+  rows: 10,
+  placeholder: '',
 };
 
-export default PasswordField;
+export default TextAreaField;

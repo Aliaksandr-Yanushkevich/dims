@@ -4,24 +4,28 @@ import ReactDom from 'react-dom';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
 import Button from '../Button/Button';
 import styles from './TaskPage.module.scss';
-import FormField from '../FormField/FormField';
 import MemberList from './MemberList';
 import firebaseApi from '../../api/firebaseApi';
 import generateID from '../../helpers/generateID';
+import taskPagaFields from './taskPageFields';
+import TextAreaField from '../common/TextAreaField/TextAreaField';
+import DateField from '../common/DateField/DateField';
+import validateTaskPageForm from '../../helpers/validators/validateTaskPageForm';
+import FormMessage from '../common/FormMessage/FormMessage';
 
 class TaskPage extends React.Component {
   constructor() {
     super();
+    const defaultDeadline = new Date(Date.now() + 604800000); // number is the number of milliseconds in a week
     this.state = {
       members: null,
-      name: '',
+      taskName: '',
       description: '',
       startDate: dateToStringForInput(new Date()),
-      deadlineDate: '',
+      deadlineDate: dateToStringForInput(defaultDeadline),
       usersWithTaskFromDB: null,
       usersWithTaskLocal: null,
       userTasks: [],
-      formIsValid: false,
     };
     this.root = document.createElement('div');
     document.body.appendChild(this.root);
@@ -29,12 +33,12 @@ class TaskPage extends React.Component {
 
   componentDidMount() {
     const { taskId } = this.props;
-    this.validateForm();
 
     if (taskId && taskId !== 'newTask') {
       this.setState({ taskId });
       firebaseApi.getTask(taskId).then((task) => {
-        this.setState({ ...task });
+        const { name } = task;
+        this.setState({ ...task, taskName: name });
       });
     } else {
       this.setState({ taskId: generateID() });
@@ -54,30 +58,13 @@ class TaskPage extends React.Component {
   }
 
   onChange = (e) => {
-    const { id, value } = e.currentTarget;
-    this.setState({ [id]: value });
-    this.validateForm();
-  };
-
-  validateForm = () => {
-    const { name, description, deadlineDate } = this.state;
-    // magic numbers here are minimal/maximum length for input fields
-    if (
-      name.length &&
-      name.length <= 140 &&
-      description.length >= 1 &&
-      description.length <= 2000 &&
-      deadlineDate.length
-    ) {
-      this.setState({ formIsValid: true });
-    } else {
-      this.setState({ formIsValid: false });
-    }
+    const { name, value } = e.currentTarget;
+    this.setState({ [name]: value, message: '' });
   };
 
   createTask = () => {
     const {
-      name,
+      taskName,
       description,
       startDate,
       deadlineDate,
@@ -86,16 +73,26 @@ class TaskPage extends React.Component {
       usersWithTaskFromDB,
       usersWithTaskLocal,
     } = this.state;
-    const preparedstartDate = new Date(startDate);
-    const preparedDeadlineDate = new Date(deadlineDate);
-    const taskInfo = {
-      taskId,
-      name: name.trim(),
-      description: description.trim(),
-      startDate: preparedstartDate,
-      deadlineDate: preparedDeadlineDate,
-    };
-    firebaseApi.assignTaskToUsers(usersWithTaskFromDB, usersWithTaskLocal, taskId, userTasks, taskInfo);
+
+    const isValid = validateTaskPageForm(taskName, description, startDate, deadlineDate);
+
+    if (isValid.formIsValid) {
+      const taskInfo = {
+        taskId,
+        name: taskName.trim(),
+        description: description.trim(),
+        startDate: new Date(startDate),
+        deadlineDate: new Date(deadlineDate),
+      };
+      firebaseApi
+        .assignTaskToUsers(usersWithTaskFromDB, usersWithTaskLocal, taskId, userTasks, taskInfo)
+        .then(({ message, messageType }) => {
+          this.setState({ message, messageType });
+        });
+    } else {
+      const { message, messageType } = isValid;
+      this.setState({ message, messageType });
+    }
   };
 
   asignTask = (userId, checked) => {
@@ -116,52 +113,52 @@ class TaskPage extends React.Component {
   };
 
   render() {
-    const { name, description, startDate, deadlineDate, members, formIsValid, usersWithTaskLocal } = this.state;
+    const { members, usersWithTaskLocal, message, messageType } = this.state;
     const { taskId, hideMemberPage } = this.props;
+    const fields = taskPagaFields.map((field) => {
+      const { id, name, type, label, placeholder, regexp, errorMessage, cols, rows } = field;
+      if (type === 'date') {
+        return (
+          <DateField key={id} id={id} name={name} label={label} value={this.state[name]} onChange={this.onChange} />
+        );
+      }
+      if (type === 'textarea') {
+        return (
+          <TextAreaField
+            id={id}
+            name={name}
+            label={label}
+            value={this.state[name]}
+            regexp={regexp}
+            errorMessage={errorMessage}
+            onChange={this.onChange}
+            cols={cols}
+            rows={rows}
+            placeholder={placeholder}
+          />
+        );
+      }
+      return null;
+    });
 
     return ReactDom.createPortal(
       <div className={styles.wrapper}>
-        <form action=''>
+        <form>
           <h1 className={styles.title}>{taskId === 'newTask' ? 'New task' : `Edit task`}</h1>
-          <FormField
-            id='name'
-            name='taskName'
-            inputType='textarea'
-            label='Task name:'
-            onChange={this.onChange}
-            value={name}
-            placeholder='Task name'
-            cols={30}
-            rows={2}
-          />
-          <FormField
-            id='description'
-            name='description'
-            inputType='textarea'
-            label='Description:'
-            maxLength={2000}
-            onChange={this.onChange}
-            value={description}
-            placeholder='Task description'
-          />
-          <FormField id='startDate' inputType='date' label='Start:' onChange={this.onChange} value={startDate} />
-          <FormField
-            id='deadlineDate'
-            inputType='date'
-            label='Deadline:'
-            onChange={this.onChange}
-            value={deadlineDate}
-          />
+          {fields}
           {members && (
             <MemberList members={members} asignTask={this.asignTask} usersWithTaskLocal={usersWithTaskLocal} />
           )}
-          <div className={styles.buttonWrapper}>
-            <Button disabled={!formIsValid} className={styles.successButton} onClick={this.createTask}>
-              {taskId === 'newTask' ? 'Create' : 'Save'}
-            </Button>
-            <Button onClick={hideMemberPage}>Back to grid</Button>
-          </div>
         </form>
+
+        <FormMessage messageType={messageType}>{message}</FormMessage>
+
+        <div className={styles.buttonWrapper}>
+          <Button className={styles.successButton} onClick={this.createTask}>
+            {taskId === 'newTask' ? 'Create' : 'Save'}
+          </Button>
+          <Button onClick={hideMemberPage}>Back to grid</Button>
+        </div>
       </div>,
       this.root,
     );

@@ -235,17 +235,15 @@ const firebaseApi = {
         });
       })
       .then(() => {
-        this.createTask(taskInfo)
-          .then(() => {
-            userTasks.forEach((task) => {
-              this.assignTask(task);
-              this.setTaskState(task.stateId);
-            });
-          })
-          .catch((error) => {
-            console.error('Error with assigning task', error);
+        this.createTask(taskInfo).then(() => {
+          userTasks.forEach((task) => {
+            this.assignTask(task);
+            this.setTaskState(task.stateId);
           });
-      });
+        });
+      })
+      .then(() => ({ message: 'Task created successfully' }))
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   assignTask(task) {
