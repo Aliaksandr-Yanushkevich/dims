@@ -84,7 +84,7 @@ const firebaseApi = {
         }
         return result;
       })
-      .catch(({ message }) => ({ message }));
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   logout() {
