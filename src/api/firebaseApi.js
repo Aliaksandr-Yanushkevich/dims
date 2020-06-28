@@ -1,5 +1,6 @@
 import firebase from './firebase';
 import dateToStringForInput from '../helpers/dateToStringForInput';
+import setUserToSessionStorage from '../helpers/setUserToSessionStorage';
 
 const firestore = firebase.firestore();
 const promiseWithMessage = (message) => {
@@ -36,6 +37,28 @@ const firebaseApi = {
       });
   },
 
+  updateUser(userId, userInfo) {
+    return firestore
+      .collection('UserProfile')
+      .doc(userId)
+      .set({
+        ...userInfo,
+      })
+      .then(() => {
+        const { firstName, lastName, email } = userInfo;
+        firestore
+          .collection('Roles')
+          .doc(userId)
+          .set({ userId, email, role: 'member', firstName, lastName });
+      })
+      .then(() => {
+        console.log('User updated successfully');
+      })
+      .catch((error) => {
+        console.error('Something went wrong when user updating', error);
+      });
+  },
+
   register(email, password) {
     firebase
       .auth()
@@ -57,8 +80,7 @@ const firebaseApi = {
       })
       .then((result) => {
         if (remember) {
-          const user = JSON.stringify(result);
-          sessionStorage.setItem('user', user);
+          setUserToSessionStorage(result);
         }
         return result;
       })
@@ -154,15 +176,14 @@ const firebaseApi = {
   },
 
   getDirections() {
-    const directions = [];
     return firestore
       .collection('Direction')
       .orderBy('directionId')
       .get()
       .then((courseDirections) => {
-        courseDirections.forEach((direction) => {
+        const directions = courseDirections.docs.map((direction) => {
           const { directionId, name } = direction.data();
-          directions.push({ directionId, name });
+          return { directionId, name };
         });
         return directions;
       })
@@ -513,35 +534,39 @@ const firebaseApi = {
   },
 
   deleteUser(userId) {
-    return this.deleteItemWithId('UserProfile', userId).then(() => {
-      firestore
-        .collection('UserTask')
-        .where('userId', '==', userId)
-        .get()
-        .then((tasks) => {
-          tasks.forEach((task) => {
-            const { userTaskId, stateId } = task.data();
-            this.deleteItemWithId('UserTask', userTaskId);
-            this.deleteItemWithId('TaskState', stateId);
-            return firestore
-              .collection('TaskTrack')
-              .where('userTaskId', '==', userTaskId)
-              .get()
-              .then((trackedTasks) => {
-                trackedTasks.forEach((trackedtask) => {
-                  const { taskTrackId } = trackedtask.data();
-                  this.deleteItemWithId('TaskTrack', taskTrackId);
+    return this.deleteItemWithId('UserProfile', userId)
+      .then(() => {
+        this.deleteItemWithId('Roles', userId);
+      })
+      .then(() => {
+        firestore
+          .collection('UserTask')
+          .where('userId', '==', userId)
+          .get()
+          .then((tasks) => {
+            tasks.forEach((task) => {
+              const { userTaskId, stateId } = task.data();
+              this.deleteItemWithId('UserTask', userTaskId);
+              this.deleteItemWithId('TaskState', stateId);
+              return firestore
+                .collection('TaskTrack')
+                .where('userTaskId', '==', userTaskId)
+                .get()
+                .then((trackedTasks) => {
+                  trackedTasks.forEach((trackedtask) => {
+                    const { taskTrackId } = trackedtask.data();
+                    this.deleteItemWithId('TaskTrack', taskTrackId);
+                  });
                 });
-              });
+            });
+          })
+          .then(() => {
+            console.log('User and all his data succesfully deleted');
+          })
+          .catch((error) => {
+            console.error(`Error removing member: ${error}`);
           });
-        })
-        .then(() => {
-          console.log('User and all his data succesfully deleted');
-        })
-        .catch((error) => {
-          console.error(`Error removing member: ${error}`);
-        });
-    });
+      });
   },
 
   deleteTask(taskId) {
@@ -573,7 +598,6 @@ const firebaseApi = {
   },
 
   deleteItemWithId(collection, docId) {
-    debugger;
     if (docId) {
       return firestore
         .collection(collection)

@@ -50,3 +50,8 @@ input {
 select {
   width: calc(10rem + 5px);
 }
+
+.message {
+  color: $dangerousColor;
+  margin: 0;
+}

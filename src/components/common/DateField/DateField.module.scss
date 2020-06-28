@@ -1,0 +1,27 @@
+@import '../../../styleguide/styleguide.scss';
+
+.error {
+  border: 2px solid $dangerousColor;
+}
+
+.message {
+  color: $dangerousColor;
+  margin: 0;
+}
+
+.gridItem {
+  height: 7rem;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  // height: 50%;
+}
+
+.textareaItem {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}

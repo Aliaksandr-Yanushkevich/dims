@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styles from './Select.module.scss';
 
 // props.options should be an array of objects {value: xxx, title: yyy}
-const Select = ({ id, name, onChange, value, options }) => {
+const Select = ({ id, name, label, onChange, value, options }) => {
   const optionsArray = options
     ? options.map((option) => (
         <option key={option.title} value={option.value}>
@@ -13,7 +13,7 @@ const Select = ({ id, name, onChange, value, options }) => {
     : null;
   return (
     <div className={styles.item}>
-      <label htmlFor={id}>{`${name}:`}</label>
+      <label htmlFor={id}>{label}</label>
       <select id={id} name={name} onChange={onChange} value={value}>
         {optionsArray}
       </select>
