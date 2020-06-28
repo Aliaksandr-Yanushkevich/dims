@@ -4,8 +4,11 @@ import { Redirect } from 'react-router-dom';
 import firebaseApi from '../../api/firebaseApi';
 import styles from './Login.module.scss';
 import Button from '../Button/Button';
-import FormField from '../FormField/FormField';
 import { emailRegexp } from '../../constants';
+import getUserFromSessionStorage from '../../helpers/getUserFromSessionStorage';
+import TextField from '../common/TextField/TextField';
+import PasswordField from '../common/PasswordField/PasswordField';
+import Checkbox from '../common/Checkbox/Checkbox';
 
 class Login extends React.Component {
   state = {
@@ -18,7 +21,7 @@ class Login extends React.Component {
   };
 
   componentDidMount() {
-    const user = JSON.parse(sessionStorage.getItem('user'));
+    const user = getUserFromSessionStorage();
     if (user) {
       const { role } = user;
       this.setState({ role, isAuth: true });
@@ -38,7 +41,12 @@ class Login extends React.Component {
 
   onChange = (e) => {
     const { id, value, checked } = e.currentTarget;
-    id === 'remember' ? this.setState({ [id]: checked }) : this.setState({ [id]: value });
+    if (id === 'remember') {
+      this.setState({ [id]: checked });
+    } else {
+      this.setState({ [id]: value });
+    }
+
     this.validateForm();
   };
 
@@ -56,22 +64,34 @@ class Login extends React.Component {
     const { email, password, remember, formIsValid, isAuth, role, message } = this.state;
 
     if (isAuth) {
-      if (role === 'admin' || role === 'mentor') return <Redirect to='/members' />;
-      if (role === 'member') return <Redirect to='/member_tasks' />;
+      if (role === 'admin' || role === 'mentor') {
+        return <Redirect to='/members' />;
+      }
+
+      if (role === 'member') {
+        return <Redirect to='/member_tasks' />;
+      }
     }
 
     return (
       <div className={styles.wrapper}>
         <h1 className={styles.title}>Login</h1>
-        <form action=''>
-          <FormField id='email' label='Email:' value={email} onChange={this.onChange} />
-          <FormField inputType='password' id='password' label='Password:' value={password} onChange={this.onChange} />
+        <form>
+          <TextField
+            id='email'
+            name='email'
+            label='Email:'
+            value={email}
+            onChange={this.onChange}
+            regexp={emailRegexp}
+            errorMessage='Email is invalid'
+          />
+          <PasswordField id='password' name='password' label='Password:' value={password} onChange={this.onChange} />
           <div className={styles.item}>
             <div className={styles.remember}>
-              <label htmlFor='remember'>
+              <Checkbox id='remember' name='remember' checked={remember} onChange={this.onChange}>
                 Remember me
-                <input id='remember' type='checkbox' checked={remember} onChange={this.onChange} />
-              </label>
+              </Checkbox>
             </div>
             <Button id='login' disabled={!formIsValid} onClick={this.login}>
               Login
