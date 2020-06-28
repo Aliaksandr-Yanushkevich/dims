@@ -15,6 +15,7 @@ import { preparedGenders } from '../../constants';
 import DateField from '../common/DateField/DateField';
 import NumberField from '../common/NumberField/NumberField';
 import validateMemberPageForm from '../../helpers/validators/validateMemberPageForm';
+import FormMessage from '../common/FormMessage/FormMessage';
 
 class MemberPage extends React.Component {
   constructor() {
@@ -121,12 +122,16 @@ class MemberPage extends React.Component {
 
       if (userId === 'newMember') {
         userId = generateID();
-        firebaseApi.createUser(userId, { ...userInfo, userId });
+        firebaseApi.createUser(userId, { ...userInfo, userId }).then(({ message, messageType }) => {
+          this.setState({ message, messageType });
+        });
       } else {
-        firebaseApi.updateUser(userId, userInfo);
+        firebaseApi.updateUser(userId, userInfo).then(({ message, messageType }) => {
+          this.setState({ message, messageType });
+        });
       }
+      this.setState({ message: isValid.message });
     }
-    this.setState({ message: isValid.message });
   };
 
   disableChangingEmail = (name) => {
@@ -149,7 +154,7 @@ class MemberPage extends React.Component {
 
   render() {
     const { userId, hideMemberPage } = this.props;
-    const { isFetching, directions, message } = this.state;
+    const { isFetching, directions, message, messageType } = this.state;
 
     const preparedDirections = directionsToOptions(directions);
 
@@ -230,7 +235,7 @@ class MemberPage extends React.Component {
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{userId === 'newMember' ? 'Register Member' : 'Edit Member'}</h1>
         <form>{fields}</form>
-        <p className={styles.message}>{message}</p>
+        <FormMessage messageType={messageType}>{message}</FormMessage>
         <div className={styles.buttonWrapper}>
           <Button className={styles.successButton} onClick={this.createUser}>
             {userId !== 'newMember' ? 'Save' : 'Create'}

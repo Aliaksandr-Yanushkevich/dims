@@ -11,14 +11,26 @@ const promiseWithMessage = (message) => {
 
 const firebaseApi = {
   createUser(userId, userInfo) {
+    const { email } = userInfo;
     return firestore
-      .collection('UserProfile')
-      .doc(userId)
-      .set({
-        ...userInfo,
+      .collection('Roles')
+      .where('email', '==', email)
+      .get()
+      .then((users) => {
+        if (users.size) {
+          throw new Error('User with such email exists');
+        }
       })
       .then(() => {
-        const { email } = userInfo;
+        firestore
+          .collection('UserProfile')
+          .doc(userId)
+          .set({
+            ...userInfo,
+          });
+      })
+
+      .then(() => {
         this.register(email, 'incubator');
         return email;
       })
@@ -29,12 +41,8 @@ const firebaseApi = {
           .doc(userId)
           .set({ userId, email: userEmail, role: 'member', firstName, lastName });
       })
-      .then(() => {
-        console.log('User created successfully');
-      })
-      .catch((error) => {
-        console.error('Something went wrong when user creation', error);
-      });
+      .then(() => ({ message: 'User created successfully' }))
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   updateUser(userId, userInfo) {
@@ -51,12 +59,8 @@ const firebaseApi = {
           .doc(userId)
           .set({ userId, email, role: 'member', firstName, lastName });
       })
-      .then(() => {
-        console.log('User updated successfully');
-      })
-      .catch((error) => {
-        console.error('Something went wrong when user updating', error);
-      });
+      .then(() => ({ message: 'User updated successfully' }))
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   register(email, password) {
@@ -72,9 +76,6 @@ const firebaseApi = {
     return firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        console.log('Successfully logged in');
-      })
       .then(() => {
         return this.getRole(email);
       })
@@ -114,7 +115,7 @@ const firebaseApi = {
         const user = firebase.auth().currentUser;
         return user.updatePassword(password).then(() => {
           console.log('Password was successfully changed');
-          return { message: null };
+          return { message: 'Password was successfully changed' };
         });
       })
       .catch(({ message }) => ({ message }));

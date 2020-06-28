@@ -1,11 +1,15 @@
 const directionsToOptions = (directions) => {
-  const options = [];
-  directions.forEach(({ directionId, name }) =>
-    options.push({
+  if (!directions) {
+    return '';
+  }
+
+  const options = directions.map(({ directionId, name }) => {
+    return {
       value: directionId,
       title: name,
-    }),
-  );
+    };
+  });
+
   return options;
 };
 
