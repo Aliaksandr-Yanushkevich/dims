@@ -3,7 +3,6 @@
 .wrapper {
   width: 50%;
   max-width: 1000px;
-  overflow: auto;
   border: 1px solid $primaryColor;
   margin: 0 auto;
   padding: 1.5rem;
@@ -19,8 +18,12 @@
 .wrapper form {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 3rem 3rem 3rem 3rem 3rem 3rem 3rem;
+  grid-template-rows: 6rem 6rem 6rem 6rem 6rem 6rem 6rem;
   grid-column-gap: 3rem;
+  overflow: auto;
+  max-height: 50vh;
+  border: 1px solid $primaryColor;
+  padding: 1.5rem;
 }
 
 .item {
@@ -51,7 +54,10 @@ select {
   width: calc(10rem + 5px);
 }
 
-.message {
+.customMessage {
+  display: flex;
   color: $dangerousColor;
   margin: 0;
+  align-items: center;
+  height: 2rem;
 }
