@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Modal, ModalBody } from 'reactstrap';
 import styles from './MembersTasks.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
@@ -89,13 +90,15 @@ class MemberTasks extends Component {
 
     return (
       <>
-        {taskTrackPageIsVisible && (
-          <TaskTrack
-            userTaskId={currentUserTaskId}
-            taskName={currentTaskName}
-            hideTaskTrackPage={this.hideTaskTrackPage}
-          />
-        )}
+        <Modal isOpen={taskTrackPageIsVisible} toggle={this.hideTaskTrackPage}>
+          <ModalBody>
+            <TaskTrack
+              userTaskId={currentUserTaskId}
+              taskName={currentTaskName}
+              hideTaskTrackPage={this.hideTaskTrackPage}
+            />
+          </ModalBody>
+        </Modal>
         <h1 className={styles.title}>Member&apos;s Task Manage Grid</h1>
         {role === 'member' && (
           <h2 className={styles.subtitle}>{`Hi, dear ${firstName} ${lastName}! This is your current tasks:`}</h2>

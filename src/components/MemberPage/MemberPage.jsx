@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDom from 'react-dom';
 import Preloader from '../common/Preloader/Preloader';
 import Button from '../Button/Button';
 import styles from './MemberPage.module.scss';
@@ -18,28 +17,23 @@ import validateMemberPageForm from '../../helpers/validators/validateMemberPageF
 import FormMessage from '../common/FormMessage/FormMessage';
 
 class MemberPage extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      firstName: '',
-      lastName: '',
-      sex: 'male',
-      mobilePhone: '',
-      email: '',
-      startDate: dateToStringForInput(new Date()),
-      skype: '',
-      birthDate: '',
-      directionId: 0,
-      address: '',
-      education: '',
-      mathScore: '',
-      universityAverageScore: '',
-      message: '',
-      isFetching: false,
-    };
-    this.root = document.createElement('div');
-    document.body.appendChild(this.root);
-  }
+  state = {
+    firstName: '',
+    lastName: '',
+    sex: 'male',
+    mobilePhone: '',
+    email: '',
+    startDate: dateToStringForInput(new Date()),
+    skype: '',
+    birthDate: '',
+    directionId: 0,
+    address: '',
+    education: '',
+    mathScore: '',
+    universityAverageScore: '',
+    message: '',
+    isFetching: false,
+  };
 
   componentDidMount() {
     const { userId } = this.props;
@@ -62,10 +56,6 @@ class MemberPage extends React.Component {
     firebaseApi.getDirections().then((directions) => {
       this.setState({ directions });
     });
-  }
-
-  componentWillUnmount() {
-    document.body.removeChild(this.root);
   }
 
   createUser = () => {
@@ -234,7 +224,7 @@ class MemberPage extends React.Component {
       return <Preloader />;
     }
 
-    return ReactDom.createPortal(
+    return (
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{userId === 'newMember' ? 'Register Member' : 'Edit Member'}</h1>
         <form>{fields}</form>
@@ -248,8 +238,7 @@ class MemberPage extends React.Component {
 
           <Button onClick={hideMemberPage}>Back to grid</Button>
         </div>
-      </div>,
-      this.root,
+      </div>
     );
   }
 }

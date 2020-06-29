@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDom from 'react-dom';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
 import Button from '../Button/Button';
 import styles from './TaskPage.module.scss';
@@ -51,10 +50,6 @@ class TaskPage extends React.Component {
     firebaseApi.getUsersWithTask(taskId).then((usersWithTaskFromDB) => {
       this.setState({ usersWithTaskFromDB, usersWithTaskLocal: usersWithTaskFromDB });
     });
-  }
-
-  componentWillUnmount() {
-    document.body.removeChild(this.root);
   }
 
   onChange = (e) => {
@@ -141,7 +136,7 @@ class TaskPage extends React.Component {
       return null;
     });
 
-    return ReactDom.createPortal(
+    return (
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{taskId === 'newTask' ? 'New task' : `Edit task`}</h1>
         <form>{fields}</form>
@@ -157,8 +152,7 @@ class TaskPage extends React.Component {
           </Button>
           <Button onClick={hideMemberPage}>Back to grid</Button>
         </div>
-      </div>,
-      this.root,
+      </div>
     );
   }
 }

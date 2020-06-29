@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Modal, ModalBody } from 'reactstrap';
 import styles from './TaskManagement.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import TasksPage from '../TaskPage/TaskPage';
@@ -74,7 +75,11 @@ class TaskManagement extends React.Component {
       <>
         <h1 className={styles.title}>Task management</h1>
         <div className={styles.tableWrapper}>
-          {taskPageIsVisible && <TasksPage taskId={currentTaskId} hideMemberPage={this.hideMemberPage} />}
+          <Modal isOpen={taskPageIsVisible} toggle={this.hideMemberPage}>
+            <ModalBody>
+              <TasksPage taskId={currentTaskId} hideMemberPage={this.hideMemberPage} />
+            </ModalBody>
+          </Modal>
           <Button className={styles.createTask} taskId='newTask' onClick={this.newTask}>
             Create task
           </Button>

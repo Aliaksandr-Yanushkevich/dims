@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
+import { Modal, ModalBody } from 'reactstrap';
 import TableHeader from '../common/TableHeader/TableHeader';
 import MemberData from './MemberData';
 import Preloader from '../common/Preloader/Preloader';
@@ -80,7 +81,11 @@ class Members extends React.Component {
 
     return (
       <>
-        {memberPageIsVisible && <MemberPage userId={currentUserId} hideMemberPage={this.hideMemberPage} />}
+        <Modal isOpen={memberPageIsVisible} toggle={this.hideMemberPage}>
+          <ModalBody>
+            <MemberPage userId={currentUserId} hideMemberPage={this.hideMemberPage} />
+          </ModalBody>
+        </Modal>
         <h1 className={styles.title}>Members Manage Grid</h1>
         <div className={styles.tableWrapper}>
           {role === 'admin' && (
