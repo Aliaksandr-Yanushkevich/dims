@@ -10,6 +10,7 @@ import TextField from '../common/TextField/TextField';
 import PasswordField from '../common/PasswordField/PasswordField';
 import Checkbox from '../common/Checkbox/Checkbox';
 import FormMessage from '../common/FormMessage/FormMessage';
+import validateLoginForm from '../../helpers/validators/validateLoginForm';
 
 class Login extends React.Component {
   state = {
@@ -32,16 +33,22 @@ class Login extends React.Component {
   login = () => {
     const { setUser } = this.props;
     const { email, password, remember } = this.state;
+    const isValid = validateLoginForm(email);
 
-    firebaseApi.login(email, password, remember).then((result) => {
-      const { role, userId, firstName, lastName, message, messageType } = result;
-      debugger;
-      if (Object.keys(result).includes('message')) {
-        this.setState({ message, messageType });
-      }
-      setUser(userId, role, firstName, lastName, email);
-      this.setState({ isAuth: true, role });
-    });
+    if (isValid.formIsValid) {
+      firebaseApi.login(email, password, remember).then((result) => {
+        const { role, userId, firstName, lastName, message, messageType } = result;
+
+        if (Object.keys(result).includes('message')) {
+          this.setState({ message, messageType });
+        }
+        setUser(userId, role, firstName, lastName, email);
+        this.setState({ isAuth: true, role });
+      });
+    } else {
+      const { message, messageType } = isValid;
+      this.setState({ message, messageType });
+    }
   };
 
   onChange = (e) => {
@@ -51,16 +58,6 @@ class Login extends React.Component {
       this.setState({ [id]: checked });
     } else {
       this.setState({ [id]: value });
-    }
-  };
-
-  validateForm = () => {
-    // magic numbers here are minimal/maximum length for input fields or other special requirements
-    const { email, password } = this.state;
-    if (emailRegexp.test(email) && password.length) {
-      this.setState({ formIsValid: true });
-    } else {
-      this.setState({ formIsValid: false });
     }
   };
 
@@ -91,18 +88,22 @@ class Login extends React.Component {
             errorMessage='Email is invalid'
           />
           <PasswordField id='password' name='password' label='Password:' value={password} onChange={this.onChange} />
-          <div className={styles.item}>
-            <div className={styles.remember}>
-              <Checkbox id='remember' name='remember' checked={remember} onChange={this.onChange}>
-                Remember me
-              </Checkbox>
-            </div>
-            <Button id='login' onClick={this.login}>
-              Login
-            </Button>
-          </div>
         </form>
-        <FormMessage messageType={messageType}>{message}</FormMessage>
+
+        <FormMessage className={styles.customMessage} messageType={messageType}>
+          {message}
+        </FormMessage>
+
+        <div className={styles.item}>
+          <div className={styles.remember}>
+            <Checkbox id='remember' name='remember' checked={remember} onChange={this.onChange}>
+              Remember me
+            </Checkbox>
+          </div>
+          <Button id='login' onClick={this.login}>
+            Login
+          </Button>
+        </div>
       </div>
     );
   }
