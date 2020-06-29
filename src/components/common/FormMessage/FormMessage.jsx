@@ -1,9 +1,9 @@
 import React from 'react';
-import PropTypes, { string } from 'prop-types';
+import PropTypes from 'prop-types';
 import styles from './FormMessage.module.scss';
 
 const FormMessage = ({ className, messageType, children }) => {
-  const classes = `${className} ${messageType ? styles[messageType] : styles.message}`;
+  const classes = `${styles.message} ${styles[messageType]} ${className}`;
   return (
     <div className={classes}>
       <p>{children}</p>
@@ -12,13 +12,15 @@ const FormMessage = ({ className, messageType, children }) => {
 };
 
 FormMessage.propTypes = {
-  messageType: string,
+  messageType: PropTypes.string,
   children: PropTypes.node,
+  className: PropTypes.string,
 };
 
 FormMessage.defaultProps = {
-  messageType: null,
+  messageType: '',
   children: null,
+  className: '',
 };
 
 export default FormMessage;

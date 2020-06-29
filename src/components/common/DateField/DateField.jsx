@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import checkRequirements from '../../../helpers/validators/checkRequirements';
 import styles from './DateField.module.scss';
 import { requiredMessage } from '../../../constants';
+import FormMessage from '../FormMessage/FormMessage';
 
 class DateField extends React.Component {
   state = {
@@ -31,10 +32,10 @@ class DateField extends React.Component {
   };
 
   render() {
-    const { id, name, label, value, onChange } = this.props;
+    const { id, name, label, value, onChange, disabled } = this.props;
     const { touched, message } = this.state;
     return (
-      <div className={styles.gridItem}>
+      <div className={styles.inputGroup}>
         <div className={styles.item}>
           <label htmlFor={id}>{label}</label>
           <input
@@ -46,10 +47,11 @@ class DateField extends React.Component {
             onChange={onChange}
             value={value}
             className={message && touched ? styles.error : null}
+            disabled={disabled}
             required
           />
         </div>
-        <p className={styles.message}>{message}</p>
+        <FormMessage messageType='warning'>{message}</FormMessage>
       </div>
     );
   }
@@ -58,6 +60,8 @@ class DateField extends React.Component {
 DateField.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
   name: PropTypes.string,
   value: PropTypes.string,
   regexp: PropTypes.string,
@@ -69,6 +73,7 @@ DateField.defaultProps = {
   value: '',
   regexp: null,
   errorMessage: null,
+  disabled: false,
 };
 
 export default DateField;

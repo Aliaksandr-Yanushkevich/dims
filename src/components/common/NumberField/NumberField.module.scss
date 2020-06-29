@@ -4,24 +4,13 @@
   border: 2px solid $dangerousColor;
 }
 
-.message {
-  color: $dangerousColor;
-  margin: 0;
-}
-
-.gridItem {
-  height: 7rem;
-}
-
 .item {
   display: flex;
-  justify-content: space-between;
-  flex-direction: row;
-  // height: 50%;
+  // justify-content: space-between;
+  flex-direction: column;
 }
 
-.textareaItem {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1rem;
+.item input {
+  width: 100%;
+  margin-top: 0.5rem;
 }

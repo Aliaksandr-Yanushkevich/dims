@@ -4,21 +4,19 @@
   border: 2px solid $dangerousColor;
 }
 
-.message {
-  color: $dangerousColor;
-}
-
 .item {
   display: flex;
   // justify-content: space-between;
   flex-direction: column;
 }
 
-.item select {
+.item input {
   width: 100%;
   margin-top: 0.5rem;
 }
 
-select {
-  height: 1.5rem;
+.textareaItem {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
 }
