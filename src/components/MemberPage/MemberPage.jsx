@@ -130,7 +130,9 @@ class MemberPage extends React.Component {
           this.setState({ message, messageType });
         });
       }
-      this.setState({ message: isValid.message });
+    } else {
+      const { message, messageType } = isValid;
+      this.setState({ message, messageType });
     }
   };
 
@@ -146,7 +148,7 @@ class MemberPage extends React.Component {
     const { name, value } = e.currentTarget;
     this.setState({ message: '' });
     let preparedValue = value;
-    if (name === 'directionId' || name === 'mathScore') {
+    if (name === 'directionId' || name === 'mathScore' || name === 'universityAverageScore') {
       preparedValue = Number(value);
     }
     this.setState({ [name]: preparedValue });
@@ -174,6 +176,7 @@ class MemberPage extends React.Component {
             regexp={regexp}
             errorMessage={errorMessage}
             disabled={this.disableChangingEmail(name)}
+            className={styles.inputGroup}
           />
         );
       }
@@ -235,7 +238,9 @@ class MemberPage extends React.Component {
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{userId === 'newMember' ? 'Register Member' : 'Edit Member'}</h1>
         <form>{fields}</form>
-        <FormMessage messageType={messageType}>{message}</FormMessage>
+        <FormMessage className={styles.customMessage} messageType={messageType}>
+          {message}
+        </FormMessage>
         <div className={styles.buttonWrapper}>
           <Button className={styles.successButton} onClick={this.createUser}>
             {userId !== 'newMember' ? 'Save' : 'Create'}

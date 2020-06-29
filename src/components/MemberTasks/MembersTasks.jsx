@@ -6,12 +6,16 @@ import Preloader from '../common/Preloader/Preloader';
 import MemberCurrentTasks from './MemberCurrentTasks';
 import { membersTasksTitle, membersTasksTitleForMembers } from '../../constants';
 import firebaseApi from '../../api/firebaseApi';
+import TaskTrack from '../TaskTrack/TaskTrack';
 
 class MemberTasks extends Component {
   state = {
+    currentTaskName: null,
+    currentUserTaskId: null,
     taskData: [],
     firstName: null,
     lastName: null,
+    taskTrackPageIsVisible: false,
     isFetching: false,
   };
 
@@ -30,11 +34,32 @@ class MemberTasks extends Component {
     }
   }
 
+  trackTask = (e) => {
+    e.persist();
+    const currentUserTaskId = e.target.dataset.taskid;
+    const currentTaskName = e.target.dataset.id;
+    this.setState({ currentTaskName, currentUserTaskId, taskTrackPageIsVisible: true });
+  };
+
+  hideTaskTrackPage = () => {
+    this.setState({ taskTrackPageIsVisible: false });
+  };
+
   render() {
     const { role } = this.props;
-    const { taskData, firstName, lastName, isFetching } = this.state;
+    const {
+      taskData,
+      firstName,
+      lastName,
+      isFetching,
+      taskTrackPageIsVisible,
+      currentUserTaskId,
+      currentTaskName,
+    } = this.state;
 
-    if (isFetching) return <Preloader />;
+    if (isFetching) {
+      return <Preloader />;
+    }
 
     if (!taskData.length) {
       return (
@@ -45,22 +70,32 @@ class MemberTasks extends Component {
         </p>
       );
     }
-    const tasksArr = taskData.map((task, index) => (
-      <MemberCurrentTasks
-        key={task.userTaskId}
-        index={index}
-        userTaskId={task.userTaskId}
-        taskName={task.name}
-        startDate={task.startDate}
-        deadlineDate={task.deadlineDate}
-        stateName={task.stateName}
-        stateId={task.stateId}
-        role={role}
-      />
-    ));
+    const tasksArr = taskData.map((task, index) => {
+      return (
+        <MemberCurrentTasks
+          key={task.userTaskId}
+          index={index}
+          userTaskId={task.userTaskId}
+          taskName={task.name}
+          startDate={task.startDate}
+          deadlineDate={task.deadlineDate}
+          stateName={task.stateName}
+          trackTask={this.trackTask}
+          stateId={task.stateId}
+          role={role}
+        />
+      );
+    });
 
     return (
       <>
+        {taskTrackPageIsVisible && (
+          <TaskTrack
+            userTaskId={currentUserTaskId}
+            taskName={currentTaskName}
+            hideTaskTrackPage={this.hideTaskTrackPage}
+          />
+        )}
         <h1 className={styles.title}>Member&apos;s Task Manage Grid</h1>
         {role === 'member' && (
           <h2 className={styles.subtitle}>{`Hi, dear ${firstName} ${lastName}! This is your current tasks:`}</h2>

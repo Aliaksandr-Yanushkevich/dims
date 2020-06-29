@@ -24,7 +24,7 @@ function validateMemberPageForm(
   mathScore,
   universityAverageScore,
 ) {
-  const isFilled = [...arguments].every((argument) => argument !== '');
+  const allIsFilled = [...arguments].every((argument) => argument !== '');
   const firstNameIsValid = checkRequirements(nameRegexp, firstName);
   const lastNameIsValid = checkRequirements(nameRegexp, lastName);
   const phoneNumberIsValid = checkRequirements(phoneNumberRegexp, mobilePhone);
@@ -45,13 +45,14 @@ function validateMemberPageForm(
     mathScoreIsValid &&
     universityAverageScoreIsValid &&
     emailIsValid &&
-    isFilled
+    allIsFilled
   ) {
-    return { formIsValid: true, message: null };
+    return { formIsValid: true };
   }
   return {
     formIsValid: false,
     message: 'Сheck fields and then submit the form. All fields are required',
+    messageType: 'warning',
   };
 }
 

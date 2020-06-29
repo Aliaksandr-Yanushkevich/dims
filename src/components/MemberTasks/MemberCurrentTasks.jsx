@@ -6,7 +6,17 @@ import Button from '../Button/Button';
 import TableData from '../common/TableData/TableData';
 import firebaseApi from '../../api/firebaseApi';
 
-const MemberCurrentTasks = ({ index, userTaskId, taskName, startDate, deadlineDate, stateName, stateId, role }) => {
+const MemberCurrentTasks = ({
+  index,
+  userTaskId,
+  taskName,
+  startDate,
+  deadlineDate,
+  stateName,
+  trackTask,
+  stateId,
+  role,
+}) => {
   const succesedTask = (e) => {
     e.persist();
     const currentTaskId = e.target.dataset.taskid;
@@ -18,7 +28,6 @@ const MemberCurrentTasks = ({ index, userTaskId, taskName, startDate, deadlineDa
     const currentTaskId = e.target.dataset.taskid;
     firebaseApi.completeTask(currentTaskId, 'fail');
   };
-
   return (
     <tr key={userTaskId}>
       <TableData>{index + 1}</TableData>
@@ -26,14 +35,21 @@ const MemberCurrentTasks = ({ index, userTaskId, taskName, startDate, deadlineDa
       <TableData>{dateToString(startDate)}</TableData>
       <TableData>{dateToString(deadlineDate)}</TableData>
       <TableData>{stateName}</TableData>
+      {role === 'member' && (
+        <TableData>
+          <Button className={styles.defaultButton} taskId={userTaskId} dataId={taskName} onClick={trackTask}>
+            Track
+          </Button>
+        </TableData>
+      )}
       {(role === 'admin' || role === 'mentor') && (
         <TableData>
           <div className={styles.buttonWrapper}>
-            <Button className={styles.successButton} taskId={stateId} onClick={succesedTask}>
+            <Button className={styles.successButton} data-taskid={stateId} onClick={succesedTask}>
               Success
             </Button>
 
-            <Button className={styles.dangerousButton} taskId={stateId} onClick={failedTask}>
+            <Button className={styles.dangerousButton} data-taskid={stateId} onClick={failedTask}>
               Fail
             </Button>
           </div>
@@ -45,6 +61,7 @@ const MemberCurrentTasks = ({ index, userTaskId, taskName, startDate, deadlineDa
 
 MemberCurrentTasks.propTypes = {
   stateName: PropTypes.string.isRequired,
+  trackTask: PropTypes.func.isRequired,
   stateId: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   userTaskId: PropTypes.string.isRequired,

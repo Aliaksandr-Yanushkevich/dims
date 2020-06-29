@@ -11,6 +11,7 @@ import TaskManagement from './components/TaskManagement/TaskManagement';
 import Login from './components/Login/Login';
 import Account from './components/Account/Account';
 import firebaseApi from './api/firebaseApi';
+import getUserFromSessionStorage from './helpers/getUserFromSessionStorage';
 
 class App extends Component {
   state = {
@@ -22,7 +23,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    const user = JSON.parse(sessionStorage.getItem('user'));
+    const user = getUserFromSessionStorage();
     if (user) {
       const { role, userId, firstName, lastName, email } = user;
       this.setState({ role, currentUserId: userId, firstName, lastName, email });

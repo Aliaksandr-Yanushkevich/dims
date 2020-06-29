@@ -428,9 +428,8 @@ const firebaseApi = {
       .collection('TaskTrack')
       .doc(taskTrackId)
       .set({ userTaskId, taskTrackId, trackDate, trackNote })
-      .catch((error) => {
-        console.error(`Error writting data: ${error}`);
-      });
+      .then(() => ({ message: 'Note successfully created' }))
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   getTaskName(userTaskId) {

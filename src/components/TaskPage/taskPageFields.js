@@ -1,6 +1,6 @@
 import { textMaxLength1000Regexp, textMaxLength140Regexp } from '../../constants';
 
-const taskPagaFields = [
+const taskPageFields = [
   {
     id: 'taskName',
     name: 'taskName',
@@ -19,10 +19,10 @@ const taskPagaFields = [
     label: 'Description:',
     placeholder: 'Task description',
     regexp: textMaxLength1000Regexp,
-    errorMessage: 'Task name must be up to 140 characters',
+    errorMessage: 'Task name must be up to 1000 characters',
   },
   { id: 'startDate', name: 'startDate', type: 'date', label: 'Start:' },
   { id: 'deadlineDate', name: 'deadlineDate', type: 'date', label: 'Deadline:' },
 ];
 
-export default taskPagaFields;
+export default taskPageFields;

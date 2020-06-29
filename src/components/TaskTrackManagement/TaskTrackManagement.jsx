@@ -14,7 +14,7 @@ class TaskTrackManagement extends React.Component {
     currentTaskTrackId: null,
     currentUserTaskId: null,
     currentTaskName: null,
-    trackData: null,
+    trackData: [],
     taskTrackPageIsVisible: false,
     isFetching: false,
   };
@@ -23,14 +23,9 @@ class TaskTrackManagement extends React.Component {
     const { userId, role } = this.props;
     if (userId && userId !== 'newMember' && role === 'member') {
       this.setState({ isFetching: true });
-      firebaseApi
-        .getTrackDataArray(userId)
-        .then((trackData) => {
-          this.setState({ trackData });
-        })
-        .then(() => {
-          this.setState({ isFetching: false });
-        });
+      firebaseApi.getTrackDataArray(userId).then((trackData) => {
+        this.setState({ trackData, isFetching: false });
+      });
     }
   }
 
@@ -92,7 +87,7 @@ class TaskTrackManagement extends React.Component {
     if (isFetching) {
       return <Preloader />;
     }
-    if (!trackData && !isFetching) {
+    if (trackData && !trackData.length) {
       return <p>You haven&apos;t track notes</p>;
     }
     return (
