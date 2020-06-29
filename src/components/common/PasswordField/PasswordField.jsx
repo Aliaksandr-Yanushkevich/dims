@@ -61,7 +61,7 @@ PasswordField.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  regexp: PropTypes.string,
+  regexp: PropTypes.instanceOf(RegExp),
   errorMessage: PropTypes.string,
   name: PropTypes.string,
   value: PropTypes.string,

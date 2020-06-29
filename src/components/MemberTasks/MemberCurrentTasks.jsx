@@ -45,11 +45,11 @@ const MemberCurrentTasks = ({
       {(role === 'admin' || role === 'mentor') && (
         <TableData>
           <div className={styles.buttonWrapper}>
-            <Button className={styles.successButton} data-taskid={stateId} onClick={succesedTask}>
+            <Button className={styles.successButton} taskId={stateId} onClick={succesedTask}>
               Success
             </Button>
 
-            <Button className={styles.dangerousButton} data-taskid={stateId} onClick={failedTask}>
+            <Button className={styles.dangerousButton} taskId={stateId} onClick={failedTask}>
               Fail
             </Button>
           </div>

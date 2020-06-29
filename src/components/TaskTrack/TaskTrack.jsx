@@ -78,6 +78,7 @@ class TaskTrack extends React.Component {
       if (type === 'textarea') {
         return (
           <TextAreaField
+            key={id}
             id={id}
             name={name}
             label={label}
@@ -120,14 +121,16 @@ class TaskTrack extends React.Component {
 }
 
 TaskTrack.propTypes = {
-  userTaskId: PropTypes.string.isRequired,
+  userTaskId: PropTypes.string,
   taskTrackId: PropTypes.string,
-  taskName: PropTypes.string.isRequired,
+  taskName: PropTypes.string,
   hideTaskTrackPage: PropTypes.func.isRequired,
 };
 
 TaskTrack.defaultProps = {
   taskTrackId: null,
+  userTaskId: '',
+  taskName: '',
 };
 
 export default TaskTrack;

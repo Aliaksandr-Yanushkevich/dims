@@ -120,6 +120,7 @@ class TaskPage extends React.Component {
       if (type === 'textarea') {
         return (
           <TextAreaField
+            key={id}
             id={id}
             name={name}
             label={label}
