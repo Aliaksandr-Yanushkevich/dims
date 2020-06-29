@@ -2,7 +2,7 @@
 
 .wrapper {
   width: 30%;
-  max-width: 500px;
+  max-width: 80vh;
   border: 1px solid $primaryColor;
   margin: 0 auto;
   padding: 1.5rem;
@@ -15,15 +15,13 @@
   background-color: $secondaryColor;
 }
 
-.dateItem {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
-  margin-bottom: 1rem;
+.wrapper form {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 14rem 2rem;
 }
 
 .buttonWrapper {
-  margin-top: 0.5rem;
   display: grid;
   grid-template-rows: 1fr;
   grid-template-columns: 1fr 1fr;
@@ -32,4 +30,11 @@
 
 .buttonWrapper button {
   width: 100%;
+}
+
+.customMessage {
+  display: flex;
+  margin: 0;
+  align-items: center;
+  height: 4rem;
 }

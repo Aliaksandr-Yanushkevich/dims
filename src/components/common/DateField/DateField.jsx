@@ -60,7 +60,7 @@ class DateField extends React.Component {
 DateField.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
   disabled: PropTypes.bool,
   name: PropTypes.string,
   value: PropTypes.string,
@@ -71,6 +71,7 @@ DateField.propTypes = {
 DateField.defaultProps = {
   name: '',
   value: '',
+  onChange: () => {},
   regexp: null,
   errorMessage: null,
   disabled: false,

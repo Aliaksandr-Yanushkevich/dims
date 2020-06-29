@@ -3,21 +3,25 @@ import PropTypes from 'prop-types';
 import Button from '../Button/Button';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
 import styles from './TaskTrack.module.scss';
-import FormField from '../FormField/FormField';
 import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
 import generateID from '../../helpers/generateID';
+import taskTrackFields from './taskTrackFields';
+import DateField from '../common/DateField/DateField';
+import TextAreaField from '../common/TextAreaField/TextAreaField';
+import FormMessage from '../common/FormMessage/FormMessage';
+import validateTaskTrackForm from '../../helpers/validators/validateTaskTrackForm';
 
 class TaskTrack extends React.Component {
   state = {
     taskName: null,
     trackNote: '',
-    formIsValid: false,
+    message: '',
   };
 
   componentDidMount() {
     const { taskTrackId, taskName } = this.props;
-    this.validateForm();
+
     if (taskTrackId) {
       firebaseApi.getTaskTrack(taskTrackId).then((trackNote) => this.setState({ trackNote }));
     }
@@ -25,36 +29,71 @@ class TaskTrack extends React.Component {
   }
 
   onChange = (e) => {
-    const { value } = e.currentTarget;
-    this.setState({ trackNote: value });
-    this.validateForm();
-  };
-
-  validateForm = () => {
-    // magic numbers here are minimal/maximum length for input fields or other special requirements
-    const { trackNote } = this.state;
-    if (trackNote.length && trackNote.length <= 1000) {
-      this.setState({ formIsValid: true });
-    } else {
-      this.setState({ formIsValid: false });
-    }
+    const { name, value } = e.currentTarget;
+    this.setState({ [name]: value, message: '' });
   };
 
   trackTask = () => {
     const { userTaskId, taskTrackId } = this.props;
     const { trackNote } = this.state;
     const trackDate = new Date();
-    if (taskTrackId) {
-      firebaseApi.trackTask(userTaskId, taskTrackId, trackDate, trackNote.trim());
+    const isValid = validateTaskTrackForm(trackNote);
+
+    if (isValid.formIsValid) {
+      if (taskTrackId) {
+        firebaseApi.trackTask(userTaskId, taskTrackId, trackDate, trackNote.trim()).then(({ message, messageType }) => {
+          this.setState({ message, messageType });
+        });
+      } else {
+        const generatedTaskTrackId = generateID();
+        firebaseApi
+          .trackTask(userTaskId, generatedTaskTrackId, trackDate, trackNote.trim())
+          .then(({ message, messageType }) => {
+            this.setState({ message, messageType });
+          });
+      }
     } else {
-      const generatedTaskTrackId = generateID();
-      firebaseApi.trackTask(userTaskId, generatedTaskTrackId, trackDate, trackNote.trim());
+      const { message, messageType } = isValid;
+      this.setState({ message, messageType });
     }
   };
 
   render() {
-    const { taskName, trackNote, formIsValid } = this.state;
+    const { taskName, message, messageType } = this.state;
     const { hideTaskTrackPage } = this.props;
+    const fields = taskTrackFields.map((field) => {
+      const { id, name, type, label, placeholder, regexp, errorMessage, cols, rows, disabled } = field;
+      if (type === 'date') {
+        return (
+          <DateField
+            key={id}
+            id={id}
+            name={name}
+            label={label}
+            value={dateToStringForInput(new Date())}
+            disabled={disabled}
+          />
+        );
+      }
+      if (type === 'textarea') {
+        return (
+          <TextAreaField
+            id={id}
+            name={name}
+            label={label}
+            value={this.state[name]}
+            regexp={regexp}
+            errorMessage={errorMessage}
+            onChange={this.onChange}
+            cols={cols}
+            rows={rows}
+            placeholder={placeholder}
+          />
+        );
+      }
+      return null;
+    });
+
     if (!taskName) {
       return <Preloader />;
     }
@@ -63,23 +102,14 @@ class TaskTrack extends React.Component {
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{`Task Track - ${taskName}`}</h1>
 
-        <div className={styles.dateItem}>
-          <label htmlFor='date'>Date </label>
-          <input id='date' type='date' value={dateToStringForInput(new Date())} disabled />
-        </div>
-        <FormField
-          id='note'
-          name='note'
-          value={trackNote}
-          placeholder='Type your note here'
-          onChange={this.onChange}
-          inputType='textarea'
-          validateForm={this.validateForm}
-          label='Note'
-          maxLength={1000}
-        />
+        <form>{fields}</form>
+
+        <FormMessage className={styles.customMessage} messageType={messageType}>
+          {message}
+        </FormMessage>
+
         <div className={styles.buttonWrapper}>
-          <Button disabled={!formIsValid} className={styles.successButton} onClick={this.trackTask}>
+          <Button className={styles.successButton} onClick={this.trackTask}>
             Save
           </Button>
           <Button onClick={hideTaskTrackPage}>Back to grid</Button>
