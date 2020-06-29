@@ -35,7 +35,11 @@ class Members extends React.Component {
 
   deleteUser = (e) => {
     e.persist();
-    const userId = e.target.dataset.id;
+    const {
+      target: {
+        dataset: { id: userId },
+      },
+    } = e;
     firebaseApi.deleteUser(userId);
   };
 
