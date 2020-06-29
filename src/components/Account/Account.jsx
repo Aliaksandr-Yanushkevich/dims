@@ -101,10 +101,8 @@ class Account extends React.Component {
             <p className={styles.formMessage}>{message}</p>
           </div>
           <div className={styles.buttonWrapper}>
-            <Button id='change' onClick={this.updatePassword}>
-              Change
-            </Button>
-            <NavLink to={role === 'admin' || role === 'admin' ? '/members' : '/member_tasks'}>
+            <Button onClick={this.updatePassword}>Change</Button>
+            <NavLink to={role === 'admin' || role === 'mentor' ? '/members' : '/member_tasks'}>
               <Button id='backToGrid'>Back to grid</Button>
             </NavLink>
           </div>

@@ -100,9 +100,7 @@ class Login extends React.Component {
               Remember me
             </Checkbox>
           </div>
-          <Button id='login' onClick={this.login}>
-            Login
-          </Button>
+          <Button onClick={this.login}>Login</Button>
         </div>
       </div>
     );

@@ -84,7 +84,7 @@ class Members extends React.Component {
         <h1 className={styles.title}>Members Manage Grid</h1>
         <div className={styles.tableWrapper}>
           {role === 'admin' && (
-            <Button id={styles.register} dataId='newMember' onClick={this.createUser}>
+            <Button className={styles.register} dataId='newMember' onClick={this.createUser}>
               Register
             </Button>
           )}
