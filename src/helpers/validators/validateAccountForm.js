@@ -8,6 +8,7 @@ const validateAccountForm = (password, repeatedPassword) => {
   return {
     formIsValid: false,
     message: 'The password does not meet the requirements or the password and the repeated password do not match',
+    messageType: 'warning',
   };
 };
 

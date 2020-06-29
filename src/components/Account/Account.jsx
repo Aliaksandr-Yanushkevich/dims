@@ -5,8 +5,9 @@ import styles from './Account.module.scss';
 import Button from '../Button/Button';
 import firebaseApi from '../../api/firebaseApi';
 import PasswordField from '../common/PasswordField/PasswordField';
-import { passwordRegexp } from '../../constants';
 import validateAccountForm from '../../helpers/validators/validateAccountForm';
+import fields from './accountFields';
+import FormMessage from '../common/FormMessage/FormMessage';
 
 class Account extends React.Component {
   state = {
@@ -19,14 +20,17 @@ class Account extends React.Component {
 
   updatePassword = () => {
     const { email } = this.props;
-    const { oldPassword, password, repeatedPassword, formIsValid } = this.state;
+    const { oldPassword, password, repeatedPassword } = this.state;
 
-    this.validateForm();
+    const isValid = validateAccountForm(password, repeatedPassword);
 
-    if (formIsValid) {
+    if (isValid.formIsValid) {
       firebaseApi.updatePassword(email, oldPassword, password, repeatedPassword).then(({ message }) => {
         this.setState({ message });
       });
+    } else {
+      const { message, messageType } = isValid;
+      this.setState({ message, messageType });
     }
   };
 
@@ -39,43 +43,12 @@ class Account extends React.Component {
     this.setState({ [name]: value });
   };
 
-  validateForm = () => {
-    const { password, repeatedPassword } = this.state;
-    const formIsValid = validateAccountForm(password, repeatedPassword);
-    this.setState(formIsValid);
-  };
-
   render() {
     const { firstName, lastName, role } = this.props;
-    const { oldPassword, password, repeatedPassword, message } = this.state;
-    const fields = [
-      {
-        id: 'oldPassword',
-        name: 'oldPassword',
-        label: 'Old password:',
-        value: oldPassword,
-      },
-      {
-        id: 'password',
-        name: 'password',
-        label: 'Password:',
-        value: password,
-        regexp: passwordRegexp,
-        errorMessage:
-          'Password must be a minimum of eight characters and contain lowercase letters, uppercase letters and numbers',
-      },
-      {
-        id: 'repeatedPassword',
-        name: 'repeatedPassword',
-        label: 'Repeate password:',
-        value: repeatedPassword,
-        regexp: passwordRegexp,
-        errorMessage:
-          'Password must be a minimum of eight characters and contain lowercase letters, uppercase letters and numbers',
-      },
-    ];
+    const { message, messageType } = this.state;
+
     const formFields = fields.map((field) => {
-      const { id, name, label, value, regexp, errorMessage } = field;
+      const { id, name, label, regexp, errorMessage } = field;
       return (
         <PasswordField
           key={id}
@@ -83,7 +56,7 @@ class Account extends React.Component {
           label={label}
           onChange={this.onChange}
           name={name}
-          value={value}
+          value={this.state[name]}
           regexp={regexp}
           errorMessage={errorMessage}
         />
@@ -95,18 +68,18 @@ class Account extends React.Component {
         <h1 className={styles.title}>Account</h1>
         <p>{`Name: ${firstName} ${lastName}`}</p>
         <p>{`Role: ${role}`}</p>
-        <form>
-          {formFields}
-          <div className={styles.message}>
-            <p className={styles.formMessage}>{message}</p>
-          </div>
-          <div className={styles.buttonWrapper}>
-            <Button onClick={this.updatePassword}>Change</Button>
-            <NavLink to={role === 'admin' || role === 'mentor' ? '/members' : '/member_tasks'}>
-              <Button id='backToGrid'>Back to grid</Button>
-            </NavLink>
-          </div>
-        </form>
+
+        <form>{formFields}</form>
+
+        <FormMessage className={styles.customMessage} messageType={messageType}>
+          {message}
+        </FormMessage>
+        <div className={styles.buttonWrapper}>
+          <Button onClick={this.updatePassword}>Change</Button>
+          <NavLink to={role === 'admin' || role === 'mentor' ? '/members' : '/member_tasks'}>
+            <Button id='backToGrid'>Back to grid</Button>
+          </NavLink>
+        </div>
       </div>
     );
   }
