@@ -143,15 +143,13 @@ class TaskPage extends React.Component {
 
     return ReactDom.createPortal(
       <div className={styles.wrapper}>
-        <form>
-          <h1 className={styles.title}>{taskId === 'newTask' ? 'New task' : `Edit task`}</h1>
-          {fields}
-          {members && (
-            <MemberList members={members} asignTask={this.asignTask} usersWithTaskLocal={usersWithTaskLocal} />
-          )}
-        </form>
+        <h1 className={styles.title}>{taskId === 'newTask' ? 'New task' : `Edit task`}</h1>
+        <form>{fields}</form>
+        {members && <MemberList members={members} asignTask={this.asignTask} usersWithTaskLocal={usersWithTaskLocal} />}
 
-        <FormMessage messageType={messageType}>{message}</FormMessage>
+        <FormMessage className={styles.customMessage} messageType={messageType}>
+          {message}
+        </FormMessage>
 
         <div className={styles.buttonWrapper}>
           <Button className={styles.successButton} onClick={this.createTask}>

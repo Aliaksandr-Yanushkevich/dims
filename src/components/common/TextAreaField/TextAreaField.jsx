@@ -78,7 +78,7 @@ TextAreaField.defaultProps = {
   regexp: null,
   errorMessage: null,
   cols: 30,
-  rows: 10,
+  rows: 5,
   placeholder: '',
 };
 

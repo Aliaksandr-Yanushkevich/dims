@@ -9,7 +9,7 @@ const taskPagaFields = [
     placeholder: 'Task name',
     regexp: textMaxLength140Regexp,
     cols: 30,
-    rows: 2,
+    rows: 1,
     errorMessage: 'Task name must be up to 140 characters',
   },
   {
