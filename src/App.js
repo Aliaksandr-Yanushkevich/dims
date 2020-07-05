@@ -58,11 +58,11 @@ class App extends Component {
     e.persist();
     const {
       target: {
-        dataset: { taskid: taskId },
+        dataset: { taskid: currentTaskId },
       },
     } = e;
     this.setState({
-      currentTaskId: taskId,
+      currentTaskId,
     });
   };
 

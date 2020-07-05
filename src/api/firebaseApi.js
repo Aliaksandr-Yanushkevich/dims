@@ -49,9 +49,7 @@ const firebaseApi = {
     return firestore
       .collection('UserProfile')
       .doc(userId)
-      .set({
-        ...userInfo,
-      })
+      .set(userInfo)
       .then(() => {
         const { firstName, lastName, email } = userInfo;
         firestore
@@ -270,25 +268,16 @@ const firebaseApi = {
   },
 
   getNames() {
-    let members = [];
     return firestore
       .collection('UserProfile')
       .orderBy('firstName')
       .get()
-      .then((users) => {
-        users.forEach((user) => {
+      .then((users) =>
+        users.docs.map((user) => {
           const { firstName, lastName, userId } = user.data();
-          members = [
-            ...members,
-            {
-              firstName,
-              lastName,
-              userId,
-            },
-          ];
-        });
-        return members;
-      })
+          return { firstName, lastName, userId };
+        }),
+      )
       .catch((error) => {
         console.error(`Error receiving data: ${error}`);
       });

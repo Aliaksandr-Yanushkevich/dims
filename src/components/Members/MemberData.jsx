@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import PropTypes, { object } from 'prop-types';
 import Button from '../common/Button/Button';
 import dateToString from '../../helpers/dateToString';
 import styles from './Members.module.scss';
@@ -35,9 +35,9 @@ const MemberData = ({
 
   const age = getAge(birthDate);
   const direction = directions
-    ? directions.filter((courseDirection) => {
+    ? directions.find((courseDirection) => {
         return courseDirection.directionId === directionId;
-      })[0].name
+      }).name
     : null;
 
   return (
@@ -93,6 +93,7 @@ MemberData.propTypes = {
   deleteUser: PropTypes.func.isRequired,
   createUser: PropTypes.func.isRequired,
   role: PropTypes.string.isRequired,
+  directions: PropTypes.arrayOf(),
 };
 
 export default MemberData;
