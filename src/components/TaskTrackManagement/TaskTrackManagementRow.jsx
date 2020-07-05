@@ -35,11 +35,10 @@ const TasksTracksManagementRow = ({
         >
           Edit
         </Button>
-        <NavLink className={styles.link} to='/task_track_management'>
-          <Button className={styles.dangerousButton} taskId={taskTrackId} onClick={deleteNote}>
-            Delete
-          </Button>
-        </NavLink>
+
+        <Button className={styles.dangerousButton} taskId={taskTrackId} onClick={deleteNote}>
+          Delete
+        </Button>
       </div>
     </TableData>
   </tr>

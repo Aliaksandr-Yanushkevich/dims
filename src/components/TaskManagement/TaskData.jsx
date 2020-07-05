@@ -21,11 +21,9 @@ const TaskData = ({ index, taskName, startDate, deadline, taskId, newTask, delet
           Edit
         </Button>
 
-        <NavLink className={styles.link} to='/task_management'>
-          <Button className={styles.dangerousButton} taskId={taskId} onClick={deleteTask}>
-            Delete
-          </Button>
-        </NavLink>
+        <Button className={styles.dangerousButton} taskId={taskId} onClick={deleteTask}>
+          Delete
+        </Button>
       </div>
     </TableData>
   </tr>

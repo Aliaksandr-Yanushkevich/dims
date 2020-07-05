@@ -6,6 +6,7 @@ import dateToString from '../../helpers/dateToString';
 import styles from './Members.module.scss';
 import TableData from '../common/TableData/TableData';
 import getAge from '../../helpers/getAge';
+import NavButton from '../common/NavButton/NavButton';
 
 const MemberData = ({
   index,
@@ -54,16 +55,25 @@ const MemberData = ({
       <TableData>{age}</TableData>
       <TableData>
         <div className={styles.buttonWrapper}>
-          <NavLink className={styles.link} to='/member_progress'>
-            <Button className={styles.defaultButton} dataId={userId} onClick={setCurrentUser}>
-              Progress
-            </Button>
-          </NavLink>
-          <NavLink className={styles.link} to='/member_tasks'>
-            <Button className={styles.defaultButton} dataId={userId} onClick={setCurrentUser}>
-              Tasks
-            </Button>
-          </NavLink>
+          <NavButton
+            className={styles.link}
+            to='/member_progress'
+            buttonClassName={styles.defaultButton}
+            dataId={userId}
+            onClick={setCurrentUser}
+          >
+            Progress
+          </NavButton>
+
+          <NavButton
+            className={styles.link}
+            to='/member_tasks'
+            buttonClassName={styles.defaultButton}
+            dataId={userId}
+            onClick={setCurrentUser}
+          >
+            Tasks
+          </NavButton>
           {role === 'admin' && (
             <Button className={styles.defaultButton} dataId={userId} onClick={createUser}>
               Edit
@@ -93,7 +103,7 @@ MemberData.propTypes = {
   deleteUser: PropTypes.func.isRequired,
   createUser: PropTypes.func.isRequired,
   role: PropTypes.string.isRequired,
-  directions: PropTypes.arrayOf(),
+  directions: PropTypes.arrayOf(object).isRequired,
 };
 
 export default MemberData;

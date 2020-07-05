@@ -17,24 +17,15 @@ const MemberCurrentTasks = ({
   stateId,
   role,
 }) => {
-  const succesedTask = (e) => {
+  const rateTask = (e) => {
     e.persist();
     const {
       target: {
         dataset: { taskid: currentTaskId },
+        innerText,
       },
     } = e;
-    firebaseApi.completeTask(currentTaskId, 'success');
-  };
-
-  const failedTask = (e) => {
-    e.persist();
-    const {
-      target: {
-        dataset: { taskid: currentTaskId },
-      },
-    } = e;
-    firebaseApi.completeTask(currentTaskId, 'fail');
+    firebaseApi.completeTask(currentTaskId, innerText);
   };
 
   return (
@@ -54,11 +45,11 @@ const MemberCurrentTasks = ({
       {(role === 'admin' || role === 'mentor') && (
         <TableData>
           <div className={styles.buttonWrapper}>
-            <Button className={styles.successButton} data-taskid={stateId} onClick={succesedTask}>
+            <Button className={styles.successButton} taskId={stateId} onClick={rateTask}>
               Success
             </Button>
 
-            <Button className={styles.dangerousButton} data-taskid={stateId} onClick={failedTask}>
+            <Button className={styles.dangerousButton} taskId={stateId} onClick={rateTask}>
               Fail
             </Button>
           </div>
