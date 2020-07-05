@@ -1,5 +1,3 @@
-const getUserFromSessionStorage = () => {
-  return JSON.parse(sessionStorage.getItem('user'));
-};
+const getUserFromSessionStorage = () => JSON.parse(sessionStorage.getItem('user'));
 
 export default getUserFromSessionStorage;

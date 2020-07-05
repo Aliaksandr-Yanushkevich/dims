@@ -22,7 +22,9 @@ class TaskTrack extends React.Component {
   componentDidMount() {
     const { taskTrackId, taskName } = this.props;
     if (taskTrackId) {
-      firebaseApi.getTaskTrack(taskTrackId).then((trackNote) => this.setState({ trackNote }));
+      firebaseApi.getTaskTrack(taskTrackId).then((trackNote) => {
+        this.setState({ trackNote });
+      });
     }
     this.setState({ taskName });
   }

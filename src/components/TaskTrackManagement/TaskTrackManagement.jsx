@@ -49,7 +49,6 @@ class TaskTrackManagement extends React.Component {
     e.persist();
     const currentTaskTrackId = e.target.dataset.taskid;
     firebaseApi.deleteItemWithId('TaskTrack', currentTaskTrackId).then((result) => {
-      debugger;
       showToast(result);
     });
   };

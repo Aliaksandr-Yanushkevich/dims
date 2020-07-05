@@ -76,9 +76,7 @@ const firebaseApi = {
     return firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        return this.getRole(email);
-      })
+      .then(() => this.getRole(email))
       .then((result) => {
         if (remember) {
           setUserToSessionStorage(result);
@@ -309,9 +307,7 @@ const firebaseApi = {
           usersWithTask.push(userId);
         });
       })
-      .then(() => {
-        return usersWithTask;
-      })
+      .then(() => usersWithTask)
       .catch((error) => {
         console.error(`Error receiving data: ${error}`);
       });

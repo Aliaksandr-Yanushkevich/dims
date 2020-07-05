@@ -58,19 +58,17 @@ class MemberProgres extends Component {
     if (!taskData.length && !isFetching) {
       return <p>{`${firstName} ${lastName} hasn't tracked tasks.`}</p>;
     }
-    const tasksArray = taskData.map((task, index) => {
-      return (
-        <MemberProgressData
-          key={task.taskId}
-          index={index}
-          taskId={task.taskId}
-          taskName={task.name}
-          trackNote={task.trackNote}
-          trackDate={task.trackDate}
-          createTask={this.createTask}
-        />
-      );
-    });
+    const tasksArray = taskData.map((task, index) => (
+      <MemberProgressData
+        key={task.taskId}
+        index={index}
+        taskId={task.taskId}
+        taskName={task.name}
+        trackNote={task.trackNote}
+        trackDate={task.trackDate}
+        createTask={this.createTask}
+      />
+    ));
     return (
       <>
         {taskPageIsVisible && <TaskPage userId={userId} taskId={currentTaskId} hideMemberPage={this.hideMemberPage} />}
