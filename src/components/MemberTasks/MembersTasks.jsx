@@ -37,9 +37,8 @@ class MemberTasks extends Component {
 
   trackTask = (e) => {
     e.persist();
-    const currentUserTaskId = e.target.dataset.taskid;
-    const currentTaskName = e.target.dataset.id;
-    this.setState({ currentTaskName, currentUserTaskId, taskTrackPageIsVisible: true });
+    const { taskid, id } = e.target.dataset;
+    this.setState({ currentTaskName: id, currentUserTaskId: taskid, taskTrackPageIsVisible: true });
   };
 
   hideTaskTrackPage = () => {

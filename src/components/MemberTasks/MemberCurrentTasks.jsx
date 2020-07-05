@@ -19,15 +19,24 @@ const MemberCurrentTasks = ({
 }) => {
   const succesedTask = (e) => {
     e.persist();
-    const currentTaskId = e.target.dataset.taskid;
+    const {
+      target: {
+        dataset: { taskid: currentTaskId },
+      },
+    } = e;
     firebaseApi.completeTask(currentTaskId, 'success');
   };
 
   const failedTask = (e) => {
     e.persist();
-    const currentTaskId = e.target.dataset.taskid;
+    const {
+      target: {
+        dataset: { taskid: currentTaskId },
+      },
+    } = e;
     firebaseApi.completeTask(currentTaskId, 'fail');
   };
+
   return (
     <tr key={userTaskId}>
       <TableData>{index + 1}</TableData>

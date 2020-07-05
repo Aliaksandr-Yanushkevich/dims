@@ -133,8 +133,8 @@ class MemberPage extends React.Component {
     });
     const preparedDirections = directions
       ? directions.map((direction) => {
-          const { name, directionId } = direction;
-          return <AvRadio key={directionId} label={name} value={directionId} onChange={this.onChange} />;
+          const { name } = direction;
+          return <AvRadio key={directionId} label={name} value={direction.directionId} onChange={this.onChange} />;
         })
       : null;
 

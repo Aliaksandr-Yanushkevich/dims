@@ -44,14 +44,23 @@ class App extends Component {
 
   setCurrentUser = (e) => {
     e.persist();
+    const {
+      target: {
+        dataset: { id: currentUserId },
+      },
+    } = e;
     this.setState({
-      currentUserId: e.target.dataset.id,
+      currentUserId,
     });
   };
 
   setCurrentTask = (e) => {
     e.persist();
-    const taskId = e.target.dataset.taskid;
+    const {
+      target: {
+        dataset: { taskid: taskId },
+      },
+    } = e;
     this.setState({
       currentTaskId: taskId,
     });
