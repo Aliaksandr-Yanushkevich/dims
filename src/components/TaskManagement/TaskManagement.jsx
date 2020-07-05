@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'reactstrap';
+import { Modal, ModalBody } from 'reactstrap';
+import Button from '../common/Button/Button';
 import styles from './TaskManagement.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import TasksPage from '../TaskPage/TaskPage';
@@ -19,19 +20,9 @@ class TaskManagement extends React.Component {
   componentDidMount() {
     const { role } = this.props;
     if (role === 'admin' || role === 'mentor') {
-      const tasks = [];
-      firebaseApi
-        .getTaskList()
-        .then((tasksList) => {
-          tasksList.forEach((task) => {
-            const { name, startDate, deadlineDate, taskId } = task.data();
-            tasks.push({ name, startDate: startDate.toDate(), deadlineDate: deadlineDate.toDate(), taskId });
-          });
-          this.setState({ tasks });
-        })
-        .catch((error) => {
-          console.error(`Error receiving data: ${error}`);
-        });
+      firebaseApi.getTaskList().then((tasks) => {
+        this.setState({ tasks });
+      });
     }
   }
 
@@ -43,10 +34,7 @@ class TaskManagement extends React.Component {
 
   deleteTask = (e) => {
     const taskId = e.target.dataset.taskid;
-    firebaseApi
-      .deleteTask(taskId)
-      .then(() => console.log('Task is removed successfully'))
-      .catch((error) => console.error('Problem with removing task', error));
+    firebaseApi.deleteTask(taskId);
   };
 
   hideMemberPage = () => {
@@ -87,8 +75,12 @@ class TaskManagement extends React.Component {
       <>
         <h1 className={styles.title}>Task management</h1>
         <div className={styles.tableWrapper}>
-          {taskPageIsVisible && <TasksPage taskId={currentTaskId} hideMemberPage={this.hideMemberPage} />}
-          <Button className={styles.defaultButton} id={styles.createTask} data-taskid='newTask' onClick={this.newTask}>
+          <Modal isOpen={taskPageIsVisible} toggle={this.hideMemberPage}>
+            <ModalBody>
+              <TasksPage taskId={currentTaskId} hideMemberPage={this.hideMemberPage} />
+            </ModalBody>
+          </Modal>
+          <Button className={`${styles.defaultButton} ${styles.createTask}`} taskId='newTask' onClick={this.newTask}>
             Create task
           </Button>
           <table>

@@ -19,38 +19,18 @@ class MemberProgres extends Component {
 
   componentDidMount() {
     const { userId, role } = this.props;
-    const { taskData } = this.state;
+
     if (userId && role !== 'member') {
       this.setState({ isFetching: true });
-      firebaseApi
-        .getUserInfo(userId)
-        .then((userInfo) => {
-          const { firstName, lastName } = userInfo.data();
-          this.setState({ firstName, lastName });
-        })
-        .catch((error) => {
-          console.error(`Error receiving data: ${error}`);
-        });
 
-      firebaseApi
-        .getUserTaskList(userId)
-        .then((taskList) => {
-          if (taskList.length) {
-            taskList.forEach((task) => {
-              const { taskId, userTaskId, stateId } = task;
-              firebaseApi.getUserTaskData(taskId, userTaskId, stateId).then((taskInfo) => {
-                if (taskInfo) {
-                  this.setState(() => ({ taskData: [...taskData, taskInfo], isFetching: false }));
-                }
-              });
-            });
-          } else {
-            this.setState({ isFetching: false });
-          }
-        })
-        .catch((error) => {
-          console.error(`Error receiving data: ${error}`);
-        });
+      firebaseApi.getUserInfo(userId).then((userInfo) => {
+        const { firstName, lastName } = userInfo;
+        this.setState({ firstName, lastName });
+      });
+
+      firebaseApi.getUserTaskList(userId).then((taskData) => {
+        this.setState(() => ({ taskData, isFetching: false }));
+      });
     }
   }
 
@@ -76,7 +56,7 @@ class MemberProgres extends Component {
       return <Preloader />;
     }
     if (!taskData.length && !isFetching) {
-      return <p>Member hasn&apos;t tracked tasks. </p>;
+      return <p>{`${firstName} ${lastName} hasn't tracked tasks.`}</p>;
     }
     const tasksArray = taskData.map((task, index) => {
       return (

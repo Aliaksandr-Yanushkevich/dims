@@ -11,6 +11,7 @@ import TaskManagement from './components/TaskManagement/TaskManagement';
 import Login from './components/Login/Login';
 import Account from './components/Account/Account';
 import firebaseApi from './api/firebaseApi';
+import getUserFromSessionStorage from './helpers/getUserFromSessionStorage';
 
 class App extends Component {
   state = {
@@ -23,7 +24,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    const user = JSON.parse(sessionStorage.getItem('user'));
+    const user = getUserFromSessionStorage();
     if (user) {
       const { role, userId, firstName, lastName, email } = user;
       this.setState({ role, currentUserId: userId, firstName, lastName, email });
@@ -36,16 +37,9 @@ class App extends Component {
   };
 
   logout = () => {
-    firebaseApi
-      .logout()
-      .then(() => {
-        sessionStorage.removeItem('user');
-        this.setState({ currentUserId: null, role: null, currentTaskId: 'newTask', firstName: null, lastName: null });
-        console.log('Logged out');
-      })
-      .catch((error) => {
-        console.error('Logout error', error);
-      });
+    firebaseApi.logout().then(() => {
+      this.setState({ currentUserId: null, role: null, currentTaskId: 'newTask', firstName: null, lastName: null });
+    });
   };
 
   setCurrentUser = (e) => {
@@ -108,7 +102,7 @@ class App extends Component {
               />
             </Route>
             <Route path='/member_tasks:userId?'>
-              <MemberTasks userId={currentUserId} taskId={currentTaskId} role={role} />
+              <MemberTasks userId={currentUserId} role={role} />
             </Route>
             <Route path='/task_management'>
               <TaskManagement

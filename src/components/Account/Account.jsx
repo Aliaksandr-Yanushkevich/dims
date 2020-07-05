@@ -1,87 +1,29 @@
 import React from 'react';
-import ReactDom from 'react-dom';
 import PropTypes from 'prop-types';
-import { Button } from 'reactstrap';
 import AvForm from 'availity-reactstrap-validation/lib/AvForm';
 import AvField from 'availity-reactstrap-validation/lib/AvField';
 import styles from './Account.module.scss';
 import firebaseApi from '../../api/firebaseApi';
-import { passwordRegexp } from '../../constants';
+import Button from '../common/Button/Button';
+import fields from './accountFields';
+import SubmitButton from '../common/SubmitButton/SubmitButton';
+import showToast from '../../helpers/showToast';
+import { ToastContainer } from 'react-toastify';
 
 class Account extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      oldPassword: '',
-      password: '',
-      repeatedPassword: '',
-    };
-    this.root = document.createElement('div');
-    document.body.appendChild(this.root);
-  }
-
-  componentWillUnmount() {
-    document.body.removeChild(this.root);
-  }
-
-  updatePassword = (event, errors) => {
+  updatePassword = (event, errors, values) => {
     if (!errors.length) {
       const { email } = this.props;
-      const { oldPassword, password } = this.state;
+      const { oldPassword, password, repeatedPassword } = values;
 
-      firebaseApi
-        .login(email, oldPassword)
-        .then(() => {
-          firebaseApi.updatePassword(password);
-        })
-        .then(() => {
-          console.log('Password was successfully changed');
-        })
-        .catch(({ message }) => {
-          console.error({ message });
-        });
+      firebaseApi.updatePassword(email, oldPassword, password, repeatedPassword).then((result) => {
+        showToast(result);
+      });
     }
-  };
-
-  onChange = (e) => {
-    const { id, value } = e.currentTarget;
-    this.setState({ [`${id}`]: value });
   };
 
   render() {
     const { firstName, lastName, role, hideAccountPage } = this.props;
-    const { oldPassword, password, repeatedPassword } = this.state;
-    const fields = [
-      {
-        id: 'oldPassword',
-        value: oldPassword,
-        name: 'oldPassword',
-        type: 'password',
-        label: 'Old password:',
-        placeholder: 'Old password',
-      },
-      {
-        id: 'password',
-        value: password,
-        name: 'password',
-        type: 'password',
-        label: 'Password:',
-        placeholder: 'Password:',
-        regexp: passwordRegexp,
-        errorMessage:
-          'Password must be a minimum of eight characters and contain lowercase letters, uppercase letters and numbers',
-      },
-      {
-        id: 'repeatedPassword',
-        value: repeatedPassword,
-        name: 'repeatedPassword',
-        type: 'password',
-        label: 'Repeate password:',
-        placeholder: 'Repeate password',
-        regexp: `/^${password}$/`,
-        errorMessage: 'Password mismatch',
-      },
-    ];
 
     const formFields = fields.map(({ id, value, name, type, label, placeholder, regexp, errorMessage }) => {
       if (id === 'oldPassword') {
@@ -122,26 +64,28 @@ class Account extends React.Component {
       );
     });
 
-    return ReactDom.createPortal(
-      <div className={styles.wrapper}>
-        <h1 className={styles.title}>Account</h1>
-        <p>{`Name: ${firstName} ${lastName}`}</p>
-        <p>{`Role: ${role}`}</p>
-        <AvForm className={styles.form} onSubmit={this.updatePassword}>
-          {formFields}
+    return (
+      <>
+        <ToastContainer />
+        <div className={styles.wrapper}>
+          <h1 className={styles.title}>Account</h1>
+          <p>{`Name: ${firstName} ${lastName}`}</p>
+          <p>{`Role: ${role}`}</p>
 
+          <AvForm id='changePassword' className={styles.form} onSubmit={this.updatePassword}>
+            {formFields}
+          </AvForm>
           <div className={styles.buttonWrapper}>
-            <Button className={styles.successButton} id='change'>
+            <SubmitButton className={styles.successButton} form='changePassword'>
               Change
-            </Button>
+            </SubmitButton>
 
             <Button className={styles.defaultButton} id='backToGrid' onClick={hideAccountPage}>
               Back to grid
             </Button>
           </div>
-        </AvForm>
-      </div>,
-      this.root,
+        </div>
+      </>
     );
   }
 }

@@ -1,0 +1,13 @@
+@import '../../../styleguide/styleguide.scss';
+
+.message {
+  color: $primaryColor;
+}
+
+.message p {
+  margin: 0.5rem 0;
+}
+
+.warning {
+  color: $dangerousColor;
+}

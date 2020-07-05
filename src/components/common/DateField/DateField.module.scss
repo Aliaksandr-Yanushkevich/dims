@@ -1,0 +1,16 @@
+@import '../../../styleguide/styleguide.scss';
+
+.error {
+  border: 2px solid $dangerousColor;
+}
+
+.item {
+  display: flex;
+  // justify-content: space-between;
+  flex-direction: column;
+}
+
+.item input {
+  width: 100%;
+  margin-top: 0.5rem;
+}

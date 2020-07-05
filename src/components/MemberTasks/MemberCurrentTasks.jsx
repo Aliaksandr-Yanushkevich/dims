@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'reactstrap';
+import Button from '../common/Button/Button';
 import dateToString from '../../helpers/dateToString';
 import styles from './MembersTasks.module.scss';
 import TableData from '../common/TableData/TableData';
@@ -35,11 +35,13 @@ const MemberCurrentTasks = ({
       <TableData>{dateToString(startDate)}</TableData>
       <TableData>{dateToString(deadlineDate)}</TableData>
       <TableData>{stateName}</TableData>
-      <TableData>
-        <Button className={styles.defaultButton} data-taskid={userTaskId} data-id={taskName} onClick={trackTask}>
-          Track
-        </Button>
-      </TableData>
+      {role === 'member' && (
+        <TableData>
+          <Button className={styles.defaultButton} taskId={userTaskId} dataId={taskName} onClick={trackTask}>
+            Track
+          </Button>
+        </TableData>
+      )}
       {(role === 'admin' || role === 'mentor') && (
         <TableData>
           <div className={styles.buttonWrapper}>

@@ -3,7 +3,6 @@
 .wrapper {
   width: 50%;
   max-width: 1000px;
-  overflow: auto;
   border: 1px solid $primaryColor;
   margin: 0 auto;
   padding: 1.5rem;
@@ -42,7 +41,14 @@
   height: 3rem;
 }
 
-select {
-  width: calc(10rem + 5px);
-  height: calc(1rem + 2px);
+.customMessage {
+  display: flex;
+  color: $dangerousColor;
+  margin: 0;
+  align-items: center;
+  height: 2rem;
+}
+
+legend {
+  font-size: 1rem;
 }

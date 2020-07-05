@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Modal } from 'reactstrap';
 import styles from './MembersTasks.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
 import MemberCurrentTasks from './MemberCurrentTasks';
 import { membersTasksTitle, membersTasksTitleForMembers } from '../../constants';
-import TaskTrack from '../TaskTrack/TaskTrack';
 import firebaseApi from '../../api/firebaseApi';
+import TaskTrack from '../TaskTrack/TaskTrack';
 
 class MemberTasks extends Component {
   state = {
@@ -23,36 +24,14 @@ class MemberTasks extends Component {
     const { userId } = this.props;
     if (userId) {
       this.setState({ isFetching: true });
-      firebaseApi
-        .getUserInfo(userId)
-        .then((userInfo) => {
-          const { firstName, lastName } = userInfo.data();
-          this.setState({ firstName, lastName });
-        })
-        .catch((error) => {
-          console.error(`Error receiving data: ${error}`);
-        });
+      firebaseApi.getUserInfo(userId).then((userInfo) => {
+        const { firstName, lastName } = userInfo;
+        this.setState({ firstName, lastName });
+      });
 
-      firebaseApi
-        .getUserTaskList(userId)
-        .then((taskList) => {
-          if (taskList.length) {
-            taskList.forEach((task) => {
-              const { taskId, userTaskId, stateId } = task;
-              firebaseApi.getUserTaskData(taskId, userTaskId, stateId).then((taskInfo) => {
-                if (taskInfo) {
-                  this.setState(({ taskData }) => ({ taskData: [...taskData, taskInfo] }));
-                  this.setState({ isFetching: false });
-                }
-              });
-            });
-          } else {
-            this.setState({ isFetching: false });
-          }
-        })
-        .catch((error) => {
-          console.error(`Error receiving data: ${error}`);
-        });
+      firebaseApi.getUserTaskList(userId).then((taskData) => {
+        this.setState({ taskData, isFetching: false });
+      });
     }
   }
 
@@ -73,13 +52,15 @@ class MemberTasks extends Component {
       taskData,
       firstName,
       lastName,
-      taskTrackPageIsVisible,
-      currentTaskName,
-      currentUserTaskId,
       isFetching,
+      taskTrackPageIsVisible,
+      currentUserTaskId,
+      currentTaskName,
     } = this.state;
 
-    if (isFetching) return <Preloader />;
+    if (isFetching) {
+      return <Preloader />;
+    }
 
     if (!taskData.length) {
       return (
@@ -90,30 +71,32 @@ class MemberTasks extends Component {
         </p>
       );
     }
-    const tasksArr = taskData.map((task, index) => (
-      <MemberCurrentTasks
-        key={task.userTaskId}
-        index={index}
-        userTaskId={task.userTaskId}
-        taskName={task.name}
-        startDate={task.startDate}
-        deadlineDate={task.deadlineDate}
-        stateName={task.stateName}
-        trackTask={this.trackTask}
-        stateId={task.stateId}
-        role={role}
-      />
-    ));
+    const tasksArr = taskData.map((task, index) => {
+      return (
+        <MemberCurrentTasks
+          key={task.userTaskId}
+          index={index}
+          userTaskId={task.userTaskId}
+          taskName={task.name}
+          startDate={task.startDate}
+          deadlineDate={task.deadlineDate}
+          stateName={task.stateName}
+          trackTask={this.trackTask}
+          stateId={task.stateId}
+          role={role}
+        />
+      );
+    });
 
     return (
       <>
-        {taskTrackPageIsVisible && (
+        <Modal isOpen={taskTrackPageIsVisible} toggle={this.hideTaskTrackPage}>
           <TaskTrack
             userTaskId={currentUserTaskId}
             taskName={currentTaskName}
             hideTaskTrackPage={this.hideTaskTrackPage}
           />
-        )}
+        </Modal>
         <h1 className={styles.title}>Member&apos;s Task Manage Grid</h1>
         {role === 'member' && (
           <h2 className={styles.subtitle}>{`Hi, dear ${firstName} ${lastName}! This is your current tasks:`}</h2>

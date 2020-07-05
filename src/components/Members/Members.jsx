@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
-import { Button } from 'reactstrap';
+import { Modal } from 'reactstrap';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Button from '../common/Button/Button';
 import TableHeader from '../common/TableHeader/TableHeader';
 import MemberData from './MemberData';
 import Preloader from '../common/Preloader/Preloader';
@@ -9,39 +12,22 @@ import { membersTitle } from '../../constants';
 import styles from './Members.module.scss';
 import MemberPage from '../MemberPage/MemberPage';
 import firebaseApi from '../../api/firebaseApi';
+import showToast from '../../helpers/showToast';
 
 class Members extends React.Component {
   state = {
     members: null,
     memberPageIsVisible: false,
+    directions: null,
   };
 
   componentDidMount() {
-    const members = [];
-    firebaseApi
-      .getUsers()
-      .then((users) => {
-        if (users.size) {
-          users.forEach((user) => {
-            const { firstName, lastName, birthDate, directionId, education, startDate, userId } = user.data();
-            members.push({
-              firstName,
-              lastName,
-              birthDate: birthDate.toDate(),
-              directionId,
-              education,
-              startDate: startDate.toDate(),
-              userId,
-            });
-          });
-        }
-      })
-      .then(() => {
-        this.setState({ members });
-      })
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
+    firebaseApi.getUsers().then((members) => {
+      this.setState({ members });
+    });
+    firebaseApi.getDirections().then((directions) => {
+      this.setState({ directions });
+    });
   }
 
   createUser = (e) => {
@@ -56,19 +42,18 @@ class Members extends React.Component {
 
   deleteUser = (e) => {
     e.persist();
-    const userId = e.target.dataset.id;
-    firebaseApi
-      .deleteUser(userId)
-      .then(() => {
-        console.log('User and all his data succesfully deleted');
-      })
-      .catch((error) => {
-        console.error(`Error removing member: ${error}`);
-      });
+    const {
+      target: {
+        dataset: { id: userId },
+      },
+    } = e;
+    firebaseApi.deleteUser(userId).then((result) => {
+      showToast(result);
+    });
   };
 
   render() {
-    const { members, memberPageIsVisible } = this.state;
+    const { members, memberPageIsVisible, directions } = this.state;
     const { currentUserId, setCurrentUser, role } = this.props;
     if (!role) {
       return <Redirect to='/login' />;
@@ -97,6 +82,7 @@ class Members extends React.Component {
           lastName={lastName}
           birthDate={birthDate}
           directionId={directionId}
+          directions={directions}
           education={education}
           startDate={startDate}
           userId={userId}
@@ -109,11 +95,18 @@ class Members extends React.Component {
 
     return (
       <>
-        {memberPageIsVisible && <MemberPage userId={currentUserId} hideMemberPage={this.hideMemberPage} />}
+        <ToastContainer />
+        <Modal isOpen={memberPageIsVisible} toggle={this.hideMemberPage}>
+          <MemberPage userId={currentUserId} hideMemberPage={this.hideMemberPage} />
+        </Modal>
         <h1 className={styles.title}>Members Manage Grid</h1>
         <div className={styles.tableWrapper}>
           {role === 'admin' && (
-            <Button className={styles.defaultButton} id={styles.register} data-id='newMember' onClick={this.createUser}>
+            <Button
+              className={`${styles.defaultButton} ${styles.register}`}
+              dataId='newMember'
+              onClick={this.createUser}
+            >
               Register
             </Button>
           )}

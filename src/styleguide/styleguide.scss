@@ -12,53 +12,53 @@ $dangerousColor: #d04b31;
 }
 
 .defaultButton {
-  font-weight: 600 !important;
-  color: $primaryColor !important;
-  border: 1px solid $primaryColor !important;
-  background-color: $secondaryColor !important;
-  height: 2rem !important;
+  font-weight: 600;
+  color: $primaryColor;
+  border: 1px solid $primaryColor;
+  background-color: $secondaryColor;
+  height: 2rem;
   &:hover {
-    color: $secondaryColor !important;
-    background-color: $primaryColor !important;
+    color: $secondaryColor;
+    background-color: $primaryColor;
   }
   &:disabled {
-    border: 1px solid #9d9d9d !important;
-    color: #9d9d9d !important;
-    background-color: #fff !important;
+    border: 1px solid #9d9d9d;
+    color: #9d9d9d;
+    background-color: #fff;
   }
 }
 
 .dangerousButton {
-  font-weight: 600 !important;
-  color: $dangerousColor !important;
-  border: 1px solid $dangerousColor !important;
-  background-color: #fff !important;
-  height: 2rem !important;
+  font-weight: 600;
+  color: $dangerousColor;
+  border: 1px solid $dangerousColor;
+  background-color: #fff;
+  height: 2rem;
   &:hover {
-    color: $secondaryColor !important;
-    background-color: $dangerousColor !important;
+    color: $secondaryColor;
+    background-color: $dangerousColor;
   }
   &:disabled {
-    border: 1px solid #9d9d9d !important;
-    color: #9d9d9d !important;
-    background-color: #fff !important;
+    border: 1px solid #9d9d9d;
+    color: #9d9d9d;
+    background-color: #fff;
   }
 }
 
 .successButton {
-  font-weight: 600 !important;
-  color: #227447 !important;
-  border: 1px solid #227447 !important;
-  background-color: $secondaryColor !important;
-  height: 2rem !important;
+  font-weight: 600;
+  color: #227447;
+  border: 1px solid #227447;
+  background-color: $secondaryColor;
+  height: 2rem;
   &:hover {
-    color: $secondaryColor !important;
-    background-color: #227447 !important;
+    color: $secondaryColor;
+    background-color: #227447;
   }
   &:disabled {
-    border: 1px solid #9d9d9d !important;
-    color: #9d9d9d !important;
-    background-color: #fff !important;
+    border: 1px solid #9d9d9d;
+    color: #9d9d9d;
+    background-color: #fff;
   }
 }
 
