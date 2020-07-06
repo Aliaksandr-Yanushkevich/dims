@@ -44,6 +44,9 @@ class Login extends React.Component {
 
   render() {
     const { isAuth, role } = this.state;
+    const isAdmin = role === 'admin';
+    const isMentor = role === 'mentor';
+    const isMember = role === 'member';
     const formFields = fields.map(({ id, name, type, label, placeholder, regexp, errorMessage, required }) => {
       if (type === 'password') {
         return (
@@ -81,11 +84,11 @@ class Login extends React.Component {
     });
 
     if (isAuth) {
-      if (role === 'admin' || role === 'mentor') {
+      if (isAdmin || isMentor) {
         return <Redirect to='/members' />;
       }
 
-      if (role === 'member') {
+      if (isMember) {
         return <Redirect to='/member_tasks' />;
       }
     }

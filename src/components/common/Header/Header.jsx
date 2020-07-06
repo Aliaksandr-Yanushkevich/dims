@@ -12,6 +12,8 @@ const Header = ({ firstName, lastName, logout, role, showAccountPage }) => {
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
+  const isAdmin = role === 'admin';
+  const isMentor = role === 'mentor';
 
   return (
     <header className={styles.header}>
@@ -25,10 +27,10 @@ const Header = ({ firstName, lastName, logout, role, showAccountPage }) => {
             onClick={() => {
               toggle('1');
             }}
-            to={role === 'admin' || role === 'mentor' ? '/members' : '/member_tasks'}
+            to={isAdmin || isMentor ? '/members' : '/member_tasks'}
           >
             <div className={classnames({ [styles.active]: activeTab === '1' }, styles.navItem)}>
-              {role === 'admin' || role === 'mentor' ? 'Members' : 'My tasks'}
+              {isAdmin || isMentor ? 'Members' : 'My tasks'}
             </div>
           </NavLink>
           <NavLink
@@ -36,10 +38,10 @@ const Header = ({ firstName, lastName, logout, role, showAccountPage }) => {
             onClick={() => {
               toggle('2');
             }}
-            to={role === 'admin' || role === 'mentor' ? '/task_management' : '/task_track_management'}
+            to={isAdmin || isMentor ? '/task_management' : '/task_track_management'}
           >
             <div className={classnames({ [styles.active]: activeTab === '2' }, styles.navItem)}>
-              {role === 'admin' || role === 'mentor' ? 'Tasks' : 'Track notes'}
+              {isAdmin || isMentor ? 'Tasks' : 'Track notes'}
             </div>
           </NavLink>
         </div>

@@ -55,10 +55,13 @@ class Members extends React.Component {
   render() {
     const { members, memberPageIsVisible, directions } = this.state;
     const { currentUserId, setCurrentUser, role } = this.props;
+    const isAdmin = role === 'admin';
+    const isMentor = role === 'mentor';
+
     if (!role) {
       return <Redirect to='/login' />;
     }
-    if (!(role === 'admin' || role === 'mentor')) {
+    if (!(isAdmin || isMentor)) {
       return <p>Only admininstrators and mentors have acces to this page</p>;
     }
 
@@ -101,7 +104,7 @@ class Members extends React.Component {
         </Modal>
         <h1 className={styles.title}>Members Manage Grid</h1>
         <div className={styles.tableWrapper}>
-          {role === 'admin' && (
+          {isAdmin && (
             <Button
               className={`${styles.defaultButton} ${styles.register}`}
               dataId='newMember'

@@ -25,7 +25,9 @@ class TaskTrackManagement extends React.Component {
 
   componentDidMount() {
     const { userId, role } = this.props;
-    if (userId && userId !== 'newMember' && role === 'member') {
+    const isMember = role === 'member';
+
+    if (userId && userId !== 'newMember' && isMember) {
       this.setState({ isFetching: true });
       firebaseApi.getTrackDataArray(userId).then((trackData) => {
         this.setState({ trackData, isFetching: false });

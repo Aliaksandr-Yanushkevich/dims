@@ -25,9 +25,7 @@ const firebaseApi = {
         firestore
           .collection('UserProfile')
           .doc(userId)
-          .set({
-            ...userInfo,
-          });
+          .set(userInfo);
       })
 
       .then(() => {

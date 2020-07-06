@@ -19,7 +19,10 @@ class TaskManagement extends React.Component {
 
   componentDidMount() {
     const { role } = this.props;
-    if (role === 'admin' || role === 'mentor') {
+    const isAdmin = role === 'admin';
+    const isMentor = role === 'mentor';
+
+    if (isAdmin || isMentor) {
       firebaseApi.getTaskList().then((tasks) => {
         this.setState({ tasks });
       });
@@ -44,8 +47,10 @@ class TaskManagement extends React.Component {
   render() {
     const { tasks, taskPageIsVisible } = this.state;
     const { currentTaskId, role } = this.props;
+    const isAdmin = role === 'admin';
+    const isMentor = role === 'mentor';
 
-    if (!(role === 'admin' || role === 'mentor')) {
+    if (!(isAdmin || isMentor)) {
       return <p>Only admininstrators and mentors have acces to this page</p>;
     }
     if (!tasks) {

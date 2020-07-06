@@ -57,6 +57,10 @@ class MemberTasks extends Component {
       currentTaskName,
     } = this.state;
 
+    const isAdmin = role === 'admin';
+    const isMentor = role === 'mentor';
+    const isMember = role === 'member';
+
     if (isFetching) {
       return <Preloader />;
     }
@@ -64,8 +68,8 @@ class MemberTasks extends Component {
     if (!taskData.length) {
       return (
         <p>
-          {role === 'member' && 'You '}
-          {(role === 'admin' || role === 'mentor') && `${firstName} ${lastName} `}
+          {isMember && 'You '}
+          {(isAdmin || isMentor) && `${firstName} ${lastName} `}
           haven&apos;t tasks
         </p>
       );
@@ -97,18 +101,14 @@ class MemberTasks extends Component {
           />
         </Modal>
         <h1 className={styles.title}>Member&apos;s Task Manage Grid</h1>
-        {role === 'member' && (
+        {isMember && (
           <h2 className={styles.subtitle}>{`Hi, dear ${firstName} ${lastName}! This is your current tasks:`}</h2>
         )}
-        {(role === 'admin' || role === 'mentor') && (
-          <h2 className={styles.subtitle}>{`Сurrent tasks of ${firstName} ${lastName}:`}</h2>
-        )}
+        {(isAdmin || isMentor) && <h2 className={styles.subtitle}>{`Сurrent tasks of ${firstName} ${lastName}:`}</h2>}
         <table>
           <thead>
             <tr>
-              <TableHeader
-                titleArray={role === 'admin' || role === 'mentor' ? membersTasksTitle : membersTasksTitleForMembers}
-              />
+              <TableHeader titleArray={isAdmin || isMentor ? membersTasksTitle : membersTasksTitleForMembers} />
             </tr>
           </thead>
           <tbody>{tasksArr}</tbody>

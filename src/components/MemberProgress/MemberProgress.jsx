@@ -47,8 +47,10 @@ class MemberProgres extends Component {
   render() {
     const { firstName, lastName, taskPageIsVisible, taskData, isFetching } = this.state;
     const { userId, currentTaskId, role } = this.props;
+    const isAdmin = role === 'admin';
+    const isMentor = role === 'mentor';
 
-    if (!(role === 'admin' || role === 'mentor')) {
+    if (!(isAdmin || isMentor)) {
       return <p>Only admininstrators and mentors have acces to this page</p>;
     }
 

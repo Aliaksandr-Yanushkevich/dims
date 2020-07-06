@@ -17,6 +17,9 @@ const MemberCurrentTasks = ({
   stateId,
   role,
 }) => {
+  const isAdmin = role === 'admin';
+  const isMentor = role === 'mentor';
+  const isMember = role === 'member';
   const rateTask = (e) => {
     e.persist();
     const {
@@ -35,14 +38,14 @@ const MemberCurrentTasks = ({
       <TableData>{dateToString(startDate)}</TableData>
       <TableData>{dateToString(deadlineDate)}</TableData>
       <TableData>{stateName}</TableData>
-      {role === 'member' && (
+      {isMember && (
         <TableData>
           <Button className={styles.defaultButton} taskId={userTaskId} dataId={taskName} onClick={trackTask}>
             Track
           </Button>
         </TableData>
       )}
-      {(role === 'admin' || role === 'mentor') && (
+      {(isAdmin || isMentor) && (
         <TableData>
           <div className={styles.buttonWrapper}>
             <Button className={styles.successButton} taskId={stateId} onClick={rateTask}>

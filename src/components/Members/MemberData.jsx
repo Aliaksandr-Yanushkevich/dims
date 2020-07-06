@@ -23,10 +23,11 @@ const MemberData = ({
   createUser,
   role,
 }) => {
+  const isAdmin = role === 'admin';
   const buttonWrapper = useRef(null);
 
   if (buttonWrapper.current) {
-    if (role === 'admin') {
+    if (isAdmin) {
       buttonWrapper.current.style.gridTemplateRows = '1fr 1fr';
     } else {
       buttonWrapper.current.style.gridTemplateRows = '1fr';
@@ -73,12 +74,12 @@ const MemberData = ({
           >
             Tasks
           </NavButton>
-          {role === 'admin' && (
+          {isAdmin && (
             <Button className={styles.defaultButton} dataId={userId} onClick={createUser}>
               Edit
             </Button>
           )}
-          {role === 'admin' && (
+          {isAdmin && (
             <Button className={styles.dangerousButton} dataId={userId} onClick={deleteUser}>
               Delete
             </Button>
