@@ -13,6 +13,8 @@ import Button from '../common/Button/Button';
 import { genders } from '../../constants';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
+import DateField from '../common/DateField/DateField';
+import withState from '../hoc/withState';
 
 class MemberPage extends React.Component {
   state = {
@@ -143,15 +145,28 @@ class MemberPage extends React.Component {
 
       if (type === 'date') {
         return (
-          <AvField
-            key={id}
-            name={name}
-            label={label}
-            type={type}
-            onChange={this.onChange}
-            value={this.state[name]}
-            required
-          />
+          // I'd practiced with HOC here  - commented out code more appropriate
+
+          // <AvField
+          //   key={id}
+          //   name={name}
+          //   label={label}
+          //   type={type}
+          //   onChange={this.onChange}
+          //   value={this.state[name]}
+          //   required
+          // />
+          withState(
+            <DateField
+              key={id}
+              name={name}
+              label={label}
+              type={type}
+              onChange={this.onChange}
+              value={this.state[name]}
+              required
+            />,
+          )()
         );
       }
 
