@@ -82,7 +82,7 @@ class MemberPage extends React.Component {
         startDate: new Date(startDate),
         skype,
         birthDate: new Date(birthDate),
-        directionId,
+        directionId: Number(directionId),
         address,
         education,
         mathScore: Number(mathScore),
@@ -112,14 +112,7 @@ class MemberPage extends React.Component {
 
   onChange = (e) => {
     const { name, value } = e.currentTarget;
-
-    if (name === 'sex') {
-      this.setState(() => ({ sex: value }));
-    } else if (name === 'directionId') {
-      this.setState(() => ({ directionId: Number(value) }));
-    } else {
-      this.setState(() => ({ [name]: value }));
-    }
+    this.setState(() => ({ [name]: value }));
   };
 
   render() {
@@ -133,8 +126,8 @@ class MemberPage extends React.Component {
     });
     const preparedDirections = directions
       ? directions.map((direction) => {
-          const { name } = direction;
-          return <AvRadio key={directionId} label={name} value={direction.directionId} onChange={this.onChange} />;
+          const { name, directionId } = direction;
+          return <AvRadio key={directionId} label={name} value={directionId} onChange={this.onChange} />;
         })
       : null;
 
