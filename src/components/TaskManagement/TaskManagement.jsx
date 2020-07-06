@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, ModalBody } from 'reactstrap';
+import { Modal } from 'reactstrap';
 import Button from '../common/Button/Button';
 import styles from './TaskManagement.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';

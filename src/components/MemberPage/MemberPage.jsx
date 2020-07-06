@@ -143,12 +143,21 @@ class MemberPage extends React.Component {
 
       if (type === 'date') {
         return (
-          <AvField name={name} label={label} type={type} onChange={this.onChange} value={this.state[name]} required />
+          <AvField
+            key={id}
+            name={name}
+            label={label}
+            type={type}
+            onChange={this.onChange}
+            value={this.state[name]}
+            required
+          />
         );
       }
 
       return (
         <AvField
+          key={id}
           id={id}
           value={this.state[name]}
           name={name}
