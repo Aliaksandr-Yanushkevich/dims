@@ -12,6 +12,8 @@ import Login from './components/Login/Login';
 import Account from './components/Account/Account';
 import firebaseApi from './api/firebaseApi';
 import getUserFromSessionStorage from './helpers/getUserFromSessionStorage';
+import showToast from './helpers/showToast';
+import { ToastContainer } from 'react-toastify';
 
 class App extends Component {
   state = {
@@ -37,8 +39,9 @@ class App extends Component {
   };
 
   logout = () => {
-    firebaseApi.logout().then(() => {
+    firebaseApi.logout().then((result) => {
       this.setState({ currentUserId: null, role: null, currentTaskId: 'newTask', firstName: null, lastName: null });
+      showToast(result);
     });
   };
 
@@ -79,6 +82,7 @@ class App extends Component {
 
     return (
       <BrowserRouter>
+        <ToastContainer />
         {accountPageIsVisible && (
           <Account
             role={role}

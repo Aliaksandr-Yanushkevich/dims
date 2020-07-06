@@ -88,11 +88,9 @@ const firebaseApi = {
       .signOut()
       .then(() => {
         sessionStorage.removeItem('user');
-        console.log('Logged out');
+        return { message: 'logged out successfully' };
       })
-      .catch((error) => {
-        console.error('Logout error', error);
-      });
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   updatePassword(email, oldPassword, password, repeatedPassword) {
