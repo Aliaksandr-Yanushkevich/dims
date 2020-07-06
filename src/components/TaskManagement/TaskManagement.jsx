@@ -76,9 +76,7 @@ class TaskManagement extends React.Component {
         <h1 className={styles.title}>Task management</h1>
         <div className={styles.tableWrapper}>
           <Modal isOpen={taskPageIsVisible} toggle={this.hideMemberPage}>
-            <ModalBody>
-              <TasksPage taskId={currentTaskId} hideMemberPage={this.hideMemberPage} />
-            </ModalBody>
+            <TasksPage taskId={currentTaskId} hideMemberPage={this.hideMemberPage} />
           </Modal>
           <Button className={`${styles.defaultButton} ${styles.createTask}`} taskId='newTask' onClick={this.newTask}>
             Create task
