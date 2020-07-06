@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes, { object } from 'prop-types';
 import Button from '../common/Button/Button';
@@ -23,15 +23,14 @@ const MemberData = ({
   createUser,
   role,
 }) => {
-  const buttonWrappers = document.querySelectorAll(`.${styles.buttonWrapper}`);
-  if (role === 'admin') {
-    buttonWrappers.forEach((wrapper) => {
-      wrapper.style.gridTemplateRows = '1fr 1fr';
-    });
-  } else {
-    buttonWrappers.forEach((wrapper) => {
-      wrapper.style.gridTemplateRows = '1fr';
-    });
+  const buttonWrapper = useRef(null);
+
+  if (buttonWrapper.current) {
+    if (role === 'admin') {
+      buttonWrapper.current.style.gridTemplateRows = '1fr 1fr';
+    } else {
+      buttonWrapper.current.style.gridTemplateRows = '1fr';
+    }
   }
 
   const age = getAge(birthDate);
@@ -54,7 +53,7 @@ const MemberData = ({
       <TableData>{dateToString(startDate)}</TableData>
       <TableData>{age}</TableData>
       <TableData>
-        <div className={styles.buttonWrapper}>
+        <div className={styles.buttonWrapper} ref={buttonWrapper}>
           <NavButton
             className={styles.link}
             to='/member_progress'
