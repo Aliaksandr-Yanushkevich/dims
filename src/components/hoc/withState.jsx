@@ -2,7 +2,7 @@ import React from 'react';
 import checkRequirements from '../../helpers/validators/checkRequirements';
 import { requiredMessage } from '../../constants';
 
-const withState = (WrappedComponent) => {
+const withState = (WrappedComponent, props) => {
   class EnhancedComponent extends React.Component {
     state = {
       touched: false,
@@ -14,7 +14,7 @@ const withState = (WrappedComponent) => {
     };
 
     checkField = () => {
-      const { value, regexp, errorMessage } = WrappedComponent.props;
+      const { value, regexp, errorMessage } = props;
       const { touched } = this.state;
       if (touched) {
         const fieldIsValid = checkRequirements(regexp, value);
@@ -30,10 +30,7 @@ const withState = (WrappedComponent) => {
     };
 
     render() {
-      debugger;
-      return (
-        <WrappedComponent state={this.state} onFocus={this.onFocus} checkField={this.checkField} {...this.props} />
-      );
+      return <WrappedComponent state={this.state} onFocus={this.onFocus} checkField={this.checkField} {...props} />;
     }
   }
 

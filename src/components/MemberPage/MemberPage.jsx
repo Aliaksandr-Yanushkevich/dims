@@ -144,8 +144,20 @@ class MemberPage extends React.Component {
       }
 
       if (type === 'date') {
+        const props = {
+          key: { id },
+          name,
+          label,
+          type,
+          onChange: this.onChange,
+          value: this.state[name],
+          required: true,
+          regexp,
+          errorMessage,
+        };
+        const DateFieldWithState = withState(DateField, props);
         return (
-          // I'd practiced with HOC here  - commented out code more appropriate
+          // I practice with HOC here  - commented out code more appropriate. HOC will be removed in the next PR and I return AvField
 
           // <AvField
           //   key={id}
@@ -156,17 +168,7 @@ class MemberPage extends React.Component {
           //   value={this.state[name]}
           //   required
           // />
-          withState(
-            <DateField
-              key={id}
-              name={name}
-              label={label}
-              type={type}
-              onChange={this.onChange}
-              value={this.state[name]}
-              required
-            />,
-          )()
+          <DateFieldWithState />
         );
       }
 
