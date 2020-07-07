@@ -5,7 +5,7 @@ import setUserToSessionStorage from '../helpers/setUserToSessionStorage';
 const firestore = firebase.firestore();
 const promiseWithMessage = (message) => {
   return new Promise((resolve) => {
-    resolve({ message });
+    resolve(message);
   });
 };
 
@@ -95,11 +95,11 @@ const firebaseApi = {
 
   updatePassword(email, oldPassword, password, repeatedPassword) {
     if (oldPassword === password) {
-      return promiseWithMessage('Old and new password match');
+      return promiseWithMessage({ message: 'Old and new password match', messageType: 'warning' });
     }
 
     if (password !== repeatedPassword) {
-      return promiseWithMessage('New and repeated password do not match');
+      return promiseWithMessage({ message: 'New and repeated password do not match', messageType: 'warning' });
     }
 
     return this.login(email, oldPassword)

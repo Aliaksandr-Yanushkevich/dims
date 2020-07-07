@@ -13,27 +13,32 @@ import Button from '../common/Button/Button';
 import { genders } from '../../constants';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
-import DateField from '../common/DateField/DateField';
+// import DateField from '../common/DateField/DateField';
 import withState from '../hoc/withState';
 import DateFieldForHOC from '../common/DateField/DateFieldForHOC';
 
 class MemberPage extends React.Component {
-  state = {
-    firstName: '',
-    lastName: '',
-    sex: '',
-    mobilePhone: '',
-    email: '',
-    startDate: dateToStringForInput(new Date()),
-    skype: '',
-    birthDate: '',
-    directionId: '',
-    address: '',
-    education: '',
-    mathScore: '',
-    universityAverageScore: '',
-    isFetching: false,
-  };
+  constructor() {
+    super();
+    this.state = {
+      firstName: '',
+      lastName: '',
+      sex: '',
+      mobilePhone: '',
+      email: '',
+      startDate: dateToStringForInput(new Date()),
+      skype: '',
+      birthDate: '',
+      directionId: '',
+      address: '',
+      education: '',
+      mathScore: '',
+      universityAverageScore: '',
+      isFetching: false,
+    };
+    this.enhacedStartDate = withState(DateFieldForHOC);
+    this.enhacedBirthDate = withState(DateFieldForHOC);
+  }
 
   componentDidMount() {
     const { userId } = this.props;
@@ -144,33 +149,46 @@ class MemberPage extends React.Component {
         );
       }
 
-      if (type === 'date') {
-        const props = {
-          key: { id },
-          name,
-          label,
-          type,
-          onChange: this.onChange,
-          value: this.state[name],
-          required: true,
-          regexp,
-          errorMessage,
-        };
-        const DateFieldWithState = withState(DateFieldForHOC, props);
+      if (name === 'startDate' || name === 'birthDate') {
+        if (name === 'startDate') {
+          return (
+            <this.enhacedStartDate
+              key={id}
+              name={name}
+              label={label}
+              type={type}
+              onChange={this.onChange}
+              value={this.state[name]}
+              required
+            />
+          );
+        }
         return (
-          // I practice with HOC here  - commented out code more appropriate. HOC will be removed in the next PR and I return AvField
-
-          // <AvField
-          //   key={id}
-          //   name={name}
-          //   label={label}
-          //   type={type}
-          //   onChange={this.onChange}
-          //   value={this.state[name]}
-          //   required
-          // />
-          <DateFieldWithState />
+          <this.enhacedBirthDate
+            key={id}
+            id={id}
+            name={name}
+            label={label}
+            type={type}
+            onChange={this.onChange}
+            value={this.state[name]}
+            required
+          />
         );
+
+        // return (
+        // I practice with HOC here  - commented out code more appropriate. HOC will be removed in the next PR and I return AvField
+
+        // <AvField
+        //   key={id}
+        //   name={name}
+        //   label={label}
+        //   type={type}
+        //   onChange={this.onChange}
+        //   value={this.state[name]}
+        //   required
+        // />
+        // );
       }
 
       return (

@@ -1,8 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import checkRequirements from '../../helpers/validators/checkRequirements';
 import { requiredMessage } from '../../constants';
 
-const withState = (WrappedComponent, props) => {
+const withState = (WrappedComponent) => {
   class EnhancedComponent extends React.Component {
     state = {
       touched: false,
@@ -14,7 +15,7 @@ const withState = (WrappedComponent, props) => {
     };
 
     checkField = () => {
-      const { value, regexp, errorMessage } = props;
+      const { value, regexp, errorMessage } = this.props;
       const { touched } = this.state;
       if (touched) {
         const fieldIsValid = checkRequirements(regexp, value);
@@ -30,9 +31,21 @@ const withState = (WrappedComponent, props) => {
     };
 
     render() {
-      return <WrappedComponent state={this.state} onFocus={this.onFocus} checkField={this.checkField} {...props} />;
+      const { state, onFocus, checkField, props } = this;
+      return <WrappedComponent state={state} onFocus={onFocus} checkField={checkField} {...props} />;
     }
   }
+
+  EnhancedComponent.propTypes = {
+    value: PropTypes.string.isRequired,
+    regexp: PropTypes.string,
+    errorMessage: PropTypes.string,
+  };
+
+  EnhancedComponent.defaultProps = {
+    regexp: '',
+    errorMessage: '',
+  };
 
   return EnhancedComponent;
 };

@@ -103,7 +103,11 @@ MemberData.propTypes = {
   deleteUser: PropTypes.func.isRequired,
   createUser: PropTypes.func.isRequired,
   role: PropTypes.string.isRequired,
-  directions: PropTypes.arrayOf(object).isRequired,
+  directions: PropTypes.arrayOf(object),
+};
+
+MemberData.defaultProps = {
+  directions: [{}],
 };
 
 export default MemberData;
