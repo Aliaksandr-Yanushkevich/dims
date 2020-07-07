@@ -36,8 +36,8 @@ class MemberPage extends React.Component {
       universityAverageScore: '',
       isFetching: false,
     };
-    this.enhacedStartDate = withState(DateFieldForHOC);
-    this.enhacedBirthDate = withState(DateFieldForHOC);
+    this.EnhacedStartDate = withState(DateFieldForHOC);
+    this.EnhacedBirthDate = withState(DateFieldForHOC);
   }
 
   componentDidMount() {
@@ -126,6 +126,7 @@ class MemberPage extends React.Component {
   render() {
     const { userId, hideMemberPage } = this.props;
     const { sex, directions, directionId, isFetching } = this.state;
+    const { EnhacedStartDate, EnhacedBirthDate } = this;
 
     const defaultValues = { directionId, sex };
     const preparedGenders = genders.map((gender) => {
@@ -152,7 +153,7 @@ class MemberPage extends React.Component {
       if (name === 'startDate' || name === 'birthDate') {
         if (name === 'startDate') {
           return (
-            <this.enhacedStartDate
+            <EnhacedStartDate
               key={id}
               name={name}
               label={label}
@@ -164,7 +165,7 @@ class MemberPage extends React.Component {
           );
         }
         return (
-          <this.enhacedBirthDate
+          <EnhacedBirthDate
             key={id}
             id={id}
             name={name}
