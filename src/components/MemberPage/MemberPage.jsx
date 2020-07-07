@@ -15,6 +15,7 @@ import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
 import DateField from '../common/DateField/DateField';
 import withState from '../hoc/withState';
+import DateFieldForHOC from '../common/DateField/DateFieldForHOC';
 
 class MemberPage extends React.Component {
   state = {
@@ -155,7 +156,7 @@ class MemberPage extends React.Component {
           regexp,
           errorMessage,
         };
-        const DateFieldWithState = withState(DateField, props);
+        const DateFieldWithState = withState(DateFieldForHOC, props);
         return (
           // I practice with HOC here  - commented out code more appropriate. HOC will be removed in the next PR and I return AvField
 

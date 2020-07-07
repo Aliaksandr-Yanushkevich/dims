@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import checkRequirements from '../../../helpers/validators/checkRequirements';
 import styles from './DateField.module.scss';
-import { requiredMessage } from '../../../constants';
 import FormMessage from '../FormMessage/FormMessage';
 
-const DateField = (props) => {
-  const { id, name, label, value, onChange, disabled, touched, message } = props;
+const DateFieldForHOC = (props) => {
+  const { id, name, label, value, onChange, disabled, onFocus, checkField, state } = props;
+  const { touched, message } = state;
+
   return (
     <div className={styles.inputGroup}>
       <div className={styles.item}>
@@ -15,8 +15,8 @@ const DateField = (props) => {
           id={id}
           name={name}
           type='date'
-          onFocus={this.onFocus}
-          onBlur={this.checkField}
+          onFocus={onFocus}
+          onBlur={checkField}
           onChange={onChange}
           value={value}
           className={message && touched ? styles.error : null}
@@ -29,7 +29,7 @@ const DateField = (props) => {
   );
 };
 
-DateField.propTypes = {
+DateFieldForHOC.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   onChange: PropTypes.func,
@@ -40,7 +40,7 @@ DateField.propTypes = {
   errorMessage: PropTypes.string,
 };
 
-DateField.defaultProps = {
+DateFieldForHOC.defaultProps = {
   name: '',
   value: '',
   onChange: () => {},
@@ -49,4 +49,4 @@ DateField.defaultProps = {
   disabled: false,
 };
 
-export default DateField;
+export default DateFieldForHOC;
