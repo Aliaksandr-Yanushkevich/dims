@@ -1,103 +1,140 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'reactstrap';
 import AvField from 'availity-reactstrap-validation/lib/AvField';
 import AvForm from 'availity-reactstrap-validation/lib/AvForm';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Button from '../common/Button/Button';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
 import styles from './TaskTrack.module.scss';
 import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
 import generateID from '../../helpers/generateID';
-import { textMaxLength1000 } from '../../constants';
+import taskTrackFields from './taskTrackFields';
+import SubmitButton from '../common/SubmitButton/SubmitButton';
+import showToast from '../../helpers/showToast';
 
 class TaskTrack extends React.Component {
   state = {
     taskName: null,
-    trackNote: '',
   };
 
   componentDidMount() {
     const { taskTrackId, taskName } = this.props;
     if (taskTrackId) {
-      firebaseApi
-        .getTaskTrack(taskTrackId)
-        .then((trackNote) => this.setState({ trackNote }))
-        .catch((error) => {
-          console.error(`Error receiving data: ${error}`);
-        });
+      firebaseApi.getTaskTrack(taskTrackId).then((trackNote) => {
+        this.setState({ trackNote });
+      });
     }
     this.setState({ taskName });
   }
 
   onChange = (e) => {
-    const { value } = e.target;
-    this.setState({ trackNote: value });
+    const { name, value } = e.currentTarget;
+    this.setState({ [name]: value, message: '' });
   };
 
-  trackTask = (event, errors) => {
+  trackTask = (event, errors, values) => {
     if (!errors.length) {
       const { userTaskId, taskTrackId } = this.props;
-      const { trackNote } = this.state;
+      const { trackNote } = values;
       const trackDate = new Date();
+
       if (taskTrackId) {
-        firebaseApi.trackTask(userTaskId, taskTrackId, trackDate, trackNote.trim());
+        firebaseApi.trackTask(userTaskId, taskTrackId, trackDate, trackNote.trim()).then((result) => {
+          showToast(result);
+        });
       } else {
         const generatedTaskTrackId = generateID();
-        firebaseApi.trackTask(userTaskId, generatedTaskTrackId, trackDate, trackNote.trim());
+        firebaseApi.trackTask(userTaskId, generatedTaskTrackId, trackDate, trackNote.trim()).then((result) => {
+          showToast(result);
+        });
       }
     }
   };
 
   render() {
-    const { taskName, trackNote } = this.state;
+    const { taskName } = this.state;
     const { hideTaskTrackPage } = this.props;
+    const fields = taskTrackFields.map((field) => {
+      const { id, name, type, label, placeholder, regexp, errorMessage, cols, rows, disabled } = field;
+      if (type === 'date') {
+        return (
+          <AvField
+            key={id}
+            id={id}
+            name={name}
+            type='date'
+            label={label}
+            value={dateToStringForInput(new Date())}
+            disabled={disabled}
+          />
+        );
+      }
+      if (type === 'textarea') {
+        return (
+          <AvField
+            key={id}
+            id={id}
+            name={name}
+            type='textarea'
+            label={label}
+            value={this.state[name]}
+            onChange={this.onChange}
+            cols={cols}
+            rows={rows}
+            placeholder={placeholder}
+            validate={{
+              required: { value: true, errorMessage: 'Field is required' },
+              pattern: {
+                value: `${regexp}`,
+                errorMessage,
+              },
+            }}
+          />
+        );
+      }
+      return null;
+    });
+
     if (!taskName) {
       return <Preloader />;
     }
 
     return (
-      <div className={styles.wrapper}>
-        <h1 className={styles.title}>{`Task Track - ${taskName}`}</h1>
+      <>
+        <ToastContainer />
+        <div className={styles.wrapper}>
+          <h1 className={styles.title}>{`Task Track - ${taskName}`}</h1>
 
-        <AvForm onSubmit={this.trackTask}>
-          <AvField name='date' label='Date:' type='date' value={dateToStringForInput(new Date())} required disabled />
-          <AvField
-            id='note'
-            value={trackNote}
-            name='note'
-            type='textarea'
-            label='Note:'
-            placeholder='Type your note here'
-            onChange={this.onChange}
-            validate={{
-              required: { value: true, errorMessage: 'Field is required' },
-              pattern: {
-                value: `${textMaxLength1000}`,
-                errorMessage: 'Field must be short than 1000 symbols',
-              },
-            }}
-          />
+          <AvForm id='track' onSubmit={this.trackTask}>
+            {fields}
+          </AvForm>
           <div className={styles.buttonWrapper}>
-            <Button className={styles.successButton}>Save</Button>
+            <SubmitButton className={styles.successButton} form='track'>
+              Save
+            </SubmitButton>
             <Button className={styles.defaultButton} onClick={hideTaskTrackPage}>
               Back to grid
             </Button>
           </div>
-        </AvForm>
-      </div>
+        </div>
+      </>
     );
   }
 }
 
 TaskTrack.propTypes = {
-  userTaskId: PropTypes.string.isRequired,
+  userTaskId: PropTypes.string,
   taskTrackId: PropTypes.string,
-  taskName: PropTypes.string.isRequired,
+  taskName: PropTypes.string,
   hideTaskTrackPage: PropTypes.func.isRequired,
 };
 
 TaskTrack.defaultProps = {
   taskTrackId: null,
+  userTaskId: '',
+  taskName: '',
 };
 
 export default TaskTrack;

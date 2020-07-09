@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Modal } from 'reactstrap';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import styles from './TaskTrackManagement.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import { tasksTrackTitle } from '../../constants';
@@ -8,6 +11,7 @@ import TasksTracksManagementRow from './TaskTrackManagementRow';
 import TaskTrack from '../TaskTrack/TaskTrack';
 import firebaseApi from '../../api/firebaseApi';
 import dateToString from '../../helpers/dateToString';
+import showToast from '../../helpers/showToast';
 
 class TaskTrackManagement extends React.Component {
   state = {
@@ -21,49 +25,34 @@ class TaskTrackManagement extends React.Component {
 
   componentDidMount() {
     const { userId, role } = this.props;
-    if (userId && userId !== 'newMember' && role === 'member') {
+    const isMember = role === 'member';
+
+    if (userId && userId !== 'newMember' && isMember) {
       this.setState({ isFetching: true });
-      return firebaseApi
-        .getUserTaskList(userId)
-        .then((tracks) => {
-          if (tracks.length) {
-            tracks.forEach((track) => {
-              const { userTaskId } = track;
-              return firebaseApi.getTrackData(userTaskId).then((trackInfo) => {
-                if (trackInfo) {
-                  this.setState(({ trackData }) => ({ trackData: [...trackData, ...trackInfo] }));
-                  this.setState({ isFetching: false });
-                }
-                this.setState({ isFetching: false });
-              });
-            });
-          } else {
-            this.setState({ isFetching: false });
-          }
-        })
-        .catch((error) => console.error('Track info receiving error', error));
+      firebaseApi.getTrackDataArray(userId).then((trackData) => {
+        this.setState({ trackData, isFetching: false });
+      });
     }
   }
 
   editTask = (e) => {
     e.persist();
-    const currentTaskTrackId = e.target.dataset.taskid;
-    const currentTaskName = e.target.dataset.name;
-    const currentUserTaskId = e.target.dataset.id;
-    this.setState({ currentTaskTrackId, currentTaskName, currentUserTaskId, taskTrackPageIsVisible: true });
+    const { taskid, name, id } = e.target.dataset;
+
+    this.setState({
+      currentTaskTrackId: taskid,
+      currentTaskName: name,
+      currentUserTaskId: id,
+      taskTrackPageIsVisible: true,
+    });
   };
 
   deleteNote = (e) => {
     e.persist();
     const currentTaskTrackId = e.target.dataset.taskid;
-    firebaseApi
-      .deleteItemWithId('TaskTrack', currentTaskTrackId)
-      .then(() => {
-        console.log('Track note deleted successfully');
-      })
-      .catch((error) => {
-        console.error('Problem with note removing', error);
-      });
+    firebaseApi.deleteItemWithId('TaskTrack', currentTaskTrackId).then((result) => {
+      showToast(result);
+    });
   };
 
   hideTaskTrackPage = () => {
@@ -80,12 +69,13 @@ class TaskTrackManagement extends React.Component {
       currentTaskName,
       isFetching,
     } = this.state;
-    const tableRows = trackData.length
+    const tableRows = trackData
       ? trackData.map((task, index) => {
           return (
             <TasksTracksManagementRow
               key={task.taskTrackId}
               index={index + 1}
+              taskName={task.taskName}
               userTaskId={task.userTaskId}
               taskTrackId={task.taskTrackId}
               trackNote={task.trackNote}
@@ -109,19 +99,20 @@ class TaskTrackManagement extends React.Component {
     if (isFetching) {
       return <Preloader />;
     }
-    if (!trackData.length && !isFetching) {
+    if (trackData && !trackData.length) {
       return <p>You haven&apos;t track notes</p>;
     }
     return (
       <>
-        {taskTrackPageIsVisible && (
+        <ToastContainer />
+        <Modal isOpen={taskTrackPageIsVisible} toggle={this.hideTaskTrackPage}>
           <TaskTrack
             userTaskId={currentUserTaskId}
             taskTrackId={currentTaskTrackId}
             taskName={currentTaskName}
             hideTaskTrackPage={this.hideTaskTrackPage}
           />
-        )}
+        </Modal>
         <h1 className={styles.title}>Task Track Management</h1>
         <table>
           <thead>

@@ -1,17 +1,34 @@
 import firebase from './firebase';
+import dateToStringForInput from '../helpers/dateToStringForInput';
+import setUserToSessionStorage from '../helpers/setUserToSessionStorage';
 
 const firestore = firebase.firestore();
+const promiseWithMessage = (message) => {
+  return new Promise((resolve) => {
+    resolve(message);
+  });
+};
 
 const firebaseApi = {
   createUser(userId, userInfo) {
+    const { email } = userInfo;
     return firestore
-      .collection('UserProfile')
-      .doc(userId)
-      .set({
-        ...userInfo,
+      .collection('Roles')
+      .where('email', '==', email)
+      .get()
+      .then((users) => {
+        if (users.size) {
+          throw new Error('User with such email exists');
+        }
       })
       .then(() => {
-        const { email } = userInfo;
+        firestore
+          .collection('UserProfile')
+          .doc(userId)
+          .set(userInfo);
+      })
+
+      .then(() => {
         this.register(email, 'incubator');
         return email;
       })
@@ -22,12 +39,24 @@ const firebaseApi = {
           .doc(userId)
           .set({ userId, email: userEmail, role: 'member', firstName, lastName });
       })
+      .then(() => ({ message: 'User created successfully' }))
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
+  },
+
+  updateUser(userId, userInfo) {
+    return firestore
+      .collection('UserProfile')
+      .doc(userId)
+      .set(userInfo)
       .then(() => {
-        console.log('User created successfully');
+        const { firstName, lastName, email } = userInfo;
+        firestore
+          .collection('Roles')
+          .doc(userId)
+          .set({ userId, email, role: 'member', firstName, lastName });
       })
-      .catch((error) => {
-        console.error('Something went wrong when user creation', error);
-      });
+      .then(() => ({ message: 'User updated successfully' }))
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   register(email, password) {
@@ -39,22 +68,47 @@ const firebaseApi = {
       });
   },
 
-  login(email, password) {
+  login(email, password, remember) {
     return firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        console.log('Successfully logged in');
-      });
+      .then(() => this.getRole(email))
+      .then((result) => {
+        if (remember) {
+          setUserToSessionStorage(result);
+        }
+        return result;
+      })
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   logout() {
-    return firebase.auth().signOut();
+    return firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        sessionStorage.removeItem('user');
+        return { message: 'logged out successfully' };
+      })
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
-  updatePassword(newPassword) {
-    const user = firebase.auth().currentUser;
-    return user.updatePassword(newPassword);
+  updatePassword(email, oldPassword, password, repeatedPassword) {
+    if (oldPassword === password) {
+      return promiseWithMessage({ message: 'Old and new password match', messageType: 'warning' });
+    }
+
+    if (password !== repeatedPassword) {
+      return promiseWithMessage({ message: 'New and repeated password do not match', messageType: 'warning' });
+    }
+
+    return this.login(email, oldPassword)
+      .then(() => {
+        const user = firebase.auth().currentUser;
+        return user.updatePassword(password);
+      })
+      .then(() => ({ message: 'Password was successfully changed' }))
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   getRole(email) {
@@ -80,21 +134,53 @@ const firebaseApi = {
     return firestore
       .collection('UserProfile')
       .orderBy('firstName')
-      .get();
+      .get()
+      .then((users) => {
+        const members = users.docs.map((user) => {
+          const { firstName, lastName, birthDate, directionId, education, startDate, userId } = user.data();
+          return {
+            firstName,
+            lastName,
+            birthDate: birthDate.toDate(),
+            directionId,
+            education,
+            startDate: startDate.toDate(),
+            userId,
+          };
+        });
+        return members;
+      })
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
+      });
   },
 
   getUserInfo(userId) {
     return firestore
       .collection('UserProfile')
       .doc(userId)
-      .get();
+      .get()
+      .then((userInfo) => userInfo.data())
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
+      });
   },
 
   getDirections() {
     return firestore
       .collection('Direction')
       .orderBy('directionId')
-      .get();
+      .get()
+      .then((courseDirections) => {
+        const directions = courseDirections.docs.map((direction) => {
+          const { directionId, name } = direction.data();
+          return { directionId, name };
+        });
+        return directions;
+      })
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
+      });
   },
 
   createTask(taskInfo) {
@@ -102,23 +188,17 @@ const firebaseApi = {
     return firestore
       .collection('Task')
       .doc(taskId)
-      .set({ ...taskInfo })
-      .then(() => {
-        console.log('Document written successfully');
-      })
-      .catch((error) => {
-        console.error('Something went wrong', error);
-      });
+      .set({ ...taskInfo });
   },
 
-  removeTaskFromUsers(usersWithTaskFromDB, usersWithTaskLocal, taskId) {
+  assignTaskToUsers(usersWithTaskFromDB, usersWithTaskLocal, taskId, userTasks, taskInfo) {
     const difference = usersWithTaskFromDB.filter((user) => !usersWithTaskLocal.includes(user));
     return firestore
       .collection('UserTask')
       .where('taskId', '==', taskId)
       .get()
-      .then((userTasks) => {
-        userTasks.forEach((userTask) => {
+      .then((tasks) => {
+        tasks.forEach((userTask) => {
           const { userId, userTaskId, stateId } = userTask.data();
           if (difference.includes(userId)) {
             this.deleteItemWithId('UserTask', userTaskId).then(() => {
@@ -137,7 +217,17 @@ const firebaseApi = {
             });
           }
         });
-      });
+      })
+      .then(() => {
+        this.createTask(taskInfo).then(() => {
+          userTasks.forEach((task) => {
+            this.assignTask(task);
+            this.setTaskState(task.stateId);
+          });
+        });
+      })
+      .then(() => ({ message: 'Task created successfully' }))
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   assignTask(task) {
@@ -159,28 +249,33 @@ const firebaseApi = {
     return firestore
       .collection('Task')
       .doc(taskId)
-      .get();
+      .get()
+      .then((task) => {
+        const { startDate, deadlineDate } = task.data();
+        return {
+          ...task.data(),
+          startDate: dateToStringForInput(startDate.toDate()),
+          deadlineDate: dateToStringForInput(deadlineDate.toDate()),
+        };
+      })
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
+      });
   },
 
   getNames() {
-    let members = [];
     return firestore
       .collection('UserProfile')
       .orderBy('firstName')
       .get()
-      .then((users) => {
-        users.forEach((user) => {
+      .then((users) =>
+        users.docs.map((user) => {
           const { firstName, lastName, userId } = user.data();
-          members = [
-            ...members,
-            {
-              firstName,
-              lastName,
-              userId,
-            },
-          ];
-        });
-        return members;
+          return { firstName, lastName, userId };
+        }),
+      )
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
       });
   },
 
@@ -197,8 +292,9 @@ const firebaseApi = {
           usersWithTask.push(userId);
         });
       })
-      .then(() => {
-        return usersWithTask;
+      .then(() => usersWithTask)
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
       });
   },
 
@@ -206,22 +302,43 @@ const firebaseApi = {
     return firestore
       .collection('Task')
       .orderBy('deadlineDate', 'desc')
-      .get();
+      .get()
+      .then((tasksList) => {
+        const tasks = tasksList.docs.map((task) => {
+          const { name, startDate, deadlineDate, taskId } = task.data();
+          return { name, startDate: startDate.toDate(), deadlineDate: deadlineDate.toDate(), taskId };
+        });
+        return tasks;
+      })
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
+      });
   },
 
   getUserTaskList(userId) {
-    // func returns array of {taskId, userTaskId, staeId} for current user
-    const taskList = [];
+    // func returns array of {taskId, userTaskId, stateId} for current user
     return firestore
       .collection('UserTask')
       .where('userId', '==', userId)
       .get()
       .then((tasks) => {
-        tasks.forEach((task) => {
+        const taskList = tasks.docs.map((task) => {
           const { taskId, userTaskId, stateId } = task.data();
-          taskList.push({ taskId, userTaskId, stateId });
+          return { taskId, userTaskId, stateId };
         });
         return taskList;
+      })
+      .then(async (taskList) => {
+        const promiseArray = taskList.map(async (task) => {
+          const { taskId, userTaskId, stateId } = task;
+          const taskInfo = await this.getUserTaskData(taskId, userTaskId, stateId);
+          return taskInfo;
+        });
+        const taskData = Promise.all(promiseArray);
+        return taskData;
+      })
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
       });
   },
 
@@ -273,6 +390,9 @@ const firebaseApi = {
           .then(() => {
             return taskData;
           });
+      })
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
       });
   },
 
@@ -280,7 +400,9 @@ const firebaseApi = {
     return firestore
       .collection('TaskTrack')
       .doc(taskTrackId)
-      .set({ userTaskId, taskTrackId, trackDate, trackNote });
+      .set({ userTaskId, taskTrackId, trackDate, trackNote })
+      .then(() => ({ message: 'Note successfully created' }))
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   getTaskName(userTaskId) {
@@ -305,24 +427,53 @@ const firebaseApi = {
   },
 
   getTrackData(userTaskId) {
-    const trackInfo = [];
     return firestore
       .collection('TaskTrack')
       .where('userTaskId', '==', userTaskId)
       .get()
       .then((taskDetail) => {
-        taskDetail.forEach((detail) => {
+        const trackInfo = taskDetail.docs.map((detail) => {
           const track = {};
           const { trackDate, trackNote, taskTrackId } = detail.data();
           track.trackDate = trackDate.toDate();
           track.trackNote = trackNote;
           track.taskTrackId = taskTrackId;
           track.userTaskId = userTaskId;
-          trackInfo.push(track);
+          return track;
         });
+        return trackInfo;
       })
-      .then(() => {
-        return trackInfo.length ? trackInfo : null;
+      .then(async (trackInfo) => {
+        const taskName = await this.getTaskName(userTaskId);
+        const trackData = trackInfo.map((track) => {
+          return { ...track, taskName };
+        });
+        return trackData;
+      });
+  },
+
+  getTrackDataArray(userId) {
+    const trackData = [];
+    return this.getUserTaskList(userId)
+      .then(async (tracks) => {
+        const promiseArray = tracks.map(async (track) => {
+          const { userTaskId } = track;
+          const trackInfo = await this.getTrackData(userTaskId);
+          return [...trackInfo];
+        });
+        const trackArray = await Promise.all(promiseArray);
+        return trackArray;
+      })
+      .then((trackArray) => {
+        const trackSet = trackArray.filter((track) => {
+          return track.length !== 0;
+        });
+        trackSet.forEach((tracks) => {
+          tracks.forEach((track) => {
+            trackData.push(track);
+          });
+        });
+        return trackData;
       });
   },
 
@@ -334,6 +485,9 @@ const firebaseApi = {
       .then((taskData) => {
         const { trackNote } = taskData.data();
         return trackNote;
+      })
+      .catch((error) => {
+        console.error(`Error receiving data: ${error}`);
       });
   },
 
@@ -344,33 +498,42 @@ const firebaseApi = {
       .update({ stateName })
       .then(() => {
         console.log('task is completed');
+      })
+      .catch((error) => {
+        console.error(`Something went wrong: ${error}`);
       });
   },
 
   deleteUser(userId) {
-    return this.deleteItemWithId('UserProfile', userId).then(() => {
-      firestore
-        .collection('UserTask')
-        .where('userId', '==', userId)
-        .get()
-        .then((tasks) => {
-          tasks.forEach((task) => {
-            const { userTaskId, stateId } = task.data();
-            this.deleteItemWithId('UserTask', userTaskId);
-            this.deleteItemWithId('TaskState', stateId);
-            return firestore
-              .collection('TaskTrack')
-              .where('userTaskId', '==', userTaskId)
-              .get()
-              .then((trackedTasks) => {
-                trackedTasks.forEach((trackedtask) => {
-                  const { taskTrackId } = trackedtask.data();
-                  this.deleteItemWithId('TaskTrack', taskTrackId);
-                });
+    return this.deleteItemWithId('UserProfile', userId)
+      .then(() => {
+        this.deleteItemWithId('Roles', userId);
+      })
+      .then(() => {
+        return firestore
+          .collection('UserTask')
+          .where('userId', '==', userId)
+          .get();
+      })
+      .then((tasks) => {
+        tasks.forEach((task) => {
+          const { userTaskId, stateId } = task.data();
+          this.deleteItemWithId('UserTask', userTaskId);
+          this.deleteItemWithId('TaskState', stateId);
+          return firestore
+            .collection('TaskTrack')
+            .where('userTaskId', '==', userTaskId)
+            .get()
+            .then((trackedTasks) => {
+              trackedTasks.forEach((trackedtask) => {
+                const { taskTrackId } = trackedtask.data();
+                this.deleteItemWithId('TaskTrack', taskTrackId);
               });
-          });
+            });
         });
-    });
+      })
+      .then(() => ({ message: 'User and all his data succesfully deleted' }))
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   deleteTask(taskId) {
@@ -393,7 +556,9 @@ const firebaseApi = {
                   const { taskTrackId } = trackedtask.data();
                   this.deleteItemWithId('TaskTrack', taskTrackId);
                 });
-              });
+              })
+              .then(() => ({ message: 'Task successfully deleted' }))
+              .catch(({ message }) => ({ message, messageType: 'warning' }));
           });
         });
     });
@@ -404,7 +569,9 @@ const firebaseApi = {
       return firestore
         .collection(collection)
         .doc(docId)
-        .delete();
+        .delete()
+        .then(() => ({ message: 'Item successfully deleted' }))
+        .catch(({ message }) => ({ message, messageType: 'warning' }));
     }
   },
 };

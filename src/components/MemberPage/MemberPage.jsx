@@ -1,23 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDom from 'react-dom';
-import { Button } from 'reactstrap';
 import { AvForm, AvField, AvRadio, AvRadioGroup } from 'availity-reactstrap-validation';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Preloader from '../common/Preloader/Preloader';
 import styles from './MemberPage.module.scss';
 import firebaseApi from '../../api/firebaseApi';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
 import generateID from '../../helpers/generateID';
-import {
-  latinLetterRegexp,
-  phoneNumberRegexp,
-  emailRegexp,
-  numberRange0To100,
-  userNameRegexp,
-  addresseRegexp,
-  numberRange0To10,
-} from '../../constants';
-import directionsToOptions from '../../helpers/directionsToOptions';
+import memberPageFields from './memberPageFields';
+import Button from '../common/Button/Button';
+import { genders } from '../../constants';
+import SubmitButton from '../common/SubmitButton/SubmitButton';
+import showToast from '../../helpers/showToast';
+// import DateField from '../common/DateField/DateField';
+import withState from '../hoc/withState';
+import DateFieldForHOC from '../common/DateField/DateFieldForHOC';
 
 class MemberPage extends React.Component {
   constructor() {
@@ -38,74 +36,29 @@ class MemberPage extends React.Component {
       universityAverageScore: '',
       isFetching: false,
     };
-    this.root = document.createElement('div');
-    document.body.appendChild(this.root);
+    this.EnhacedStartDate = withState(DateFieldForHOC);
+    this.EnhacedBirthDate = withState(DateFieldForHOC);
   }
 
   componentDidMount() {
     const { userId } = this.props;
-    const directions = [];
 
     if (userId && userId !== 'newMember') {
       this.setState({ isFetching: true });
-      firebaseApi
-        .getUserInfo(userId)
-        .then((userInfo) => {
-          const {
-            firstName,
-            lastName,
-            sex,
-            mobilePhone,
-            email,
-            startDate,
-            skype,
-            birthDate,
-            directionId,
-            address,
-            education,
-            mathScore,
-            universityAverageScore,
-          } = userInfo.data();
-
-          this.setState({
-            firstName,
-            lastName,
-            sex,
-            mobilePhone,
-            email,
-            startDate: dateToStringForInput(startDate.toDate()),
-            skype,
-            birthDate: dateToStringForInput(birthDate.toDate()),
-            directionId,
-            address,
-            education,
-            mathScore,
-            universityAverageScore,
-            isFetching: false,
-          });
-        })
-        .catch((error) => {
-          console.error(`Error receiving data: ${error}`);
+      firebaseApi.getUserInfo(userId).then((userInfo) => {
+        const { startDate, birthDate } = userInfo;
+        this.setState({
+          ...userInfo,
+          startDate: dateToStringForInput(startDate.toDate()),
+          birthDate: dateToStringForInput(birthDate.toDate()),
+          isFetching: false,
         });
-    }
-    firebaseApi
-      .getDirections()
-      .then((courseDirections) => {
-        courseDirections.forEach((direction) => {
-          const { directionId, name } = direction.data();
-          directions.push({ directionId, name });
-        });
-      })
-      .then(() => {
-        this.setState({ directions });
-      })
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
       });
-  }
+    }
 
-  componentWillUnmount() {
-    document.body.removeChild(this.root);
+    firebaseApi.getDirections().then((directions) => {
+      this.setState({ directions });
+    });
   }
 
   createUser = (event, errors) => {
@@ -126,9 +79,7 @@ class MemberPage extends React.Component {
         mathScore,
         universityAverageScore,
       } = this.state;
-      if (userId === 'newMember') {
-        userId = generateID();
-      }
+
       const userInfo = {
         userId,
         firstName,
@@ -146,227 +97,145 @@ class MemberPage extends React.Component {
         universityAverageScore: Number(universityAverageScore),
       };
 
-      firebaseApi.createUser(userId, userInfo).catch((error) => {
-        console.error(`User creation error: ${error}`);
-      });
-      console.log('submitted!');
+      if (userId === 'newMember') {
+        userId = generateID();
+        firebaseApi.createUser(userId, { ...userInfo, userId }).then((result) => {
+          showToast(result);
+        });
+      } else {
+        firebaseApi.updateUser(userId, userInfo).then((result) => {
+          showToast(result);
+        });
+      }
     }
   };
 
-  onChange = (e) => {
-    const { id } = e.currentTarget;
-    const { value } = e.target;
-
-    if (id.includes('sex')) {
-      this.setState(() => ({ sex: value }));
-    } else if (id.includes('directionId')) {
-      this.setState(() => ({ directionId: value }));
-    } else {
-      this.setState(() => ({ [id]: value }));
+  disableChangingEmail = (name) => {
+    const { userId } = this.props;
+    if (userId !== 'newMember' && name === 'email') {
+      return true;
     }
+    return false;
+  };
+
+  onChange = (e) => {
+    const { name, value } = e.currentTarget;
+    this.setState(() => ({ [name]: value }));
   };
 
   render() {
     const { userId, hideMemberPage } = this.props;
-    const {
-      firstName,
-      lastName,
-      sex,
-      directionId,
-      mobilePhone,
-      email,
-      startDate,
-      skype,
-      birthDate,
-      address,
-      education,
-      mathScore,
-      universityAverageScore,
-      isFetching,
-      directions,
-    } = this.state;
+    const { sex, directions, directionId, isFetching } = this.state;
+    const { EnhacedStartDate, EnhacedBirthDate } = this;
 
-    const fields = [
-      {
-        id: 'firstName',
-        value: firstName,
-        name: 'firstName',
-        type: 'text',
-        label: 'First Name:',
-        placeholder: 'First Name',
-        regexp: latinLetterRegexp,
-        errorMessage: 'Field must be composed only with latin letters',
-      },
-      {
-        id: 'lastName',
-        value: lastName,
-        name: 'lastName',
-        type: 'text',
-        label: 'Last Name:',
-        placeholder: 'Last Name',
-        regexp: latinLetterRegexp,
-        errorMessage: 'Field must be composed only with latin letters',
-      },
-      {
-        id: 'mobilePhone',
-        value: mobilePhone,
-        name: 'mobilePhone',
-        type: 'text',
-        label: 'Phone:',
-        placeholder: 'Phone number',
-        regexp: phoneNumberRegexp,
-        errorMessage: 'Only numbers and + - symbols are allowed',
-      },
-      {
-        id: 'email',
-        value: email,
-        name: 'email',
-        type: 'text',
-        label: 'Email:',
-        placeholder: 'Email',
-        regexp: emailRegexp,
-        errorMessage: 'You have entered an invalid email address',
-      },
-      {
-        id: 'skype',
-        value: skype,
-        name: 'skype',
-        type: 'text',
-        label: 'Skype:',
-        placeholder: 'Skype account',
-        regexp: userNameRegexp,
-        errorMessage: 'The username must be letters, numbers, hyphens, and underscores',
-      },
-      {
-        id: 'address',
-        value: address,
-        name: 'address',
-        type: 'text',
-        label: 'Address:',
-        placeholder: 'Address',
-        regexp: addresseRegexp,
-        errorMessage: 'Characters & (% # $ ^) are not allowed',
-      },
-      {
-        id: 'mathScore',
-        value: mathScore,
-        name: 'mathScore',
-        type: 'number',
-        label: 'Math score:',
-        placeholder: 'Math test score',
-        regexp: numberRange0To100,
-        errorMessage: 'Test mark must be between 0 and 100',
-      },
-      {
-        id: 'universityAverageScore',
-        value: universityAverageScore,
-        name: 'universityAverageScore',
-        type: 'number',
-        step: 0.1,
-        label: 'Average score:',
-        placeholder: 'Diploma average score',
-        regexp: numberRange0To10,
-        errorMessage: 'Average score must be between 0 and 10',
-      },
-      {
-        id: 'education',
-        value: education,
-        name: 'education',
-        type: 'text',
-        label: 'Education:',
-        placeholder: 'University Name:',
-        regexp: latinLetterRegexp,
-        errorMessage: 'Field must be composed only with latin letters',
-      },
-      {
-        id: 'sex',
-        value: sex,
-        name: 'sex',
-        type: 'radio',
-        label: 'Sex:',
-        options: [
-          { label: 'Male', value: 'male' },
-          { label: 'Female', value: 'female' },
-        ],
-      },
-      {
-        id: 'directionId',
-        value: directionId,
-        name: 'directionId',
-        type: 'radio',
-        label: 'Direction:',
-        options: directionsToOptions(directions),
-      },
-      { id: 'startDate', value: startDate, name: 'startDate', type: 'date', label: 'Start Date:' },
-      { id: 'birthDate', value: birthDate, name: 'birthDate', type: 'date', label: 'Birthday:' },
-    ];
+    const defaultValues = { directionId, sex };
+    const preparedGenders = genders.map((gender) => {
+      const { label, value } = gender;
+      return <AvRadio key={label} label={label} value={value} onChange={this.onChange} />;
+    });
+    const preparedDirections = directions
+      ? directions.map((direction) => {
+          const { name, directionId } = direction;
+          return <AvRadio key={directionId} label={name} value={directionId} onChange={this.onChange} />;
+        })
+      : null;
 
-    const formFields = fields.map(
-      ({ id, value, name, type, label, placeholder, regexp, errorMessage, options = [], step }) => {
-        if (type === 'radio') {
+    const fields = memberPageFields.map(({ id, name, type, label, placeholder, regexp, errorMessage, step }) => {
+      if (type === 'radio') {
+        return (
+          <AvRadioGroup key={id} inline id={id} name={name} label={label} required>
+            {name === 'directionId' && preparedDirections}
+            {name === 'sex' && preparedGenders}
+          </AvRadioGroup>
+        );
+      }
+
+      if (name === 'startDate' || name === 'birthDate') {
+        if (name === 'startDate') {
           return (
-            <AvRadioGroup key={id} inline id={id} name={name} label={label} required>
-              {options.map((option) => {
-                console.log(option.value === sex);
-                return (
-                  <AvRadio
-                    key={label}
-                    label={option.label}
-                    value={option.value}
-                    onChange={this.onChange}
-                    checked={id === 'sex' ? option.value === sex : false} // doesn't work
-                  />
-                );
-              })}
-            </AvRadioGroup>
+            <EnhacedStartDate
+              key={id}
+              name={name}
+              label={label}
+              type={type}
+              onChange={this.onChange}
+              value={this.state[name]}
+              required
+            />
           );
         }
-
-        if (type === 'date') {
-          return <AvField name={name} label={label} type={type} onChange={this.onChange} value={value} required />;
-        }
-
         return (
-          <AvField
+          <EnhacedBirthDate
+            key={id}
             id={id}
-            value={value}
             name={name}
-            type={type}
-            step={step}
             label={label}
-            placeholder={placeholder}
+            type={type}
             onChange={this.onChange}
-            validate={{
-              required: { value: true, errorMessage: 'Field is required' },
-              pattern: {
-                value: `${regexp}`,
-                errorMessage,
-              },
-            }}
+            value={this.state[name]}
+            required
           />
         );
-      },
-    );
+
+        // return (
+        // I practice with HOC here  - commented out code more appropriate. HOC will be removed in the next PR and I return AvField
+
+        // <AvField
+        //   key={id}
+        //   name={name}
+        //   label={label}
+        //   type={type}
+        //   onChange={this.onChange}
+        //   value={this.state[name]}
+        //   required
+        // />
+        // );
+      }
+
+      return (
+        <AvField
+          key={id}
+          id={id}
+          value={this.state[name]}
+          name={name}
+          type={type}
+          step={step}
+          label={label}
+          placeholder={placeholder}
+          onChange={this.onChange}
+          disabled={this.disableChangingEmail(name)}
+          validate={{
+            required: { value: true, errorMessage: 'Field is required' },
+            pattern: {
+              value: `${regexp}`,
+              errorMessage,
+            },
+          }}
+        />
+      );
+    });
 
     if (isFetching) {
       return <Preloader />;
     }
 
-    return ReactDom.createPortal(
-      <div className={styles.wrapper}>
-        <h1 className={styles.title}>{userId === 'newMember' ? 'Register Member' : 'Edit Member'}</h1>
-        <AvForm onSubmit={this.createUser}>
-          {formFields}
+    return (
+      <>
+        <ToastContainer />
+        <div className={styles.wrapper}>
+          <h1 className={styles.title}>{userId === 'newMember' ? 'Register Member' : 'Edit Member'}</h1>
+          <AvForm id='createMember' model={defaultValues} onSubmit={this.createUser}>
+            {fields}
+          </AvForm>
           <div className={styles.buttonWrapper}>
-            <Button className={styles.successButton}>{userId !== 'newMember' ? 'Save' : 'Create'}</Button>
+            <SubmitButton className={styles.successButton} form='createMember'>
+              {userId !== 'newMember' ? 'Save' : 'Create'}
+            </SubmitButton>
 
-            <Button className={styles.defaultButton} onClick={hideMemberPage}>
-              Back to grid
-            </Button>
+            <Button onClick={hideMemberPage}>Back to grid</Button>
           </div>
-        </AvForm>
-      </div>,
-      this.root,
+        </div>
+      </>
     );
   }
 }

@@ -20,6 +20,12 @@
   grid-template-rows: 6rem 6rem 6rem 3rem;
 }
 
+.wrapper form {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 7.5rem 7.5rem 7.5rem;
+}
+
 .buttonWrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -31,7 +37,9 @@
   margin-left: auto;
 }
 
-.message {
+.customMessage {
+  display: flex;
+  margin: 0;
+  align-items: center;
   height: 4rem;
-  color: $dangerousColor;
 }

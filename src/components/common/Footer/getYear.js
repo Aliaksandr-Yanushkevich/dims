@@ -1,5 +1,3 @@
-const getYear = () => {
-  return new Date().getFullYear();
-};
+const getYear = () => new Date().getFullYear();
 
 export default getYear;

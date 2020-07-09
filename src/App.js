@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Route, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import Header from './components/common/Header/Header';
 import Members from './components/Members/Members';
 import MemberProgress from './components/MemberProgress/MemberProgress';
@@ -12,11 +12,15 @@ import TaskManagement from './components/TaskManagement/TaskManagement';
 import Login from './components/Login/Login';
 import Account from './components/Account/Account';
 import { setRole, loginSuccess } from './redux/reducers/authReducer';
+import firebaseApi from './api/firebaseApi';
+import getUserFromSessionStorage from './helpers/getUserFromSessionStorage';
+import showToast from './helpers/showToast';
+import { ToastContainer } from 'react-toastify';
 
 class App extends Component {
   componentDidMount() {
-    const { setRole } = this.props;
-    const user = JSON.parse(sessionStorage.getItem('user'));
+    const user = getUserFromSessionStorage();
+
     if (user) {
       const { role, userId, firstName, lastName, email } = user;
       setRole({ role, currentUserId: userId, firstName, lastName, email });
@@ -26,16 +30,25 @@ class App extends Component {
 
   setCurrentUser = (e) => {
     e.persist();
+    const {
+      target: {
+        dataset: { id: currentUserId },
+      },
+    } = e;
     this.setState({
-      currentUserId: e.target.dataset.id,
+      currentUserId,
     });
   };
 
   setCurrentTask = (e) => {
     e.persist();
-    const taskId = e.target.dataset.taskid;
+    const {
+      target: {
+        dataset: { taskid: currentTaskId },
+      },
+    } = e;
     this.setState({
-      currentTaskId: taskId,
+      currentTaskId,
     });
   };
 
@@ -44,7 +57,8 @@ class App extends Component {
     const savedUserData = sessionStorage.getItem('user');
 
     return (
-      <>
+      <BrowserRouter>
+        <ToastContainer />
         {accountPageIsVisible && (
           <Account
             role={role}
@@ -71,7 +85,7 @@ class App extends Component {
               />
             </Route>
             <Route path='/member_tasks:userId?'>
-              <MemberTasks userId={currentUserId} taskId={currentTaskId} role={role} />
+              <MemberTasks userId={currentUserId} role={role} />
             </Route>
             <Route path='/task_management'>
               <TaskManagement
@@ -91,7 +105,7 @@ class App extends Component {
           </div>
           <Footer />
         </div>
-      </>
+      </BrowserRouter>
     );
   }
 }

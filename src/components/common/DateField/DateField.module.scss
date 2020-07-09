@@ -4,16 +4,12 @@
   border: 2px solid $dangerousColor;
 }
 
-.message {
-  color: $dangerousColor;
-}
-
 .item {
   display: flex;
-  justify-content: space-between;
-  flex-direction: row;
+  flex-direction: column;
 }
 
-select {
-  height: 1.5rem;
+.item input {
+  width: 100%;
+  margin-top: 0.5rem;
 }

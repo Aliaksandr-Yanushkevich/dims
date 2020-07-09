@@ -1,112 +1,94 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { NavLink } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { Button } from 'reactstrap';
+import PropTypes, { object } from 'prop-types';
+import Button from '../common/Button/Button';
 import dateToString from '../../helpers/dateToString';
 import styles from './Members.module.scss';
 import TableData from '../common/TableData/TableData';
-import firebaseApi from '../../api/firebaseApi';
 import getAge from '../../helpers/getAge';
+import NavButton from '../common/NavButton/NavButton';
 
-class MemberData extends React.Component {
-  state = {
-    directions: null,
-  };
+const MemberData = ({
+  index,
+  firstName,
+  lastName,
+  birthDate,
+  directionId,
+  directions,
+  education,
+  startDate,
+  userId,
+  setCurrentUser,
+  deleteUser,
+  createUser,
+  role,
+}) => {
+  const isAdmin = role === 'admin';
+  const buttonWrapper = useRef(null);
 
-  componentDidMount() {
-    const { role } = this.props;
-    const directions = [];
-    const buttonWrappers = document.querySelectorAll(`.${styles.buttonWrapper}`);
-    if (role === 'admin') {
-      buttonWrappers.forEach((wrapper) => {
-        wrapper.style.gridTemplateRows = '1fr 1fr';
-      });
+  if (buttonWrapper.current) {
+    if (isAdmin) {
+      buttonWrapper.current.style.gridTemplateRows = '1fr 1fr';
     } else {
-      buttonWrappers.forEach((wrapper) => {
-        wrapper.style.gridTemplateRows = '1fr';
-      });
+      buttonWrapper.current.style.gridTemplateRows = '1fr';
     }
-
-    firebaseApi
-      .getDirections()
-      .then((courseDirections) => {
-        courseDirections.forEach((direction) => {
-          const { directionId, name } = direction.data();
-          directions.push({ directionId, name });
-        });
-      })
-      .then(() => {
-        this.setState({ directions });
-      })
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
   }
 
-  render() {
-    const {
-      index,
-      firstName,
-      lastName,
-      birthDate,
-      directionId,
-      education,
-      startDate,
-      userId,
-      setCurrentUser,
-      deleteUser,
-      createUser,
-      role,
-    } = this.props;
-    const { directions } = this.state;
+  const age = getAge(birthDate);
+  const direction = directions
+    ? directions.find((courseDirection) => {
+        return courseDirection.directionId === directionId;
+      }).name
+    : null;
 
-    const age = getAge(birthDate);
-    const direction = directions
-      ? directions.filter((courseDirection) => {
-          return courseDirection.directionId === directionId;
-        })[0].name
-      : null;
+  return (
+    <tr key={userId}>
+      <TableData>{index}</TableData>
+      <TableData>
+        <NavLink className={styles.link} to='/members' data-id={userId} onClick={createUser}>
+          {`${firstName} ${lastName}`}
+        </NavLink>
+      </TableData>
+      <TableData>{direction}</TableData>
+      <TableData>{education}</TableData>
+      <TableData>{dateToString(startDate)}</TableData>
+      <TableData>{age}</TableData>
+      <TableData>
+        <div className={styles.buttonWrapper} ref={buttonWrapper}>
+          <NavButton
+            className={styles.link}
+            to='/member_progress'
+            buttonClassName={styles.defaultButton}
+            dataId={userId}
+            onClick={setCurrentUser}
+          >
+            Progress
+          </NavButton>
 
-    return (
-      <tr key={userId}>
-        <TableData>{index}</TableData>
-        <TableData>
-          <NavLink className={styles.link} to='/members' data-id={userId} onClick={createUser}>
-            {`${firstName} ${lastName}`}
-          </NavLink>
-        </TableData>
-        <TableData>{direction}</TableData>
-        <TableData>{education}</TableData>
-        <TableData>{dateToString(startDate)}</TableData>
-        <TableData>{age}</TableData>
-        <TableData>
-          <div className={styles.buttonWrapper}>
-            <NavLink className={styles.link} to='/member_progress'>
-              <Button className={styles.defaultButton} data-id={userId} onClick={setCurrentUser}>
-                Progress
-              </Button>
-            </NavLink>
-            <NavLink className={styles.link} to='/member_tasks'>
-              <Button className={styles.defaultButton} data-id={userId} onClick={setCurrentUser}>
-                Tasks
-              </Button>
-            </NavLink>
-            {role === 'admin' && (
-              <Button className={styles.defaultButton} data-id={userId} onClick={createUser}>
-                Edit
-              </Button>
-            )}
-            {role === 'admin' && (
-              <Button data-id={userId} onClick={deleteUser} className={styles.dangerousButton}>
-                Delete
-              </Button>
-            )}
-          </div>
-        </TableData>
-      </tr>
-    );
-  }
-}
+          <NavButton
+            className={styles.link}
+            to='/member_tasks'
+            buttonClassName={styles.defaultButton}
+            dataId={userId}
+            onClick={setCurrentUser}
+          >
+            Tasks
+          </NavButton>
+          {isAdmin && (
+            <Button className={styles.defaultButton} dataId={userId} onClick={createUser}>
+              Edit
+            </Button>
+          )}
+          {isAdmin && (
+            <Button className={styles.dangerousButton} dataId={userId} onClick={deleteUser}>
+              Delete
+            </Button>
+          )}
+        </div>
+      </TableData>
+    </tr>
+  );
+};
 
 MemberData.propTypes = {
   index: PropTypes.number.isRequired,
@@ -121,6 +103,11 @@ MemberData.propTypes = {
   deleteUser: PropTypes.func.isRequired,
   createUser: PropTypes.func.isRequired,
   role: PropTypes.string.isRequired,
+  directions: PropTypes.arrayOf(object),
+};
+
+MemberData.defaultProps = {
+  directions: [{}],
 };
 
 export default MemberData;

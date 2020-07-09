@@ -19,38 +19,18 @@ class MemberProgres extends Component {
 
   componentDidMount() {
     const { userId, role } = this.props;
-    const { taskData } = this.state;
+
     if (userId && role !== 'member') {
       this.setState({ isFetching: true });
-      firebaseApi
-        .getUserInfo(userId)
-        .then((userInfo) => {
-          const { firstName, lastName } = userInfo.data();
-          this.setState({ firstName, lastName });
-        })
-        .catch((error) => {
-          console.error(`Error receiving data: ${error}`);
-        });
 
-      firebaseApi
-        .getUserTaskList(userId)
-        .then((taskList) => {
-          if (taskList.length) {
-            taskList.forEach((task) => {
-              const { taskId, userTaskId, stateId } = task;
-              firebaseApi.getUserTaskData(taskId, userTaskId, stateId).then((taskInfo) => {
-                if (taskInfo) {
-                  this.setState(() => ({ taskData: [...taskData, taskInfo], isFetching: false }));
-                }
-              });
-            });
-          } else {
-            this.setState({ isFetching: false });
-          }
-        })
-        .catch((error) => {
-          console.error(`Error receiving data: ${error}`);
-        });
+      firebaseApi.getUserInfo(userId).then((userInfo) => {
+        const { firstName, lastName } = userInfo;
+        this.setState({ firstName, lastName });
+      });
+
+      firebaseApi.getUserTaskList(userId).then((taskData) => {
+        this.setState(() => ({ taskData, isFetching: false }));
+      });
     }
   }
 
@@ -67,8 +47,10 @@ class MemberProgres extends Component {
   render() {
     const { firstName, lastName, taskPageIsVisible, taskData, isFetching } = this.state;
     const { userId, currentTaskId, role } = this.props;
+    const isAdmin = role === 'admin';
+    const isMentor = role === 'mentor';
 
-    if (!(role === 'admin' || role === 'mentor')) {
+    if (!(isAdmin || isMentor)) {
       return <p>Only admininstrators and mentors have acces to this page</p>;
     }
 
@@ -76,21 +58,19 @@ class MemberProgres extends Component {
       return <Preloader />;
     }
     if (!taskData.length && !isFetching) {
-      return <p>Member hasn&apos;t tracked tasks. </p>;
+      return <p>{`${firstName} ${lastName} hasn't tracked tasks.`}</p>;
     }
-    const tasksArray = taskData.map((task, index) => {
-      return (
-        <MemberProgressData
-          key={task.taskId}
-          index={index}
-          taskId={task.taskId}
-          taskName={task.name}
-          trackNote={task.trackNote}
-          trackDate={task.trackDate}
-          createTask={this.createTask}
-        />
-      );
-    });
+    const tasksArray = taskData.map((task, index) => (
+      <MemberProgressData
+        key={task.taskId}
+        index={index}
+        taskId={task.taskId}
+        taskName={task.name}
+        trackNote={task.trackNote}
+        trackDate={task.trackDate}
+        createTask={this.createTask}
+      />
+    ));
     return (
       <>
         {taskPageIsVisible && <TaskPage userId={userId} taskId={currentTaskId} hideMemberPage={this.hideMemberPage} />}

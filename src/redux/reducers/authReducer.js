@@ -1,4 +1,5 @@
 import firebaseApi from '../../api/firebaseApi';
+import showToast from '../../helpers/showToast';
 
 const LOGIN = 'LOGIN';
 const LOGOUT = 'LOGOUT';
@@ -22,22 +23,13 @@ const initialState = {
 export const login = (event, errors, values) => (dispatch) => {
   const { email, password, remember } = values;
   if (!errors.length) {
-    firebaseApi
-      .login(email, password)
-      .then(() => {
-        dispatch(loginSuccess());
-        // dispatch(isRemember(remember));
-      })
-      .then(() => {
-        return firebaseApi.getRole(email);
-      })
-      .then((userData) => {
-        dispatch(setRole(userData));
-        if (remember) {
-          const user = JSON.stringify(userData);
-          sessionStorage.setItem('user', user);
-        }
-      });
+    firebaseApi.login(email, password, remember).then((result) => {
+      if (result.hasOwnProperty('message')) {
+        return showToast(result);
+      }
+      dispatch(loginSuccess());
+      // dispatch(isRemember(remember));
+    });
   }
 };
 
@@ -63,6 +55,7 @@ const authReducer = (state = initialState, action) => {
     case SET_ROLE:
       return {
         ...state,
+        isAuth: true,
         ...action.userData,
       };
     // case REMEMBER:

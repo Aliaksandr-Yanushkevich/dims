@@ -2,41 +2,22 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
-import { Button } from 'reactstrap';
 import AvForm from 'availity-reactstrap-validation/lib/AvForm';
 import AvGroup from 'availity-reactstrap-validation/lib/AvGroup';
 import AvField from 'availity-reactstrap-validation/lib/AvField';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { login, setRole } from '../../redux/reducers/authReducer';
 import styles from './Login.module.scss';
-import { emailRegexp } from '../../constants';
-import { login } from '../../redux/reducers/authReducer';
+import getUserFromSessionStorage from '../../helpers/getUserFromSessionStorage';
+import fields from './loginField';
+import SubmitButton from '../common/SubmitButton/SubmitButton';
 
-const Login = ({ isAuth, role, login }) => {
-  if (isAuth) {
-    if (role === 'admin' || role === 'mentor') return <Redirect to='/members' />;
-    if (role === 'member') return <Redirect to='/member_tasks' />;
-  }
-
-  const fields = [
-    {
-      id: 'email',
-      name: 'email',
-      type: 'text',
-      label: 'Email:',
-      placeholder: 'Email',
-      regexp: emailRegexp,
-      errorMessage: 'You have entered an invalid email address',
-      reguired: true,
-    },
-    {
-      id: 'password',
-      name: 'password',
-      type: 'password',
-      label: 'Password:',
-      placeholder: 'Password',
-      reguired: true,
-    },
-  ];
-
+const Login = ({ isAuth, role, login, setRole }) => {
+  const isAdmin = role === 'admin';
+  const isMentor = role === 'mentor';
+  const isMember = role === 'member';
+  const user = getUserFromSessionStorage();
   const formFields = fields.map(({ id, name, type, label, placeholder, regexp, errorMessage, required }) => {
     if (type === 'password') {
       return (
@@ -53,7 +34,6 @@ const Login = ({ isAuth, role, login }) => {
         />
       );
     }
-
     return (
       <AvField
         key={id}
@@ -73,22 +53,56 @@ const Login = ({ isAuth, role, login }) => {
     );
   });
 
-  return (
-    <div className={styles.wrapper}>
-      <h1 className={styles.title}>Login</h1>
+  if (isAuth) {
+    if (isAdmin || isMentor) return <Redirect to='/members' />;
+    if (isMember) return <Redirect to='/member_tasks' />;
+  }
 
-      <AvForm className={styles.form} onSubmit={login}>
-        {formFields}
-        <div className={styles.item}>
-          <AvGroup>
-            <AvField name='remember' label='Remember me' type='checkbox' />
-          </AvGroup>
-          <Button className={styles.defaultButton} id='login'>
-            Login
-          </Button>
-        </div>
-      </AvForm>
-    </div>
+  // here should check saved user data in store
+
+  if (user) {
+    setRole(user);
+  }
+
+  if (isAuth) {
+    if (isAdmin || isMentor) {
+      return <Redirect to='/members' />;
+    }
+
+    if (isMember) {
+      return <Redirect to='/member_tasks' />;
+    }
+  }
+
+  return (
+    <>
+      <ToastContainer
+        position='top-right'
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <div className={styles.wrapper}>
+        <h1 className={styles.title}>Login</h1>
+
+        <AvForm id='login' className={styles.form} onSubmit={login}>
+          {formFields}
+          <div className={styles.item}>
+            <AvGroup>
+              <AvField name='remember' label='Remember me' type='checkbox' />
+            </AvGroup>
+            <SubmitButton className={styles.defaultButton} form='login'>
+              Login
+            </SubmitButton>
+          </div>
+        </AvForm>
+      </div>
+    </>
   );
 };
 
@@ -98,7 +112,9 @@ const mapStateToProps = (state) => {
 };
 
 Login.propTypes = {
-  setUser: PropTypes.func.isRequired,
+  isAuth: PropTypes.bool.isRequired,
+  role: PropTypes.string.isRequired,
+  login: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, { login })(Login);
+export default connect(mapStateToProps, { login, setRole })(Login);

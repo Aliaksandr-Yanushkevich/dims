@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'reactstrap';
+import Button from '../common/Button/Button';
 import dateToString from '../../helpers/dateToString';
 import styles from './MembersTasks.module.scss';
 import TableData from '../common/TableData/TableData';
@@ -17,17 +17,20 @@ const MemberCurrentTasks = ({
   stateId,
   role,
 }) => {
-  const succesedTask = (e) => {
+  const isAdmin = role === 'admin';
+  const isMentor = role === 'mentor';
+  const isMember = role === 'member';
+  const rateTask = (e) => {
     e.persist();
-    const currentTaskId = e.target.dataset.taskid;
-    firebaseApi.completeTask(currentTaskId, 'success');
+    const {
+      target: {
+        dataset: { taskid: currentTaskId },
+        innerText,
+      },
+    } = e;
+    firebaseApi.completeTask(currentTaskId, innerText);
   };
 
-  const failedTask = (e) => {
-    e.persist();
-    const currentTaskId = e.target.dataset.taskid;
-    firebaseApi.completeTask(currentTaskId, 'fail');
-  };
   return (
     <tr key={userTaskId}>
       <TableData>{index + 1}</TableData>
@@ -35,19 +38,21 @@ const MemberCurrentTasks = ({
       <TableData>{dateToString(startDate)}</TableData>
       <TableData>{dateToString(deadlineDate)}</TableData>
       <TableData>{stateName}</TableData>
-      <TableData>
-        <Button className={styles.defaultButton} data-taskid={userTaskId} data-id={taskName} onClick={trackTask}>
-          Track
-        </Button>
-      </TableData>
-      {(role === 'admin' || role === 'mentor') && (
+      {isMember && (
+        <TableData>
+          <Button className={styles.defaultButton} taskId={userTaskId} dataId={taskName} onClick={trackTask}>
+            Track
+          </Button>
+        </TableData>
+      )}
+      {(isAdmin || isMentor) && (
         <TableData>
           <div className={styles.buttonWrapper}>
-            <Button className={styles.successButton} data-taskid={stateId} onClick={succesedTask}>
+            <Button className={styles.successButton} taskId={stateId} onClick={rateTask}>
               Success
             </Button>
 
-            <Button className={styles.dangerousButton} data-taskid={stateId} onClick={failedTask}>
+            <Button className={styles.dangerousButton} taskId={stateId} onClick={rateTask}>
               Fail
             </Button>
           </div>

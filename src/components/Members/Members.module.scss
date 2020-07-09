@@ -2,7 +2,6 @@
 
 .buttonWrapper {
   display: grid;
-  // grid-template-rows: 1fr 1fr;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
@@ -16,6 +15,6 @@
   width: fit-content;
 }
 
-#register {
+.register {
   margin-bottom: 1rem;
 }
