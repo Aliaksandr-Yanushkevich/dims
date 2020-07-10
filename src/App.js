@@ -13,6 +13,7 @@ import Login from './components/Login/Login';
 import Account from './components/Account/Account';
 import { showAccountPage } from './redux/reducers/appReducer';
 import MembersContainer from './components/Members/MembersContainer';
+import MemberProgressContainer from './components/MemberProgress/MemberProgressContainer';
 
 class App extends Component {
   componentDidMount() {
@@ -46,12 +47,7 @@ class App extends Component {
               <MembersContainer />
             </Route>
             <Route path='/member_progress:userId?'>
-              <MemberProgress
-                userId={currentUserId}
-                currentTaskId={currentTaskId}
-                setCurrentTask={this.setCurrentTask}
-                role={role}
-              />
+              <MemberProgressContainer />
             </Route>
             <Route path='/member_tasks:userId?'>
               <MemberTasks userId={currentUserId} role={role} />

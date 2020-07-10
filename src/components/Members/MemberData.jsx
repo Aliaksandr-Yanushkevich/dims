@@ -35,6 +35,11 @@ const MemberData = ({
   }
 
   const age = getAge(birthDate);
+  const setUser = (e) => {
+    // need persist ???
+    const { id } = e.target.dataset;
+    setCurrentUser(id);
+  };
   const direction = directions
     ? directions.find((courseDirection) => {
         return courseDirection.directionId === directionId;
@@ -60,7 +65,7 @@ const MemberData = ({
             to='/member_progress'
             buttonClassName={styles.defaultButton}
             dataId={userId}
-            onClick={setCurrentUser}
+            onClick={setUser}
           >
             Progress
           </NavButton>

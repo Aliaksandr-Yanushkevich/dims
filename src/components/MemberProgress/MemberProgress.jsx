@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styles from './MembersProgress.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
@@ -7,33 +8,9 @@ import MemberProgressData from './MemberProgressData';
 import { memberProgressTitle } from '../../constants';
 import TaskPage from '../TaskPage/TaskPage';
 import firebaseApi from '../../api/firebaseApi';
+import { setCurrentTask } from '../../redux/reducers/appReducer';
 
 class MemberProgres extends Component {
-  state = {
-    firstName: null,
-    lastName: null,
-    taskPageIsVisible: false,
-    taskData: [],
-    isFetching: false,
-  };
-
-  componentDidMount() {
-    const { userId, role } = this.props;
-
-    if (userId && role !== 'member') {
-      this.setState({ isFetching: true });
-
-      firebaseApi.getUserInfo(userId).then((userInfo) => {
-        const { firstName, lastName } = userInfo;
-        this.setState({ firstName, lastName });
-      });
-
-      firebaseApi.getUserTaskList(userId).then((taskData) => {
-        this.setState(() => ({ taskData, isFetching: false }));
-      });
-    }
-  }
-
   createTask = (e) => {
     const { setCurrentTask } = this.props;
     setCurrentTask(e);
@@ -45,8 +22,7 @@ class MemberProgres extends Component {
   };
 
   render() {
-    const { firstName, lastName, taskPageIsVisible, taskData, isFetching } = this.state;
-    const { userId, currentTaskId, role } = this.props;
+    const { userId, currentTaskId, role, firstName, lastName, taskPageIsVisible, taskData, isFetching } = this.props;
     const isAdmin = role === 'admin';
     const isMentor = role === 'mentor';
 
@@ -85,6 +61,22 @@ class MemberProgres extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  const { currentUserId, isFetching, currentTaskId } = state.app;
+  const { role, firstName, lastName } = state.auth;
+  const { taskPageIsVisible, taskData } = state.taskPage;
+  return {
+    currentUserId,
+    isFetching,
+    currentTaskId,
+    role,
+    firstName,
+    lastName,
+    taskPageIsVisible,
+    taskData,
+  };
+};
+
 MemberProgres.propTypes = {
   role: PropTypes.string,
   userId: PropTypes.string,
@@ -97,4 +89,4 @@ MemberProgres.defaultProps = {
   userId: '',
 };
 
-export default MemberProgres;
+export default connect(mapStateToProps, { setCurrentTask })(MemberProgres);
