@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import AvForm from 'availity-reactstrap-validation/lib/AvForm';
 import AvField from 'availity-reactstrap-validation/lib/AvField';
@@ -9,8 +10,9 @@ import Button from '../common/Button/Button';
 import fields from './accountFields';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
+import { showAccountPage } from '../../redux/reducers/appReducer';
 
-const Account = ({ firstName, lastName, role, hideAccountPage, email }) => {
+const Account = ({ firstName, lastName, role, showAccountPage, email }) => {
   const updatePassword = (event, errors, values) => {
     if (!errors.length) {
       const { oldPassword, password, repeatedPassword } = values;
@@ -19,6 +21,10 @@ const Account = ({ firstName, lastName, role, hideAccountPage, email }) => {
         showToast(result);
       });
     }
+  };
+
+  const hideAccountPage = () => {
+    showAccountPage(false);
   };
 
   const formFields = fields.map(({ id, name, type, label, placeholder, regexp, errorMessage }) => {
@@ -81,12 +87,17 @@ const Account = ({ firstName, lastName, role, hideAccountPage, email }) => {
   );
 };
 
+const mapStateToProps = (state) => {
+  const { firstName, lastName, role, email } = state.auth;
+  return { firstName, lastName, role, email };
+};
+
 Account.propTypes = {
   firstName: PropTypes.string,
   lastName: PropTypes.string,
   role: PropTypes.string,
   email: PropTypes.string,
-  hideAccountPage: PropTypes.func,
+  showAccountPage: PropTypes.func.isRequired,
 };
 
 Account.defaultProps = {
@@ -94,7 +105,7 @@ Account.defaultProps = {
   lastName: '',
   role: '',
   email: '',
-  hideAccountPage: () => {},
+  // showAccountPage: () => {},
 };
 
-export default Account;
+export default connect(mapStateToProps, { showAccountPage })(Account);

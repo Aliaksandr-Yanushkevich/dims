@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
+import { Modal } from 'reactstrap';
 import Header from './components/common/Header/Header';
 import Members from './components/Members/Members';
 import MemberProgress from './components/MemberProgress/MemberProgress';
@@ -12,44 +13,15 @@ import TaskManagement from './components/TaskManagement/TaskManagement';
 import Login from './components/Login/Login';
 import Account from './components/Account/Account';
 import { setRole, loginSuccess } from './redux/reducers/authReducer';
-import firebaseApi from './api/firebaseApi';
-import getUserFromSessionStorage from './helpers/getUserFromSessionStorage';
-import showToast from './helpers/showToast';
-import { ToastContainer } from 'react-toastify';
+import { showAccountPage } from './redux/reducers/appReducer';
 
 class App extends Component {
   componentDidMount() {
-    const user = getUserFromSessionStorage();
-
-    if (user) {
-      const { role, userId, firstName, lastName, email } = user;
-      setRole({ role, currentUserId: userId, firstName, lastName, email });
-    }
     document.title = 'DIMS';
   }
 
-  setCurrentUser = (e) => {
-    e.persist();
-    const {
-      target: {
-        dataset: { id: currentUserId },
-      },
-    } = e;
-    this.setState({
-      currentUserId,
-    });
-  };
-
-  setCurrentTask = (e) => {
-    e.persist();
-    const {
-      target: {
-        dataset: { taskid: currentTaskId },
-      },
-    } = e;
-    this.setState({
-      currentTaskId,
-    });
+  hideAccountPage = () => {
+    showAccountPage(false);
   };
 
   render() {
@@ -58,19 +30,15 @@ class App extends Component {
 
     return (
       <BrowserRouter>
-        <ToastContainer />
-        {accountPageIsVisible && (
-          <Account
-            role={role}
-            firstName={firstName}
-            lastName={lastName}
-            email={email}
-            hideAccountPage={this.hideAccountPage}
-          />
-        )}
+        {/* bug with click outside modal - modal doesn't disapear */}
+        <Modal isOpen={accountPageIsVisible} toogle={this.hideAccountPage}>
+          <Account />
+        </Modal>
+
         <div className={styles.wrapper}>
           <Header />
           <div className={styles.contentWrapper}>
+            {/* here should use HOC for redirect. to create universal HOC for all secured component is better solution */}
             {!isAuth && !savedUserData && <Redirect from='/' to='/login' />}
             {role === 'admin' || (role === 'mentor' && <Redirect from='/' to='/members' />)}
             <Route path='/members'>
@@ -113,7 +81,7 @@ class App extends Component {
 const mapStateToProps = (state) => {
   const { currentTaskId, currentUserId, accountPageIsVisible } = state.app;
   const { isAuth, role, userId, firstName, lastName } = state.auth;
-  return { currentTaskId, currentUserId, isAuth, role, userId, firstName, lastName };
+  return { currentTaskId, currentUserId, isAuth, role, userId, firstName, lastName, accountPageIsVisible };
 };
 
 export default connect(mapStateToProps, { setRole, loginSuccess })(App);

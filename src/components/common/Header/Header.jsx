@@ -6,10 +6,8 @@ import classnames from 'classnames';
 import styles from './Header.module.scss';
 import logo from '../logo.svg';
 import UserBlock from './UserBlock';
-import { showAccountPage } from '../../../redux/reducers/appReducer';
-import { logout } from '../../../redux/reducers/authReducer';
 
-const Header = ({ firstName, lastName, role, logout }) => {
+const Header = ({ role }) => {
   const [activeTab, setActiveTab] = useState('1');
 
   const toggle = (tab) => {
@@ -50,9 +48,7 @@ const Header = ({ firstName, lastName, role, logout }) => {
         </div>
       )}
 
-      {firstName && (
-        <UserBlock firstName={firstName} lastName={lastName} logout={logout} showAccountPage={showAccountPage} />
-      )}
+      {role && <UserBlock />}
     </header>
   );
 };
@@ -63,15 +59,11 @@ const mapStateToProps = (state) => {
 };
 
 Header.propTypes = {
-  firstName: PropTypes.string,
-  lastName: PropTypes.string,
   role: PropTypes.string,
 };
 
 Header.defaultProps = {
-  firstName: '',
-  lastName: '',
   role: '',
 };
 
-export default connect(mapStateToProps, { showAccountPage, logout })(Header);
+export default connect(mapStateToProps, {})(Header);
