@@ -150,9 +150,7 @@ const firebaseApi = {
         });
         return members;
       })
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   getUserInfo(userId) {

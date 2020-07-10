@@ -1,5 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { object } from 'prop-types';
+import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Modal } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
@@ -13,34 +14,33 @@ import styles from './Members.module.scss';
 import MemberPage from '../MemberPage/MemberPage';
 import firebaseApi from '../../api/firebaseApi';
 import showToast from '../../helpers/showToast';
+import { setCurrentUser } from '../../redux/reducers/appReducer';
+import { showMemberPage } from '../../redux/reducers/membersReducer';
 
-class Members extends React.Component {
-  state = {
-    members: null,
-    memberPageIsVisible: false,
-    directions: null,
+const Members = ({
+  members,
+  memberPageIsVisible,
+  directions,
+  currentUserId,
+  setCurrentUser,
+  role,
+  showMemberPage,
+  message,
+}) => {
+  const isAdmin = role === 'admin';
+  const isMentor = role === 'mentor';
+  const createUser = (e) => {
+    e.persist();
+    const { id } = e.target.dataset;
+    setCurrentUser(id);
+    showMemberPage(true);
   };
 
-  componentDidMount() {
-    firebaseApi.getUsers().then((members) => {
-      this.setState({ members });
-    });
-    firebaseApi.getDirections().then((directions) => {
-      this.setState({ directions });
-    });
-  }
-
-  createUser = (e) => {
-    const { setCurrentUser } = this.props;
-    setCurrentUser(e);
-    this.setState({ memberPageIsVisible: true });
+  const hideMemberPage = () => {
+    showMemberPage(false);
   };
 
-  hideMemberPage = () => {
-    this.setState({ memberPageIsVisible: false });
-  };
-
-  deleteUser = (e) => {
+  const deleteUser = (e) => {
     e.persist();
     const {
       target: {
@@ -51,92 +51,94 @@ class Members extends React.Component {
       showToast(result);
     });
   };
+  const memberRows = members
+    ? members.map((member, index) => {
+        const { firstName, lastName, birthDate, directionId, education, startDate, userId } = member;
+        return (
+          <MemberData
+            key={userId}
+            role={role}
+            index={index + 1}
+            firstName={firstName}
+            lastName={lastName}
+            birthDate={birthDate}
+            directionId={directionId}
+            directions={directions}
+            education={education}
+            startDate={startDate}
+            userId={userId}
+            setCurrentUser={setCurrentUser}
+            deleteUser={deleteUser}
+            createUser={createUser}
+          />
+        );
+      })
+    : null;
 
-  render() {
-    const { members, memberPageIsVisible, directions } = this.state;
-    const { currentUserId, setCurrentUser, role } = this.props;
-    const isAdmin = role === 'admin';
-    const isMentor = role === 'mentor';
-
-    if (!role) {
-      return <Redirect to='/login' />;
-    }
-    if (!(isAdmin || isMentor)) {
-      return <p>Only admininstrators and mentors have acces to this page</p>;
-    }
-
-    if (!members) {
-      return <Preloader />;
-    }
-
-    if (!members.length) {
-      return <p>Member list is empty. Administrators should create it.</p>;
-    }
-
-    const memberRows = members.map((member, index) => {
-      const { firstName, lastName, birthDate, directionId, education, startDate, userId } = member;
-
-      return (
-        <MemberData
-          key={userId}
-          role={role}
-          index={index + 1}
-          firstName={firstName}
-          lastName={lastName}
-          birthDate={birthDate}
-          directionId={directionId}
-          directions={directions}
-          education={education}
-          startDate={startDate}
-          userId={userId}
-          setCurrentUser={setCurrentUser}
-          deleteUser={this.deleteUser}
-          createUser={this.createUser}
-        />
-      );
-    });
-
-    return (
-      <>
-        <ToastContainer />
-        <Modal isOpen={memberPageIsVisible} toggle={this.hideMemberPage}>
-          <MemberPage userId={currentUserId} hideMemberPage={this.hideMemberPage} />
-        </Modal>
-        <h1 className={styles.title}>Members Manage Grid</h1>
-        <div className={styles.tableWrapper}>
-          {isAdmin && (
-            <Button
-              className={`${styles.defaultButton} ${styles.register}`}
-              dataId='newMember'
-              onClick={this.createUser}
-            >
-              Register
-            </Button>
-          )}
-
-          <table>
-            <thead>
-              <tr>
-                <TableHeader titleArray={membersTitle} />
-              </tr>
-            </thead>
-            <tbody>{memberRows}</tbody>
-          </table>
-        </div>
-      </>
-    );
+  if (!role) {
+    return <Redirect to='/login' />;
   }
-}
+  if (!(isAdmin || isMentor)) {
+    return <p>Only admininstrators and mentors have acces to this page</p>;
+  }
+
+  if (!members && !message) {
+    return <Preloader />;
+  }
+
+  if (message) {
+    showToast(message);
+  }
+
+  if (members && !members.length) {
+    return <p>Member list is empty. Administrators should create it.</p>;
+  }
+
+  return (
+    <>
+      <ToastContainer />
+      <Modal isOpen={memberPageIsVisible} toggle={hideMemberPage}>
+        <MemberPage userId={currentUserId} hideMemberPage={hideMemberPage} />
+      </Modal>
+      <h1 className={styles.title}>Members Manage Grid</h1>
+      <div className={styles.tableWrapper}>
+        {isAdmin && (
+          <Button className={`${styles.defaultButton} ${styles.register}`} dataId='newMember' onClick={createUser}>
+            Register
+          </Button>
+        )}
+
+        <table>
+          <TableHeader titleArray={membersTitle} />
+          <tbody>{memberRows}</tbody>
+        </table>
+      </div>
+    </>
+  );
+};
+
+const mapStateToProps = (state) => {
+  const { members, memberPageIsVisible, directions, message } = state.members;
+  const { currentUserId } = state.app;
+  const { role } = state.auth;
+  return { members, directions, memberPageIsVisible, currentUserId, role, message };
+};
 
 Members.propTypes = {
+  members: PropTypes.arrayOf(PropTypes.instanceOf(object)),
+  memberPageIsVisible: PropTypes.bool.isRequired,
+  directions: PropTypes.arrayOf(PropTypes.instanceOf(object)),
   role: PropTypes.string,
   setCurrentUser: PropTypes.func.isRequired,
   currentUserId: PropTypes.string,
+  showMemberPage: PropTypes.func.isRequired,
 };
 
 Members.defaultProps = {
+  members: [{}],
+  directions: [{}],
   role: '',
   currentUserId: '',
 };
 
-export default Members;
+export default connect(mapStateToProps, { setCurrentUser, showMemberPage })(Members);

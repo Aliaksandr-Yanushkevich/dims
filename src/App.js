@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import { Modal } from 'reactstrap';
 import Header from './components/common/Header/Header';
-import Members from './components/Members/Members';
 import MemberProgress from './components/MemberProgress/MemberProgress';
 import MemberTasks from './components/MemberTasks/MembersTasks';
 import TaskTrackManagement from './components/TaskTrackManagement/TaskTrackManagement';
@@ -12,8 +11,8 @@ import styles from './App.module.scss';
 import TaskManagement from './components/TaskManagement/TaskManagement';
 import Login from './components/Login/Login';
 import Account from './components/Account/Account';
-import { setRole, loginSuccess } from './redux/reducers/authReducer';
 import { showAccountPage } from './redux/reducers/appReducer';
+import MembersContainer from './components/Members/MembersContainer';
 
 class App extends Component {
   componentDidMount() {
@@ -21,6 +20,8 @@ class App extends Component {
   }
 
   hideAccountPage = () => {
+    /* bug with click outside modal - modal doesn't disapear */
+    const { showAccountPage } = this.props;
     showAccountPage(false);
   };
 
@@ -42,7 +43,7 @@ class App extends Component {
             {!isAuth && !savedUserData && <Redirect from='/' to='/login' />}
             {role === 'admin' || (role === 'mentor' && <Redirect from='/' to='/members' />)}
             <Route path='/members'>
-              <Members currentUserId={currentUserId} setCurrentUser={this.setCurrentUser} role={role} />
+              <MembersContainer />
             </Route>
             <Route path='/member_progress:userId?'>
               <MemberProgress
@@ -84,4 +85,4 @@ const mapStateToProps = (state) => {
   return { currentTaskId, currentUserId, isAuth, role, userId, firstName, lastName, accountPageIsVisible };
 };
 
-export default connect(mapStateToProps, { setRole, loginSuccess })(App);
+export default connect(mapStateToProps, { showAccountPage })(App);
