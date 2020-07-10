@@ -77,12 +77,8 @@ class MemberProgres extends Component {
         <h1 className={styles.title}>Member Progress Grid</h1>
         <h2 className={styles.subtitle}>{`${firstName} ${lastName} progress:`}</h2>
         <table>
-          <tbody>
-            <tr>
-              <TableHeader titleArray={memberProgressTitle} />
-            </tr>
-            {tasksArray}
-          </tbody>
+          <TableHeader titleArray={memberProgressTitle} />
+          <tbody>{tasksArray}</tbody>
         </table>
       </>
     );

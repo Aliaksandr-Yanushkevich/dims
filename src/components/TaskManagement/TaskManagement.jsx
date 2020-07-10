@@ -87,11 +87,7 @@ class TaskManagement extends React.Component {
             Create task
           </Button>
           <table>
-            <thead>
-              <tr>
-                <TableHeader titleArray={taskManagementTitle} />
-              </tr>
-            </thead>
+            <TableHeader titleArray={taskManagementTitle} />
             <tbody>{taskRows}</tbody>
           </table>
         </div>

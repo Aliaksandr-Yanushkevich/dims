@@ -106,11 +106,7 @@ class MemberTasks extends Component {
         )}
         {(isAdmin || isMentor) && <h2 className={styles.subtitle}>{`Сurrent tasks of ${firstName} ${lastName}:`}</h2>}
         <table>
-          <thead>
-            <tr>
-              <TableHeader titleArray={isAdmin || isMentor ? membersTasksTitle : membersTasksTitleForMembers} />
-            </tr>
-          </thead>
+          <TableHeader titleArray={isAdmin || isMentor ? membersTasksTitle : membersTasksTitleForMembers} />
           <tbody>{tasksArr}</tbody>
         </table>
       </>

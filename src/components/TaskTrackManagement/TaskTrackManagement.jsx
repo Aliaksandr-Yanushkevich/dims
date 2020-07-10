@@ -115,11 +115,7 @@ class TaskTrackManagement extends React.Component {
         </Modal>
         <h1 className={styles.title}>Task Track Management</h1>
         <table>
-          <thead>
-            <tr>
-              <TableHeader titleArray={tasksTrackTitle} />
-            </tr>
-          </thead>
+          <TableHeader titleArray={tasksTrackTitle} />
           <tbody>{tableRows}</tbody>
         </table>
       </>
