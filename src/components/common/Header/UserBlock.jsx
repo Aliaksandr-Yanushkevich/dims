@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import styles from './Header.module.scss';
 import { showAccountPage } from '../../../redux/reducers/appReducer';
+import { logout } from '../../../redux/reducers/authReducer';
 
 const UserBlock = ({ firstName, lastName, logout, showAccountPage }) => {
   const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -39,4 +40,4 @@ UserBlock.propTypes = {
   showAccountPage: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, { showAccountPage })(UserBlock);
+export default connect(mapStateToProps, { showAccountPage, logout })(UserBlock);
