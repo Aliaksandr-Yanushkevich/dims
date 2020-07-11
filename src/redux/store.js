@@ -1,5 +1,6 @@
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunkMiddleWare from 'redux-thunk';
+import logger from 'redux-logger';
 import membersReducer from './reducers/membersReducer';
 import authReducer from './reducers/authReducer';
 import appReducer from './reducers/appReducer';
@@ -16,6 +17,6 @@ const reducers = combineReducers({
   memberPage: memberPageReducer,
 });
 
-const store = createStore(reducers, applyMiddleware(thunkMiddleWare));
+const store = createStore(reducers, applyMiddleware(thunkMiddleWare, logger));
 
 export default store;

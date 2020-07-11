@@ -1,5 +1,6 @@
 import firebaseApi from '../../api/firebaseApi';
 import showToast from '../../helpers/showToast';
+import { toggleIsFetching } from './appReducer';
 
 const SET_USER_INFO = 'SET_USER_INFO ';
 const SET_USER_TASKS = 'SET_USER_TASKS';
@@ -17,23 +18,36 @@ const initialState = {
   userTasks: null,
 };
 
+// should use Promise.all for getUserInfo & getUserTasksList then dispatch  dispatch(tooggleIsFetching(false))
 export const getUserInfo = (currentUserId) => (dispatch) => {
-  firebaseApi.getUserInfo(currentUserId).then((result) => {
-    if (result.hasOwnProperty('message')) {
-      return showToast(result);
-    }
-    const { firstName, lastName } = result;
-    dispatch(setUserInfo(firstName, lastName));
-  });
+  dispatch(toggleIsFetching(true));
+  firebaseApi
+    .getUserInfo(currentUserId)
+    .then((result) => {
+      if (result.hasOwnProperty('message')) {
+        return showToast(result);
+      }
+      const { firstName, lastName } = result;
+      dispatch(setUserInfo(firstName, lastName));
+    })
+    .then(() => {
+      dispatch(toggleIsFetching(false));
+    });
 };
 
 export const getUserTasksList = (currentUserId) => (dispatch) => {
-  firebaseApi.getUserTaskList(currentUserId).then((result) => {
-    if (result.hasOwnProperty('message')) {
-      return showToast(result);
-    }
-    dispatch(setUserTasks(result));
-  });
+  dispatch(toggleIsFetching(true));
+  firebaseApi
+    .getUserTaskList(currentUserId)
+    .then((result) => {
+      if (result.hasOwnProperty('message')) {
+        return showToast(result);
+      }
+      dispatch(setUserTasks(result));
+    })
+    .then(() => {
+      dispatch(toggleIsFetching(false));
+    });
 };
 
 const membersProgressReducer = (state = initialState, action) => {

@@ -1,12 +1,12 @@
 const SET_CURRENT_USER = 'SET_CURRENT_USER';
 const SET_CURRENT_TASK = 'SET_CURRENT_TASK';
 const SHOW_ACCOUNT_PAGE = 'SHOW_ACCOUNT_PAGE';
-const TOOGGLE_IS_FETCHING = 'TOOGGLE_IS_FETCHING';
+const TOGGLE_IS_FETCHING = 'TOOGGLE_IS_FETCHING';
 
 export const setCurrentUser = (userId) => ({ type: SET_CURRENT_USER, userId });
 export const setCurrentTask = (taskId) => ({ type: SET_CURRENT_TASK, taskId });
 export const showAccountPage = (accountPageIsVisible) => ({ type: SHOW_ACCOUNT_PAGE, accountPageIsVisible });
-export const tooggleIsFetching = (isFetching) => ({ type: TOOGGLE_IS_FETCHING, isFetching });
+export const toggleIsFetching = (isFetching) => ({ type: TOGGLE_IS_FETCHING, isFetching });
 
 const initialState = {
   currentUserId: null,
@@ -23,6 +23,8 @@ const appReducer = (state = initialState, action) => {
       return { ...state, currentUserId: action.taskId };
     case SHOW_ACCOUNT_PAGE:
       return { ...state, accountPageIsVisible: action.accountPageIsVisible };
+    case TOGGLE_IS_FETCHING:
+      return { ...state, isFetching: action.isFetching };
     default:
       return state;
   }
