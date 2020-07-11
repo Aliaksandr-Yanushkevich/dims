@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
-import { Modal } from 'reactstrap';
 import Header from './components/common/Header/Header';
 import MemberTasks from './components/MemberTasks/MembersTasks';
 import TaskTrackManagement from './components/TaskTrackManagement/TaskTrackManagement';
@@ -9,8 +8,6 @@ import Footer from './components/common/Footer/Footer';
 import styles from './App.module.scss';
 import TaskManagement from './components/TaskManagement/TaskManagement';
 import Login from './components/Login/Login';
-import Account from './components/Account/Account';
-import { showAccountPage } from './redux/reducers/appReducer';
 import MembersContainer from './components/Members/MembersContainer';
 import MemberProgressContainer from './components/MemberProgress/MemberProgressContainer';
 
@@ -19,23 +16,12 @@ class App extends Component {
     document.title = 'DIMS';
   }
 
-  hideAccountPage = () => {
-    /* bug with click outside modal - modal doesn't disapear */
-    const { showAccountPage } = this.props;
-    showAccountPage(false);
-  };
-
   render() {
-    const { isAuth, currentUserId, currentTaskId, role, accountPageIsVisible } = this.props;
+    const { isAuth, currentUserId, currentTaskId, role } = this.props;
     const savedUserData = sessionStorage.getItem('user');
 
     return (
       <BrowserRouter>
-        {/* bug with click outside modal - modal doesn't disapear */}
-        <Modal isOpen={accountPageIsVisible} toogle={this.hideAccountPage}>
-          <Account />
-        </Modal>
-
         <div className={styles.wrapper}>
           <Header />
           <div className={styles.contentWrapper}>
@@ -80,4 +66,4 @@ const mapStateToProps = (state) => {
   return { currentTaskId, currentUserId, isAuth, role, userId, firstName, lastName, accountPageIsVisible };
 };
 
-export default connect(mapStateToProps, { showAccountPage })(App);
+export default connect(mapStateToProps, {})(App);

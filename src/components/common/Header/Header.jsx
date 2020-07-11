@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { Modal } from 'reactstrap';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import styles from './Header.module.scss';
 import logo from '../logo.svg';
 import UserBlock from './UserBlock';
+import Account from '../../Account/Account';
+import { showAccountPage } from '../../../redux/reducers/appReducer';
 
-const Header = ({ role }) => {
+const Header = ({ role, showAccountPage, accountPageIsVisible }) => {
   const [activeTab, setActiveTab] = useState('1');
 
   const toggle = (tab) => {
@@ -16,8 +19,17 @@ const Header = ({ role }) => {
   const isAdmin = role === 'admin';
   const isMentor = role === 'mentor';
 
+  const hideAccountPage = () => {
+    /* bug with click outside modal - modal doesn't disapear */
+    showAccountPage(false);
+  };
+
   return (
     <header className={styles.header}>
+      {/* bug with click outside modal - modal doesn't disapear */}
+      <Modal isOpen={accountPageIsVisible} toogle={hideAccountPage}>
+        <Account />
+      </Modal>
       <NavLink className={styles.link} to='/members'>
         <img src={logo} alt='logo' />
       </NavLink>
@@ -54,16 +66,19 @@ const Header = ({ role }) => {
 };
 
 const mapStateToProps = (state) => {
+  const { accountPageIsVisible } = state.app;
   const { firstName, lastName, role } = state.auth;
-  return { firstName, lastName, role };
+  return { firstName, lastName, role, accountPageIsVisible };
 };
 
 Header.propTypes = {
   role: PropTypes.string,
+  showAccountPage: PropTypes.func.isRequired,
+  accountPageIsVisible: PropTypes.bool.isRequired,
 };
 
 Header.defaultProps = {
   role: '',
 };
 
-export default connect(mapStateToProps, {})(Header);
+export default connect(mapStateToProps, { showAccountPage })(Header);
