@@ -17,7 +17,16 @@ import showToast from '../../helpers/showToast';
 import { setCurrentUser } from '../../redux/reducers/appReducer';
 import { showMemberPage } from '../../redux/reducers/membersReducer';
 
-const Members = ({ members, memberPageIsVisible, directions, currentUserId, setCurrentUser, role, showMemberPage }) => {
+const Members = ({
+  members,
+  memberPageIsVisible,
+  directions,
+  currentUserId,
+  setCurrentUser,
+  role,
+  showMemberPage,
+  message,
+}) => {
   const isAdmin = role === 'admin';
   const isMentor = role === 'mentor';
   const createUser = (e) => {
@@ -73,11 +82,15 @@ const Members = ({ members, memberPageIsVisible, directions, currentUserId, setC
     return <p>Only admininstrators and mentors have acces to this page</p>;
   }
 
-  if (!members) {
+  if (!members && !message) {
     return <Preloader />;
   }
 
-  if (!members.length) {
+  if (message) {
+    showToast(message);
+  }
+
+  if (members && !members.length) {
     return <p>Member list is empty. Administrators should create it.</p>;
   }
 
@@ -105,10 +118,10 @@ const Members = ({ members, memberPageIsVisible, directions, currentUserId, setC
 };
 
 const mapStateToProps = (state) => {
-  const { members, memberPageIsVisible, directions } = state.members;
+  const { members, memberPageIsVisible, directions, message } = state.members;
   const { currentUserId } = state.app;
   const { role } = state.auth;
-  return { members, directions, memberPageIsVisible, currentUserId, role };
+  return { members, directions, memberPageIsVisible, currentUserId, role, message };
 };
 
 Members.propTypes = {

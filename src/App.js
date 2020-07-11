@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import { Modal } from 'reactstrap';
 import Header from './components/common/Header/Header';
-import MemberProgress from './components/MemberProgress/MemberProgress';
 import MemberTasks from './components/MemberTasks/MembersTasks';
 import TaskTrackManagement from './components/TaskTrackManagement/TaskTrackManagement';
 import Footer from './components/common/Footer/Footer';
@@ -13,6 +12,7 @@ import Login from './components/Login/Login';
 import Account from './components/Account/Account';
 import { showAccountPage } from './redux/reducers/appReducer';
 import MembersContainer from './components/Members/MembersContainer';
+import MemberProgressContainer from './components/MemberProgress/MemberProgressContainer';
 
 class App extends Component {
   componentDidMount() {
@@ -26,7 +26,7 @@ class App extends Component {
   };
 
   render() {
-    const { isAuth, currentUserId, currentTaskId, role, firstName, lastName, email, accountPageIsVisible } = this.props;
+    const { isAuth, currentUserId, currentTaskId, role, accountPageIsVisible } = this.props;
     const savedUserData = sessionStorage.getItem('user');
 
     return (
@@ -46,12 +46,7 @@ class App extends Component {
               <MembersContainer />
             </Route>
             <Route path='/member_progress:userId?'>
-              <MemberProgress
-                userId={currentUserId}
-                currentTaskId={currentTaskId}
-                setCurrentTask={this.setCurrentTask}
-                role={role}
-              />
+              <MemberProgressContainer />
             </Route>
             <Route path='/member_tasks:userId?'>
               <MemberTasks userId={currentUserId} role={role} />

@@ -1,26 +1,31 @@
 import firebaseApi from '../../api/firebaseApi';
-import showToast from '../../helpers/showToast';
+// import showToast from '../../helpers/showToast';
 
 const SET_MEMBERS = 'SET_MEMBERS';
 const SET_DIRECTIONS = 'SET_DIRECTIONS';
 const SHOW_MEMBER_PAGE = 'SHOW_MEMBER_PAGE';
+const SET_MESSAGE = 'SET_MESSAGE';
 
 export const setMembers = (members) => ({ type: SET_MEMBERS, members });
 export const setDirections = (directions) => ({ type: SET_DIRECTIONS, directions });
 export const showMemberPage = (memberPageIsVisible) => ({ type: SHOW_MEMBER_PAGE, memberPageIsVisible });
+export const setMessage = (message) => ({ type: SET_MESSAGE, message });
 
 const initialState = {
   members: null,
   directions: null,
   memberPageIsVisible: false,
+  message: null,
 };
 
 export const getMembers = () => (dispatch) => {
   firebaseApi.getUsers().then((result) => {
     if (result.hasOwnProperty('message')) {
-      return showToast(result);
+      dispatch(setMessage(result));
+    } else {
+      dispatch(setMembers(result));
+      dispatch(setMessage(null));
     }
-    dispatch(setMembers(result));
   });
 };
 
@@ -38,6 +43,8 @@ const membersReducer = (state = initialState, action) => {
       return { ...state, directions: action.directions };
     case SHOW_MEMBER_PAGE:
       return { ...state, memberPageIsVisible: action.memberPageIsVisible };
+    case SET_MESSAGE:
+      return { ...state, message: action.message };
     default:
       return state;
   }
