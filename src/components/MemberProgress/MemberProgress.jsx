@@ -1,79 +1,91 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import PropTypes, { object } from 'prop-types';
 import styles from './MembersProgress.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
 import MemberProgressData from './MemberProgressData';
 import { memberProgressTitle } from '../../constants';
 import TaskPage from '../TaskPage/TaskPage';
-import firebaseApi from '../../api/firebaseApi';
 import { setCurrentTask } from '../../redux/reducers/appReducer';
+import { showTaskPage } from '../../redux/reducers/taskPageReducer';
 
-class MemberProgres extends Component {
-  createTask = (e) => {
-    const { setCurrentTask } = this.props;
-    setCurrentTask(e);
-    this.setState({ taskPageIsVisible: true });
+const MemberProgres = ({
+  userId,
+  currentTaskId,
+  role,
+  currentUserFirstName,
+  currentUserLastName,
+  taskPageIsVisible,
+  userTasks,
+  isFetching,
+  setCurrentTask,
+  showTaskPage,
+}) => {
+  const createTask = (e) => {
+    const { taskid } = e.target.dataset;
+    setCurrentTask(taskid);
+    showTaskPage(true);
   };
 
-  hideMemberPage = () => {
-    this.setState({ taskPageIsVisible: false });
+  const hideMemberPage = () => {
+    showTaskPage(false);
   };
 
-  render() {
-    const { userId, currentTaskId, role, firstName, lastName, taskPageIsVisible, taskData, isFetching } = this.props;
-    const isAdmin = role === 'admin';
-    const isMentor = role === 'mentor';
+  const isAdmin = role === 'admin';
+  const isMentor = role === 'mentor';
 
-    if (!(isAdmin || isMentor)) {
-      return <p>Only admininstrators and mentors have acces to this page</p>;
-    }
-
-    if (isFetching) {
-      return <Preloader />;
-    }
-    if (!taskData.length && !isFetching) {
-      return <p>{`${firstName} ${lastName} hasn't tracked tasks.`}</p>;
-    }
-    const tasksArray = taskData.map((task, index) => (
-      <MemberProgressData
-        key={task.taskId}
-        index={index}
-        taskId={task.taskId}
-        taskName={task.name}
-        trackNote={task.trackNote}
-        trackDate={task.trackDate}
-        createTask={this.createTask}
-      />
-    ));
-    return (
-      <>
-        {taskPageIsVisible && <TaskPage userId={userId} taskId={currentTaskId} hideMemberPage={this.hideMemberPage} />}
-        <h1 className={styles.title}>Member Progress Grid</h1>
-        <h2 className={styles.subtitle}>{`${firstName} ${lastName} progress:`}</h2>
-        <table>
-          <TableHeader titleArray={memberProgressTitle} />
-          <tbody>{tasksArray}</tbody>
-        </table>
-      </>
-    );
+  if (!(isAdmin || isMentor)) {
+    return <p>Only admininstrators and mentors have acces to this page</p>;
   }
-}
+
+  if (isFetching) {
+    return <Preloader />;
+  }
+  if (userTasks && !userTasks.length && !isFetching) {
+    return <p>{`${currentUserFirstName} ${currentUserLastName} hasn't tracked tasks.`}</p>;
+  }
+  const tasksArray = userTasks
+    ? userTasks.map((task, index) => (
+        <MemberProgressData
+          key={task.taskId}
+          index={index}
+          taskId={task.taskId}
+          taskName={task.name}
+          trackNote={task.trackNote}
+          trackDate={task.trackDate}
+          createTask={createTask}
+        />
+      ))
+    : null;
+
+  return (
+    <>
+      {taskPageIsVisible && <TaskPage userId={userId} taskId={currentTaskId} hideMemberPage={hideMemberPage} />}
+      <h1 className={styles.title}>Member Progress Grid</h1>
+      <h2 className={styles.subtitle}>{`${currentUserFirstName} ${currentUserLastName} progress:`}</h2>
+      <table>
+        <TableHeader titleArray={memberProgressTitle} />
+        <tbody>{tasksArray}</tbody>
+      </table>
+    </>
+  );
+};
 
 const mapStateToProps = (state) => {
   const { currentUserId, isFetching, currentTaskId } = state.app;
-  const { role, firstName, lastName } = state.auth;
-  const { taskPageIsVisible, taskData } = state.taskPage;
+  const { role } = state.auth;
+  const { taskPageIsVisible } = state.taskPage;
+  const { currentUserFirstName, currentUserLastName, userTasks } = state.memberProgress;
   return {
     currentUserId,
     isFetching,
     currentTaskId,
     role,
-    firstName,
-    lastName,
+    currentUserFirstName,
+    currentUserLastName,
     taskPageIsVisible,
-    taskData,
+    userTasks,
   };
 };
 
@@ -82,11 +94,20 @@ MemberProgres.propTypes = {
   userId: PropTypes.string,
   currentTaskId: PropTypes.string.isRequired,
   setCurrentTask: PropTypes.func.isRequired,
+  currentUserFirstName: PropTypes.string,
+  currentUserLastName: PropTypes.string,
+  taskPageIsVisible: PropTypes.bool.isRequired,
+  userTasks: PropTypes.arrayOf(PropTypes.instanceOf(object)),
+  isFetching: PropTypes.bool.isRequired,
+  showTaskPage: PropTypes.func.isRequired,
 };
 
 MemberProgres.defaultProps = {
   role: '',
   userId: '',
+  currentUserFirstName: '',
+  currentUserLastName: '',
+  userTasks: [{}],
 };
 
-export default connect(mapStateToProps, { setCurrentTask })(MemberProgres);
+export default connect(mapStateToProps, { setCurrentTask, showTaskPage })(MemberProgres);

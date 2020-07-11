@@ -27,7 +27,7 @@ const taskPageReducer = (state = initialState, action) => {
     case SET_TASK_DATA:
       return { ...state, taskData: action.taskData };
     case SHOW_TASK_PAGE:
-      return { ...state, memberPageIsVisible: action.taskPageIsVisible };
+      return { ...state, taskPageIsVisible: action.taskPageIsVisible };
     default:
       return state;
   }

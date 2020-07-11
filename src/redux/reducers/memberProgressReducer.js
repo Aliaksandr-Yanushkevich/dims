@@ -9,22 +9,21 @@ export const setUserInfo = (currentUserFirstName, currentUserLastName) => ({
   currentUserFirstName,
   currentUserLastName,
 });
-export const setUserTasks = (taskData) => ({ type: SET_USER_TASKS, taskData });
+export const setUserTasks = (userTasks) => ({ type: SET_USER_TASKS, userTasks });
 
 const initialState = {
   currentUserFirstName: null,
   currentUserLastName: null,
-  taskData: null,
+  userTasks: null,
 };
 
 export const getUserInfo = (currentUserId) => (dispatch) => {
   firebaseApi.getUserInfo(currentUserId).then((result) => {
     if (result.hasOwnProperty('message')) {
       return showToast(result);
-    } else {
-      const { firstName, lastName } = result;
-      dispatch(setUserInfo(firstName, lastName));
     }
+    const { firstName, lastName } = result;
+    dispatch(setUserInfo(firstName, lastName));
   });
 };
 
@@ -32,9 +31,8 @@ export const getUserTasksList = (currentUserId) => (dispatch) => {
   firebaseApi.getUserTaskList(currentUserId).then((result) => {
     if (result.hasOwnProperty('message')) {
       return showToast(result);
-    } else {
-      dispatch(setUserTasks(result));
     }
+    dispatch(setUserTasks(result));
   });
 };
 
@@ -47,7 +45,7 @@ const membersProgressReducer = (state = initialState, action) => {
         currentUserLastName: action.currentUserLastName,
       };
     case SET_USER_TASKS:
-      return { ...state, taskData: action.taskData };
+      return { ...state, userTasks: action.userTasks };
     default:
       return state;
   }

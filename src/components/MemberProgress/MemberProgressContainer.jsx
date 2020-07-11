@@ -28,12 +28,14 @@ const mapStateToProps = (state) => {
   };
 };
 
-MemberProgres.propTypes = {
+MemberProgresContainer.propTypes = {
   role: PropTypes.string,
   currentUserId: PropTypes.string,
+  getUserInfo: PropTypes.func.isRequired,
+  getUserTasksList: PropTypes.func.isRequired,
 };
 
-MemberProgres.defaultProps = {
+MemberProgresContainer.defaultProps = {
   role: '',
   currentUserId: '',
 };
