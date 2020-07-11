@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes, { object } from 'prop-types';
+import { Modal } from 'reactstrap';
 import styles from './MembersProgress.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
@@ -59,9 +60,15 @@ const MemberProgres = ({
       ))
     : null;
 
+  if (isFetching) {
+    return <Preloader />;
+  }
   return (
     <>
-      {taskPageIsVisible && <TaskPage userId={userId} taskId={currentTaskId} hideMemberPage={hideMemberPage} />}
+      <Modal isOpen={taskPageIsVisible} toggle={hideMemberPage}>
+        <TaskPage userId={userId} taskId={currentTaskId} hideMemberPage={hideMemberPage} />
+      </Modal>
+
       <h1 className={styles.title}>Member Progress Grid</h1>
       <h2 className={styles.subtitle}>{`${currentUserFirstName} ${currentUserLastName} progress:`}</h2>
       <table>
