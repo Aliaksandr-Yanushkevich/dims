@@ -12,45 +12,50 @@ import generateID from '../../helpers/generateID';
 import taskPageFields from './taskPageFields';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
+import { connect } from 'react-redux';
 
-class TaskPage extends React.Component {
-  state = {
-    members: null,
-    taskName: '',
-    description: '',
-    startDate: dateToStringForInput(new Date()),
-    deadlineDate: dateToStringForInput(new Date(Date.now() + 604800000)), // number is the number of milliseconds in a week
-    usersWithTaskFromDB: null,
-    usersWithTaskLocal: null,
-    userTasks: [],
-  };
-
-  componentDidMount() {
-    const { taskId } = this.props;
-
-    if (taskId && taskId !== 'newTask') {
-      this.setState({ taskId });
-
-      firebaseApi.getTask(taskId).then((task) => {
-        const { name } = task;
-        this.setState({ ...task, taskName: name });
-      });
-    } else {
-      this.setState({ taskId: generateID() });
+const TaskPage = ({ userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal, members, taskId, hideMemberPage }) => {
+  const formFields = taskPageFields.map(({ id, name, type, label, placeholder, regexp, errorMessage, cols, rows }) => {
+    if (type === 'date') {
+      return (
+        <AvField
+          key={id}
+          id={id}
+          name={name}
+          label={label}
+          type={type}
+          onChange={this.onChange}
+          value={this.state[name]}
+          required
+        />
+      );
     }
 
-    firebaseApi.getNames().then((members) => {
-      this.setState({ members });
-    });
-
-    firebaseApi.getUsersWithTask(taskId).then((usersWithTaskFromDB) => {
-      this.setState({ usersWithTaskFromDB, usersWithTaskLocal: usersWithTaskFromDB });
-    });
-  }
+    return (
+      <AvField
+        key={id}
+        id={id}
+        value={this.state[name]}
+        name={name}
+        type={type}
+        label={label}
+        placeholder={placeholder}
+        onChange={this.onChange}
+        cols={cols}
+        rows={rows}
+        validate={{
+          required: { value: true, errorMessage: 'Field is required' },
+          pattern: {
+            value: `${regexp}`,
+            errorMessage,
+          },
+        }}
+      />
+    );
+  });
 
   createTask = (event, errors, values) => {
     if (!errors.length) {
-      const { userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal } = this.state;
       const { taskName, description, startDate, deadlineDate } = values;
 
       const taskInfo = {
@@ -70,7 +75,6 @@ class TaskPage extends React.Component {
   };
 
   asignTask = (userId, checked) => {
-    const { userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal } = this.state;
     const stateId = generateID();
     const userTaskId = generateID();
     let memberTasks = userTasks;
@@ -86,84 +90,64 @@ class TaskPage extends React.Component {
     this.setState({ userTasks: memberTasks });
   };
 
-  render() {
-    const { members, usersWithTaskLocal } = this.state;
-    const { taskId, hideMemberPage } = this.props;
+  return (
+    <>
+      <ToastContainer />
+      <div className={styles.wrapper}>
+        <h1 className={styles.title}>{taskId === 'newTask' ? 'New task' : `Edit task`}</h1>
+        <div className={styles.left}>
+          <AvForm id='createTask' onSubmit={this.createTask}>
+            {formFields}
+          </AvForm>
+        </div>
 
-    const formFields = taskPageFields.map(
-      ({ id, name, type, label, placeholder, regexp, errorMessage, cols, rows }) => {
-        if (type === 'date') {
-          return (
-            <AvField
-              key={id}
-              id={id}
-              name={name}
-              label={label}
-              type={type}
-              onChange={this.onChange}
-              value={this.state[name]}
-              required
-            />
-          );
-        }
-
-        return (
-          <AvField
-            key={id}
-            id={id}
-            value={this.state[name]}
-            name={name}
-            type={type}
-            label={label}
-            placeholder={placeholder}
-            onChange={this.onChange}
-            cols={cols}
-            rows={rows}
-            validate={{
-              required: { value: true, errorMessage: 'Field is required' },
-              pattern: {
-                value: `${regexp}`,
-                errorMessage,
-              },
-            }}
-          />
-        );
-      },
-    );
-
-    return (
-      <>
-        <ToastContainer />
-        <div className={styles.wrapper}>
-          <h1 className={styles.title}>{taskId === 'newTask' ? 'New task' : `Edit task`}</h1>
-          <div className={styles.left}>
-            <AvForm id='createTask' onSubmit={this.createTask}>
-              {formFields}
-            </AvForm>
-          </div>
-
-          <div className={styles.right}>
-            {members && (
-              <MemberList members={members} asignTask={this.asignTask} usersWithTaskLocal={usersWithTaskLocal} />
-            )}
-            <div className={styles.buttonWrapper}>
-              <SubmitButton className={styles.successButton} form='createTask'>
-                {taskId === 'newTask' ? 'Create' : 'Save'}
-              </SubmitButton>
-              <Button className={styles.defaultButton} onClick={hideMemberPage}>
-                Back to grid
-              </Button>
-            </div>
+        <div className={styles.right}>
+          {members && (
+            <MemberList members={members} asignTask={this.asignTask} usersWithTaskLocal={usersWithTaskLocal} />
+          )}
+          <div className={styles.buttonWrapper}>
+            <SubmitButton className={styles.successButton} form='createTask'>
+              {taskId === 'newTask' ? 'Create' : 'Save'}
+            </SubmitButton>
+            <Button className={styles.defaultButton} onClick={hideMemberPage}>
+              Back to grid
+            </Button>
           </div>
         </div>
-      </>
-    );
-  }
-}
+      </div>
+    </>
+  );
+};
+
+const mapStateToProps = (state) => {
+  const {
+    members,
+    description,
+    startDate,
+    deadlineDate,
+    usersWithTaskFromDB,
+    usersWithTaskLocal,
+    userTasks,
+    currentTaskData,
+  } = state.taskPage;
+  const { currentTaskId } = state.app;
+
+  return {
+    members,
+    description,
+    startDate,
+    deadlineDate,
+    usersWithTaskFromDB,
+    usersWithTaskLocal,
+    userTasks,
+    currentTaskData,
+    currentTaskId,
+  };
+};
 
 TaskPage.propTypes = {
   taskId: PropTypes.string.isRequired,
   hideMemberPage: PropTypes.func.isRequired,
 };
 
-export default TaskPage;
+export default connect(mapStateToProps, {})(TaskPage);

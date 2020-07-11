@@ -11,6 +11,7 @@ export const toggleIsFetching = (isFetching) => ({ type: TOGGLE_IS_FETCHING, isF
 const initialState = {
   currentUserId: null,
   currentTaskId: null,
+  currentTaskName: null,
   accountPageIsVisible: false,
   isFetching: false,
 };
