@@ -3,7 +3,7 @@ import { textMaxLength1000Regexp, textMaxLength140Regexp } from '../../constants
 const taskPageFields = [
   {
     id: 'taskName',
-    name: 'taskName',
+    name: 'name',
     type: 'textarea',
     label: 'Task name:',
     placeholder: 'Task name',

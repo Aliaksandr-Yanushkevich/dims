@@ -10,6 +10,7 @@ import { memberProgressTitle } from '../../constants';
 import TaskPage from '../TaskPage/TaskPage';
 import { setCurrentTask } from '../../redux/reducers/appReducer';
 import { showTaskPage } from '../../redux/reducers/taskPageReducer';
+import TaskPageContainer from '../TaskPage/TaskPageContainer';
 
 const MemberProgres = ({
   userId,
@@ -66,7 +67,7 @@ const MemberProgres = ({
   return (
     <>
       <Modal isOpen={taskPageIsVisible} toggle={hideMemberPage}>
-        <TaskPage userId={userId} taskId={currentTaskId} hideMemberPage={hideMemberPage} />
+        <TaskPageContainer hideMemberPage={hideMemberPage} />
       </Modal>
 
       <h1 className={styles.title}>Member Progress Grid</h1>

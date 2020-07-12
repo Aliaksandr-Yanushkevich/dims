@@ -2,25 +2,27 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import TaskPage from './TaskPage';
-import { getTask, getUsersWithTask } from '../../redux/reducers/taskPageReducer';
+import { getTask, getUsersWithTask, clearUserTasks } from '../../redux/reducers/taskPageReducer';
 import { getMembers } from '../../redux/reducers/membersReducer';
 
 class TaskPageContainer extends React.Component {
   componentDidMount() {
-    const { currentTaskId, getTask, getMembers, getUsersWithTask } = this.props;
-    getTask(currentTaskId);
+    const { taskId, getTask, getMembers, getUsersWithTask, clearUserTasks } = this.props;
+    getTask(taskId);
     getMembers();
-    getUsersWithTask(currentTaskId);
+    getUsersWithTask(taskId);
+    clearUserTasks();
   }
 
   render() {
-    return <TaskPage />;
+    const { hideMemberPage } = this.props;
+    return <TaskPage hideMemberPage={hideMemberPage} />;
   }
 }
 
 const mapStateToProps = (state) => {
-  const { currentTaskId } = state.app;
-  return { currentTaskId };
+  const { taskId } = state.taskPage;
+  return { taskId };
 };
 
 TaskPageContainer.propTypes = {
@@ -30,4 +32,4 @@ TaskPageContainer.propTypes = {
   getUsersWithTask: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, { getTask, getMembers, getUsersWithTask })(TaskPageContainer);
+export default connect(mapStateToProps, { getTask, getMembers, getUsersWithTask, clearUserTasks })(TaskPageContainer);

@@ -230,11 +230,11 @@ const firebaseApi = {
   },
 
   assignTask(task) {
-    const { userId, taskId, userTaskId, stateId } = task;
+    const { id, taskId, userTaskId, stateId } = task;
     return firestore
       .collection('UserTask')
       .doc(userTaskId)
-      .set({ userId, taskId, userTaskId, stateId });
+      .set({ userId: id, taskId, userTaskId, stateId });
   },
 
   setTaskState(stateId) {

@@ -4,17 +4,21 @@ import { AvForm, AvField } from 'availity-reactstrap-validation';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Button from '../common/Button/Button';
-import dateToStringForInput from '../../helpers/dateToStringForInput';
 import styles from './TaskPage.module.scss';
 import MemberList from './MemberList';
 import firebaseApi from '../../api/firebaseApi';
-import generateID from '../../helpers/generateID';
 import taskPageFields from './taskPageFields';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
 import { connect } from 'react-redux';
+import { onChangeValue } from '../../redux/reducers/taskPageReducer';
 
-const TaskPage = ({ userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal, members, taskId, hideMemberPage }) => {
+const TaskPage = (props) => {
+  const { userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal, members, hideMemberPage, onChangeValue } = props;
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    onChangeValue(name, value);
+  };
   const formFields = taskPageFields.map(({ id, name, type, label, placeholder, regexp, errorMessage, cols, rows }) => {
     if (type === 'date') {
       return (
@@ -24,8 +28,8 @@ const TaskPage = ({ userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal, 
           name={name}
           label={label}
           type={type}
-          onChange={this.onChange}
-          value={this.state[name]}
+          onChange={onChange}
+          value={props[name]}
           required
         />
       );
@@ -35,12 +39,12 @@ const TaskPage = ({ userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal, 
       <AvField
         key={id}
         id={id}
-        value={this.state[name]}
+        value={props[name]}
         name={name}
         type={type}
         label={label}
         placeholder={placeholder}
-        onChange={this.onChange}
+        onChange={onChange}
         cols={cols}
         rows={rows}
         validate={{
@@ -54,13 +58,13 @@ const TaskPage = ({ userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal, 
     );
   });
 
-  createTask = (event, errors, values) => {
+  const createTask = (event, errors, values) => {
     if (!errors.length) {
-      const { taskName, description, startDate, deadlineDate } = values;
+      const { name, description, startDate, deadlineDate } = values;
 
       const taskInfo = {
         taskId,
-        name: taskName.trim(),
+        name: name.trim(),
         description: description.trim(),
         startDate: new Date(startDate),
         deadlineDate: new Date(deadlineDate),
@@ -74,37 +78,19 @@ const TaskPage = ({ userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal, 
     }
   };
 
-  asignTask = (userId, checked) => {
-    const stateId = generateID();
-    const userTaskId = generateID();
-    let memberTasks = userTasks;
-    if (checked) {
-      if (!usersWithTaskFromDB.includes(userId)) {
-        memberTasks = [...memberTasks, { userId, taskId, stateId, userTaskId }];
-      }
-      this.setState(() => ({ usersWithTaskLocal: [...usersWithTaskLocal, userId] }));
-    } else {
-      memberTasks = memberTasks.filter((member) => member.userId !== userId);
-      this.setState(() => ({ usersWithTaskLocal: [...usersWithTaskLocal.filter((memberId) => memberId !== userId)] }));
-    }
-    this.setState({ userTasks: memberTasks });
-  };
-
   return (
     <>
       <ToastContainer />
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{taskId === 'newTask' ? 'New task' : `Edit task`}</h1>
         <div className={styles.left}>
-          <AvForm id='createTask' onSubmit={this.createTask}>
+          <AvForm id='createTask' onSubmit={createTask}>
             {formFields}
           </AvForm>
         </div>
 
         <div className={styles.right}>
-          {members && (
-            <MemberList members={members} asignTask={this.asignTask} usersWithTaskLocal={usersWithTaskLocal} />
-          )}
+          {members && <MemberList />}
           <div className={styles.buttonWrapper}>
             <SubmitButton className={styles.successButton} form='createTask'>
               {taskId === 'newTask' ? 'Create' : 'Save'}
@@ -122,6 +108,8 @@ const TaskPage = ({ userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal, 
 const mapStateToProps = (state) => {
   const {
     members,
+    taskId,
+    name,
     description,
     startDate,
     deadlineDate,
@@ -130,7 +118,6 @@ const mapStateToProps = (state) => {
     userTasks,
     currentTaskData,
   } = state.taskPage;
-  const { currentTaskId } = state.app;
 
   return {
     members,
@@ -141,7 +128,8 @@ const mapStateToProps = (state) => {
     usersWithTaskLocal,
     userTasks,
     currentTaskData,
-    currentTaskId,
+    taskId,
+    name,
   };
 };
 
@@ -150,4 +138,4 @@ TaskPage.propTypes = {
   hideMemberPage: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, {})(TaskPage);
+export default connect(mapStateToProps, { onChangeValue })(TaskPage);
