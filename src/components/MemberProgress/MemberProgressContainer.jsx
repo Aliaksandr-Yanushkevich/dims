@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getUserInfo, getUserTasksList } from '../../redux/reducers/memberProgressReducer';
+import { getUserInfo, getUserTasksList } from '../../redux/reducers/appReducer';
 import MemberProgres from './MemberProgress';
 
 class MemberProgresContainer extends Component {

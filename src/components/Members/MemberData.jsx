@@ -75,7 +75,7 @@ const MemberData = ({
             to='/member_tasks'
             buttonClassName={styles.defaultButton}
             dataId={userId}
-            onClick={setCurrentUser}
+            onClick={setUser}
           >
             Tasks
           </NavButton>

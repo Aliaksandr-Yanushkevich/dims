@@ -13,8 +13,6 @@ import { showTaskPage } from '../../redux/reducers/taskPageReducer';
 import TaskPageContainer from '../TaskPage/TaskPageContainer';
 
 const MemberProgres = ({
-  userId,
-  currentTaskId,
   role,
   currentUserFirstName,
   currentUserLastName,
@@ -81,10 +79,10 @@ const MemberProgres = ({
 };
 
 const mapStateToProps = (state) => {
-  const { currentUserId, isFetching, currentTaskId } = state.app;
+  const { currentUserId, isFetching, currentTaskId, currentUserFirstName, currentUserLastName, userTasks } = state.app;
   const { role } = state.auth;
   const { taskPageIsVisible } = state.taskPage;
-  const { currentUserFirstName, currentUserLastName, userTasks } = state.memberProgress;
+
   return {
     currentUserId,
     isFetching,
@@ -115,7 +113,7 @@ MemberProgres.defaultProps = {
   userId: '',
   currentUserFirstName: '',
   currentUserLastName: '',
-  userTasks: [{}],
+  userTasks: null,
 };
 
 export default connect(mapStateToProps, { setCurrentTask, showTaskPage })(MemberProgres);

@@ -7,6 +7,7 @@ import appReducer from './reducers/appReducer';
 import memberProgressReducer from './reducers/memberProgressReducer';
 import taskPageReducer from './reducers/taskPageReducer';
 import memberPageReducer from './reducers/memberPageReducer';
+import membersTasksReducer from './reducers/memberTasksReducer';
 
 const reducers = combineReducers({
   app: appReducer,
@@ -15,6 +16,7 @@ const reducers = combineReducers({
   memberProgress: memberProgressReducer,
   taskPage: taskPageReducer,
   memberPage: memberPageReducer,
+  memberTasks: membersTasksReducer,
 });
 
 const store = createStore(reducers, applyMiddleware(thunkMiddleWare, logger));

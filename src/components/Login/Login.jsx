@@ -12,8 +12,9 @@ import styles from './Login.module.scss';
 import getUserFromSessionStorage from '../../helpers/getUserFromSessionStorage';
 import fields from './loginField';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
+import { setCurrentUser } from '../../redux/reducers/appReducer';
 
-const Login = ({ isAuth, role, login, setRole }) => {
+const Login = ({ isAuth, role, login, setRole, setCurrentUser, userId }) => {
   const isAdmin = role === 'admin';
   const isMentor = role === 'mentor';
   const isMember = role === 'member';
@@ -54,6 +55,7 @@ const Login = ({ isAuth, role, login, setRole }) => {
   });
 
   if (isAuth) {
+    setCurrentUser(userId);
     if (isAdmin || isMentor) return <Redirect to='/members' />;
     if (isMember) return <Redirect to='/member_tasks' />;
   }
@@ -117,4 +119,4 @@ Login.propTypes = {
   login: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, { login, setRole })(Login);
+export default connect(mapStateToProps, { login, setRole, setCurrentUser })(Login);

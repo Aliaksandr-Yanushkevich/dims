@@ -10,6 +10,7 @@ import TaskManagement from './components/TaskManagement/TaskManagement';
 import Login from './components/Login/Login';
 import MembersContainer from './components/Members/MembersContainer';
 import MemberProgressContainer from './components/MemberProgress/MemberProgressContainer';
+import MemberTasksContainer from './components/MemberTasks/MembersTasksContainer';
 
 class App extends Component {
   componentDidMount() {
@@ -35,7 +36,7 @@ class App extends Component {
               <MemberProgressContainer />
             </Route>
             <Route path='/member_tasks:userId?'>
-              <MemberTasks userId={currentUserId} role={role} />
+              <MemberTasksContainer />
             </Route>
             <Route path='/task_management'>
               <TaskManagement
