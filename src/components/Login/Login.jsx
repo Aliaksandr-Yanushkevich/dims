@@ -115,8 +115,15 @@ const mapStateToProps = (state) => {
 
 Login.propTypes = {
   isAuth: PropTypes.bool.isRequired,
-  role: PropTypes.string.isRequired,
+  role: PropTypes.string,
   login: PropTypes.func.isRequired,
+  setRole: PropTypes.func.isRequired,
+  setCurrentUser: PropTypes.func.isRequired,
+  userId: PropTypes.func.isRequired,
+};
+
+Login.defaultProps = {
+  role: null,
 };
 
 export default connect(mapStateToProps, { login, setRole, setCurrentUser })(Login);

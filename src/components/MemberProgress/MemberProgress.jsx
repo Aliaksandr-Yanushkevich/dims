@@ -1,13 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes, { object } from 'prop-types';
+import PropTypes from 'prop-types';
 import { Modal } from 'reactstrap';
 import styles from './MembersProgress.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
 import MemberProgressData from './MemberProgressData';
 import { memberProgressTitle } from '../../constants';
-import TaskPage from '../TaskPage/TaskPage';
 import { setCurrentTask } from '../../redux/reducers/appReducer';
 import { showTaskPage } from '../../redux/reducers/taskPageReducer';
 import TaskPageContainer from '../TaskPage/TaskPageContainer';
@@ -97,23 +96,21 @@ const mapStateToProps = (state) => {
 
 MemberProgres.propTypes = {
   role: PropTypes.string,
-  userId: PropTypes.string,
-  currentTaskId: PropTypes.string.isRequired,
   setCurrentTask: PropTypes.func.isRequired,
   currentUserFirstName: PropTypes.string,
   currentUserLastName: PropTypes.string,
-  taskPageIsVisible: PropTypes.bool.isRequired,
-  userTasks: PropTypes.arrayOf(PropTypes.instanceOf(object)),
+  taskPageIsVisible: PropTypes.bool,
+  userTasks: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   isFetching: PropTypes.bool.isRequired,
   showTaskPage: PropTypes.func.isRequired,
 };
 
 MemberProgres.defaultProps = {
   role: '',
-  userId: '',
   currentUserFirstName: '',
   currentUserLastName: '',
   userTasks: null,
+  taskPageIsVisible: false,
 };
 
 export default connect(mapStateToProps, { setCurrentTask, showTaskPage })(MemberProgres);

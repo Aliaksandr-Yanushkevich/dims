@@ -30,22 +30,22 @@ const DateFieldForHOC = (props) => {
 };
 
 DateFieldForHOC.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
   label: PropTypes.string.isRequired,
   onChange: PropTypes.func,
   disabled: PropTypes.bool,
   name: PropTypes.string,
   value: PropTypes.string,
-  regexp: PropTypes.string,
-  errorMessage: PropTypes.string,
+  onFocus: PropTypes.func.isRequired,
+  checkField: PropTypes.func.isRequired,
+  state: PropTypes.shape({ subProp: PropTypes.string }).isRequired,
 };
 
 DateFieldForHOC.defaultProps = {
+  id: '',
   name: '',
   value: '',
   onChange: () => {},
-  regexp: null,
-  errorMessage: null,
   disabled: false,
 };
 

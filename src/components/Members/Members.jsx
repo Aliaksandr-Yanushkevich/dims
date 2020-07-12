@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes, { object } from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Modal } from 'reactstrap';
@@ -125,13 +125,14 @@ const mapStateToProps = (state) => {
 };
 
 Members.propTypes = {
-  members: PropTypes.arrayOf(PropTypes.instanceOf(object)),
+  members: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   memberPageIsVisible: PropTypes.bool.isRequired,
-  directions: PropTypes.arrayOf(PropTypes.instanceOf(object)),
+  directions: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   role: PropTypes.string,
   setCurrentUser: PropTypes.func.isRequired,
   currentUserId: PropTypes.string,
   showMemberPage: PropTypes.func.isRequired,
+  message: PropTypes.string,
 };
 
 Members.defaultProps = {
@@ -139,6 +140,7 @@ Members.defaultProps = {
   directions: [{}],
   role: '',
   currentUserId: '',
+  message: '',
 };
 
 export default connect(mapStateToProps, { setCurrentUser, showMemberPage })(Members);

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import firebaseApi from '../../api/firebaseApi';
 import MemberTasks from './MembersTasks';
 import { getUserInfo, getUserTasksList } from '../../redux/reducers/appReducer';
 
@@ -29,6 +28,8 @@ const mapStateToProps = (state) => {
 
 MemberTasksContainer.propTypes = {
   currentUserId: PropTypes.string,
+  getUserInfo: PropTypes.func.isRequired,
+  getUserTasksList: PropTypes.func.isRequired,
 };
 
 MemberTasksContainer.defaultProps = {

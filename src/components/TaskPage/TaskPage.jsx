@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { AvForm, AvField } from 'availity-reactstrap-validation';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { connect } from 'react-redux';
 import Button from '../common/Button/Button';
 import styles from './TaskPage.module.scss';
 import MemberList from './MemberList';
@@ -10,7 +11,6 @@ import firebaseApi from '../../api/firebaseApi';
 import taskPageFields from './taskPageFields';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
-import { connect } from 'react-redux';
 import { onChangeValue } from '../../redux/reducers/taskPageReducer';
 
 const TaskPage = (props) => {
@@ -136,6 +136,18 @@ const mapStateToProps = (state) => {
 TaskPage.propTypes = {
   taskId: PropTypes.string.isRequired,
   hideMemberPage: PropTypes.func.isRequired,
+  userTasks: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
+  usersWithTaskFromDB: PropTypes.arrayOf(PropTypes.string),
+  usersWithTaskLocal: PropTypes.arrayOf(PropTypes.string),
+  members: PropTypes.arrayOf(PropTypes.string),
+  onChangeValue: PropTypes.func.isRequired,
+};
+
+TaskPage.defaultProps = {
+  userTasks: [],
+  usersWithTaskFromDB: [],
+  usersWithTaskLocal: [],
+  members: [],
 };
 
 export default connect(mapStateToProps, { onChangeValue })(TaskPage);

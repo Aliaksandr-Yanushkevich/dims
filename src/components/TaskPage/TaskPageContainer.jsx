@@ -26,10 +26,16 @@ const mapStateToProps = (state) => {
 };
 
 TaskPageContainer.propTypes = {
-  currentTaskId: PropTypes.string.isRequired,
+  taskId: PropTypes.string,
+  hideMemberPage: PropTypes.func.isRequired,
   getTask: PropTypes.func.isRequired,
   getMembers: PropTypes.func.isRequired,
   getUsersWithTask: PropTypes.func.isRequired,
+  clearUserTasks: PropTypes.func.isRequired,
+};
+
+TaskPageContainer.defaultProps = {
+  taskId: '',
 };
 
 export default connect(mapStateToProps, { getTask, getMembers, getUsersWithTask, clearUserTasks })(TaskPageContainer);

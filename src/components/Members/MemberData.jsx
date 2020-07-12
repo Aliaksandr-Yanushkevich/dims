@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { NavLink } from 'react-router-dom';
-import PropTypes, { object } from 'prop-types';
+import PropTypes from 'prop-types';
 import Button from '../common/Button/Button';
 import dateToString from '../../helpers/dateToString';
 import styles from './Members.module.scss';
@@ -108,7 +108,7 @@ MemberData.propTypes = {
   deleteUser: PropTypes.func.isRequired,
   createUser: PropTypes.func.isRequired,
   role: PropTypes.string.isRequired,
-  directions: PropTypes.arrayOf(object),
+  directions: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
 };
 
 MemberData.defaultProps = {

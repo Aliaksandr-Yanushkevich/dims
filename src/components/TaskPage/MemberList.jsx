@@ -60,12 +60,20 @@ const mapStateToProps = (state) => {
 };
 
 MemberList.propTypes = {
-  members: PropTypes.arrayOf(PropTypes.object).isRequired,
+  members: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })).isRequired,
   usersWithTaskLocal: PropTypes.arrayOf(PropTypes.string),
+  userTasks: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
+  usersWithTaskFromDB: PropTypes.arrayOf(PropTypes.string),
+  taskId: PropTypes.string,
+  setUserTasks: PropTypes.func.isRequired,
+  setUsersWithTask: PropTypes.func.isRequired,
 };
 
 MemberList.defaultProps = {
   usersWithTaskLocal: [],
+  taskId: '',
+  usersWithTaskFromDB: [],
+  userTasks: [],
 };
 
 export default connect(mapStateToProps, { setUserTasks, setUsersWithTask })(MemberList);
