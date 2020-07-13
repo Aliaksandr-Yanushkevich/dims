@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Modal } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,42 +13,34 @@ import TaskTrack from '../TaskTrack/TaskTrack';
 import firebaseApi from '../../api/firebaseApi';
 import dateToString from '../../helpers/dateToString';
 import showToast from '../../helpers/showToast';
+import { setCurrentTaskTrackId } from '../../redux/reducers/taskTrackManagementReducer';
+import { setCurrentTaskName } from '../../redux/reducers/memberTasksReducer';
+import { setCurrentTask } from '../../redux/reducers/appReducer';
+import { showTaskTrackPage } from '../../redux/reducers/taskTrackPageReducer';
 
-class TaskTrackManagement extends React.Component {
-  state = {
-    currentTaskTrackId: null,
-    currentUserTaskId: null,
-    currentTaskName: null,
-    trackData: [],
-    taskTrackPageIsVisible: false,
-    isFetching: false,
-  };
-
-  componentDidMount() {
-    const { userId, role } = this.props;
-    const isMember = role === 'member';
-
-    if (userId && userId !== 'newMember' && isMember) {
-      this.setState({ isFetching: true });
-      firebaseApi.getTrackDataArray(userId).then((trackData) => {
-        this.setState({ trackData, isFetching: false });
-      });
-    }
-  }
-
-  editTask = (e) => {
+const TaskTrackManagement = ({
+  role,
+  currentTaskTrackId,
+  currentTaskName,
+  currentTaskId,
+  trackData,
+  taskTrackPageIsVisible,
+  isFetching,
+  setCurrentTaskTrackId,
+  setCurrentTaskName,
+  setCurrentTask,
+  showTaskTrackPage,
+}) => {
+  const editTask = (e) => {
     e.persist();
     const { taskid, name, id } = e.target.dataset;
-
-    this.setState({
-      currentTaskTrackId: taskid,
-      currentTaskName: name,
-      currentUserTaskId: id,
-      taskTrackPageIsVisible: true,
-    });
+    setCurrentTaskTrackId(taskid);
+    setCurrentTaskName(name);
+    setCurrentTask(id);
+    showTaskTrackPage(true);
   };
 
-  deleteNote = (e) => {
+  const deleteNote = (e) => {
     e.persist();
     const currentTaskTrackId = e.target.dataset.taskid;
     firebaseApi.deleteItemWithId('TaskTrack', currentTaskTrackId).then((result) => {
@@ -55,82 +48,84 @@ class TaskTrackManagement extends React.Component {
     });
   };
 
-  hideTaskTrackPage = () => {
-    this.setState({ taskTrackPageIsVisible: false });
+  const hideTaskTrackPage = () => {
+    //clean data method
+    showTaskTrackPage(false);
   };
 
-  render() {
-    const { role } = this.props;
-    const {
-      trackData,
-      taskTrackPageIsVisible,
-      currentUserTaskId,
-      currentTaskTrackId,
-      currentTaskName,
-      isFetching,
-    } = this.state;
-    const tableRows = trackData
-      ? trackData.map((task, index) => {
-          return (
-            <TasksTracksManagementRow
-              key={task.taskTrackId}
-              index={index + 1}
-              taskName={task.taskName}
-              userTaskId={task.userTaskId}
-              taskTrackId={task.taskTrackId}
-              trackNote={task.trackNote}
-              trackDate={dateToString(task.trackDate)}
-              editTask={this.editTask}
-              deleteNote={this.deleteNote}
-            />
-          );
-        })
-      : null;
-
-    if (role !== 'member') {
-      return (
-        <p>
-          You do not have permission to view this page. This page is only available to users with the &apos;member&apos;
-          role.
-        </p>
-      );
-    }
-
-    if (isFetching) {
-      return <Preloader />;
-    }
-    if (trackData && !trackData.length) {
-      return <p>You haven&apos;t track notes</p>;
-    }
-    return (
-      <>
-        <ToastContainer />
-        <Modal isOpen={taskTrackPageIsVisible} toggle={this.hideTaskTrackPage}>
-          <TaskTrack
-            userTaskId={currentUserTaskId}
-            taskTrackId={currentTaskTrackId}
-            taskName={currentTaskName}
-            hideTaskTrackPage={this.hideTaskTrackPage}
+  const tableRows = trackData
+    ? trackData.map((task, index) => {
+        return (
+          <TasksTracksManagementRow
+            key={task.taskTrackId}
+            index={index + 1}
+            taskName={task.taskName}
+            userTaskId={task.userTaskId}
+            taskTrackId={task.taskTrackId}
+            trackNote={task.trackNote}
+            trackDate={dateToString(task.trackDate)}
+            editTask={editTask}
+            deleteNote={deleteNote}
           />
-        </Modal>
-        <h1 className={styles.title}>Task Track Management</h1>
-        <table>
-          <TableHeader titleArray={tasksTrackTitle} />
-          <tbody>{tableRows}</tbody>
-        </table>
-      </>
+        );
+      })
+    : null;
+
+  if (role !== 'member') {
+    return (
+      <p>
+        You do not have permission to view this page. This page is only available to users with the &apos;member&apos;
+        role.
+      </p>
     );
   }
-}
+
+  if (isFetching) {
+    return <Preloader />;
+  }
+  if (trackData && !trackData.length) {
+    return <p>You haven&apos;t track notes</p>;
+  }
+  return (
+    <>
+      <ToastContainer />
+      <Modal isOpen={taskTrackPageIsVisible} toggle={hideTaskTrackPage}>
+        <TaskTrack
+          userTaskId={currentTaskId}
+          taskTrackId={currentTaskTrackId}
+          taskName={currentTaskName}
+          hideTaskTrackPage={hideTaskTrackPage}
+        />
+      </Modal>
+      <h1 className={styles.title}>Task Track Management</h1>
+      <table>
+        <TableHeader titleArray={tasksTrackTitle} />
+        <tbody>{tableRows}</tbody>
+      </table>
+    </>
+  );
+};
+
+const mapStateToProps = (state) => {
+  const { currentTaskTrackId, trackData } = state.taskTrackManagement;
+  const { role } = state.auth;
+  const { currentTaskName } = state.memberTasks;
+  const { currentTaskId, isFetching } = state.app;
+  const { taskTrackPageIsVisible } = state.taskTrackPage;
+  return { role, currentTaskTrackId, currentTaskName, currentTaskId, trackData, taskTrackPageIsVisible, isFetching };
+};
 
 TaskTrackManagement.propTypes = {
-  userId: PropTypes.string,
   role: PropTypes.string,
 };
 
 TaskTrackManagement.defaultProps = {
-  userId: '',
   role: '',
 };
 
-export default TaskTrackManagement;
+export default connect(mapStateToProps, {
+  setCurrentTaskTrackId,
+  setCurrentTaskName,
+  setCurrentTask,
+  showTaskTrackPage,
+})(TaskTrackManagement);

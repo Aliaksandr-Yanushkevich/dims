@@ -27,6 +27,7 @@ const mapStateToProps = (state) => {
 
 TaskManagementContainer.propTypes = {
   role: PropTypes.string,
+  getTaskList: PropTypes.func.isRequired,
 };
 
 TaskManagementContainer.defaultProps = {

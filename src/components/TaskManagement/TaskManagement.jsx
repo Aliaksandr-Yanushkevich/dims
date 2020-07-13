@@ -5,7 +5,6 @@ import { Modal } from 'reactstrap';
 import Button from '../common/Button/Button';
 import styles from './TaskManagement.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
-import TasksPage from '../TaskPage/TaskPage';
 import { taskManagementTitle } from '../../constants';
 import TaskData from './TaskData';
 import firebaseApi from '../../api/firebaseApi';
@@ -15,15 +14,7 @@ import { showTaskPage, clearUserTasks } from '../../redux/reducers/taskPageReduc
 import { setCurrentTask } from '../../redux/reducers/appReducer';
 import TaskPageContainer from '../TaskPage/TaskPageContainer';
 
-const TaskManagement = ({
-  setCurrentTask,
-  taskPageIsVisible,
-  showTaskPage,
-  currentTaskId,
-  role,
-  taskList,
-  clearUserTasks,
-}) => {
+const TaskManagement = ({ setCurrentTask, taskPageIsVisible, showTaskPage, role, taskList, clearUserTasks }) => {
   const newTask = (e) => {
     const taskId = e.target.dataset.taskid;
     setCurrentTask(taskId);
@@ -92,21 +83,20 @@ const mapStateToProps = (state) => {
   const { taskList } = state.taskManagement;
   const { taskPageIsVisible } = state.taskPage;
   const { role } = state.auth;
-  const { currentTaskId } = state.app;
-  return { taskList, taskPageIsVisible, role, currentTaskId };
+
+  return { taskList, taskPageIsVisible, role };
 };
 
 TaskManagement.propTypes = {
   setCurrentTask: PropTypes.func.isRequired,
   showTaskPage: PropTypes.func.isRequired,
-  currentTaskId: PropTypes.string,
+  clearUserTasks: PropTypes.func.isRequired,
   role: PropTypes.string,
   taskList: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   taskPageIsVisible: PropTypes.bool.isRequired,
 };
 
 TaskManagement.defaultProps = {
-  currentTaskId: '',
   role: '',
   taskList: [],
 };

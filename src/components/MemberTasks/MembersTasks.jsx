@@ -8,7 +8,10 @@ import Preloader from '../common/Preloader/Preloader';
 import MemberCurrentTasks from './MemberCurrentTasks';
 import { membersTasksTitle, membersTasksTitleForMembers } from '../../constants';
 import TaskTrack from '../TaskTrack/TaskTrack';
-import trackTask from '../../redux/reducers/memberTasksReducer';
+import { setCurrentTaskName } from '../../redux/reducers/memberTasksReducer';
+import { setCurrentTask } from '../../redux/reducers/appReducer';
+import { showTaskTrackPage } from '../../redux/reducers/taskTrackPageReducer';
+
 const MemberTasks = ({
   role,
   isFetching,
@@ -18,16 +21,21 @@ const MemberTasks = ({
   currentUserFirstName,
   currentUserLastName,
   taskTrackPageIsVisible,
-  trackTask,
+  setCurrentTaskName,
+  showTaskTrackPage,
+  setCurrentTask,
 }) => {
   const track = (e) => {
     e.persist();
     const { id, taskid } = e.target.dataset;
-    trackTask(id, taskid);
+    setCurrentTaskName(id);
+    showTaskTrackPage(true);
+    setCurrentTask(taskid);
   };
 
   const hideTaskTrackPage = () => {
-    this.setState({ taskTrackPageIsVisible: false });
+    // clear data ?
+    showTaskTrackPage(false);
   };
 
   const isAdmin = role === 'admin';
@@ -74,9 +82,9 @@ const MemberTasks = ({
       </Modal>
       <h1 className={styles.title}>Member&apos;s Task Manage Grid</h1>
       {isMember && (
-        <h2
-          className={styles.subtitle}
-        >{`Hi, dear ${currentUserFirstName} ${currentUserLastName}! This is your current tasks:`}</h2>
+        <h2 className={styles.subtitle}>
+          {`Hi, dear ${currentUserFirstName} ${currentUserLastName}! This is your current tasks:`}
+        </h2>
       )}
       {(isAdmin || isMentor) && (
         <h2 className={styles.subtitle}>{`Сurrent tasks of ${currentUserFirstName} ${currentUserLastName}:`}</h2>
@@ -92,7 +100,8 @@ const MemberTasks = ({
 const mapStateToProps = (state) => {
   const { currentUserId, isFetching, currentUserFirstName, currentUserLastName, userTasks } = state.app;
   const { role } = state.auth;
-  const { currentTaskName, currentUserTaskId, taskTrackPageIsVisible } = state.memberTasks;
+  const { taskTrackPageIsVisible } = state.taskTrackPage;
+  const { currentTaskName, currentUserTaskId } = state.memberTasks;
 
   return {
     currentUserId,
@@ -109,12 +118,25 @@ const mapStateToProps = (state) => {
 
 MemberTasks.propTypes = {
   role: PropTypes.string,
-  userId: PropTypes.string,
+  isFetching: PropTypes.bool.isRequired,
+  currentTaskName: PropTypes.string,
+  currentUserTaskId: PropTypes.string,
+  userTasks: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
+  currentUserFirstName: PropTypes.string,
+  currentUserLastName: PropTypes.string,
+  taskTrackPageIsVisible: PropTypes.bool.isRequired,
+  setCurrentTaskName: PropTypes.func.isRequired,
+  showTaskTrackPage: PropTypes.func.isRequired,
+  setCurrentTask: PropTypes.func.isRequired,
 };
 
 MemberTasks.defaultProps = {
   role: '',
-  userId: '',
+  currentTaskName: '',
+  currentUserTaskId: '',
+  userTasks: [],
+  currentUserFirstName: '',
+  currentUserLastName: '',
 };
 
-export default connect(mapStateToProps, { trackTask })(MemberTasks);
+export default connect(mapStateToProps, { setCurrentTaskName, showTaskTrackPage, setCurrentTask })(MemberTasks);

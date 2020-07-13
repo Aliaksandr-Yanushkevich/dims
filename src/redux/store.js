@@ -9,6 +9,8 @@ import taskPageReducer from './reducers/taskPageReducer';
 import memberPageReducer from './reducers/memberPageReducer';
 import membersTasksReducer from './reducers/memberTasksReducer';
 import taskManagementReducer from './reducers/taskManagementReducer';
+import taskTrackManagementReducer from './reducers/taskTrackManagementReducer';
+import taskTrackPageReducer from './reducers/taskTrackPageReducer';
 
 const reducers = combineReducers({
   app: appReducer,
@@ -19,6 +21,8 @@ const reducers = combineReducers({
   memberPage: memberPageReducer,
   memberTasks: membersTasksReducer,
   taskManagement: taskManagementReducer,
+  taskTrackManagement: taskTrackManagementReducer,
+  taskTrackPage: taskTrackPageReducer,
 });
 
 const store = createStore(reducers, applyMiddleware(thunkMiddleWare, logger));

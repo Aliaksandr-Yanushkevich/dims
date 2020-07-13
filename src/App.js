@@ -2,16 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import Header from './components/common/Header/Header';
-import MemberTasks from './components/MemberTasks/MembersTasks';
 import TaskTrackManagement from './components/TaskTrackManagement/TaskTrackManagement';
 import Footer from './components/common/Footer/Footer';
 import styles from './App.module.scss';
-import TaskManagement from './components/TaskManagement/TaskManagement';
 import Login from './components/Login/Login';
 import MembersContainer from './components/Members/MembersContainer';
 import MemberProgressContainer from './components/MemberProgress/MemberProgressContainer';
 import MemberTasksContainer from './components/MemberTasks/MembersTasksContainer';
 import TaskManagementContainer from './components/TaskManagement/TaskManagementContainer';
+import TaskTrackManagementContainer from './components/TaskTrackManagement/TaskTrackManagementContainer';
 
 class App extends Component {
   componentDidMount() {
@@ -19,7 +18,7 @@ class App extends Component {
   }
 
   render() {
-    const { isAuth, currentUserId, currentTaskId, role } = this.props;
+    const { isAuth, currentUserId, role } = this.props;
     const savedUserData = sessionStorage.getItem('user');
 
     return (
@@ -43,7 +42,7 @@ class App extends Component {
               <TaskManagementContainer />
             </Route>
             <Route path='/task_track_management'>
-              <TaskTrackManagement userId={currentUserId} role={role} />
+              <TaskTrackManagementContainer />
             </Route>
             <Route path='/login'>
               <Login />
