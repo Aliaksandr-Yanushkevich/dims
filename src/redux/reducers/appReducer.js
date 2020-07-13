@@ -65,7 +65,7 @@ const appReducer = (state = initialState, action) => {
     case SET_CURRENT_USER:
       return { ...state, currentUserId: action.userId };
     case SET_CURRENT_TASK:
-      return { ...state, currentUserId: action.taskId };
+      return { ...state, currentTaskId: action.taskId };
     case SHOW_ACCOUNT_PAGE:
       return { ...state, accountPageIsVisible: action.accountPageIsVisible };
     case TOGGLE_IS_FETCHING:

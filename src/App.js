@@ -11,6 +11,7 @@ import Login from './components/Login/Login';
 import MembersContainer from './components/Members/MembersContainer';
 import MemberProgressContainer from './components/MemberProgress/MemberProgressContainer';
 import MemberTasksContainer from './components/MemberTasks/MembersTasksContainer';
+import TaskManagementContainer from './components/TaskManagement/TaskManagementContainer';
 
 class App extends Component {
   componentDidMount() {
@@ -39,13 +40,7 @@ class App extends Component {
               <MemberTasksContainer />
             </Route>
             <Route path='/task_management'>
-              <TaskManagement
-                userId={currentUserId}
-                currentTaskId={currentTaskId}
-                setCurrentTask={this.setCurrentTask}
-                setCurrentUser={this.setCurrentUser}
-                role={role}
-              />
+              <TaskManagementContainer />
             </Route>
             <Route path='/task_track_management'>
               <TaskTrackManagement userId={currentUserId} role={role} />

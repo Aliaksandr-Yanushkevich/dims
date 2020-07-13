@@ -139,7 +139,7 @@ TaskPage.propTypes = {
   userTasks: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   usersWithTaskFromDB: PropTypes.arrayOf(PropTypes.string),
   usersWithTaskLocal: PropTypes.arrayOf(PropTypes.string),
-  members: PropTypes.arrayOf(PropTypes.string),
+  members: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   onChangeValue: PropTypes.func.isRequired,
 };
 

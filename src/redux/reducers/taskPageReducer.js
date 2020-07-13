@@ -37,6 +37,7 @@ const initialState = {
   usersWithTaskFromDB: null,
   usersWithTaskLocal: null,
   userTasks: [],
+  taskPageIsVisible: false,
 };
 
 export const getTask = (currentTaskId) => (dispatch) => {
