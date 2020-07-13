@@ -9,28 +9,29 @@ import MemberCurrentTasks from './MemberCurrentTasks';
 import { membersTasksTitle, membersTasksTitleForMembers } from '../../constants';
 import TaskTrack from '../TaskTrack/TaskTrack';
 import { setCurrentTaskName } from '../../redux/reducers/memberTasksReducer';
-import { setCurrentTask } from '../../redux/reducers/appReducer';
+import { setUserTaskId } from '../../redux/reducers/taskTrackManagementReducer';
 import { showTaskTrackPage } from '../../redux/reducers/taskTrackPageReducer';
 
 const MemberTasks = ({
   role,
   isFetching,
   currentTaskName,
-  currentUserTaskId,
+  userTaskId,
   userTasks,
   currentUserFirstName,
   currentUserLastName,
   taskTrackPageIsVisible,
   setCurrentTaskName,
   showTaskTrackPage,
-  setCurrentTask,
+  setUserTaskId,
 }) => {
   const track = (e) => {
     e.persist();
     const { id, taskid } = e.target.dataset;
+    debugger;
     setCurrentTaskName(id);
     showTaskTrackPage(true);
-    setCurrentTask(taskid);
+    setUserTaskId(taskid);
   };
 
   const hideTaskTrackPage = () => {
@@ -78,7 +79,7 @@ const MemberTasks = ({
   return (
     <>
       <Modal isOpen={taskTrackPageIsVisible} toggle={hideTaskTrackPage}>
-        <TaskTrack userTaskId={currentUserTaskId} taskName={currentTaskName} hideTaskTrackPage={hideTaskTrackPage} />
+        <TaskTrack userTaskId={userTaskId} taskName={currentTaskName} hideTaskTrackPage={hideTaskTrackPage} />
       </Modal>
       <h1 className={styles.title}>Member&apos;s Task Manage Grid</h1>
       {isMember && (
@@ -101,14 +102,15 @@ const mapStateToProps = (state) => {
   const { currentUserId, isFetching, currentUserFirstName, currentUserLastName, userTasks } = state.app;
   const { role } = state.auth;
   const { taskTrackPageIsVisible } = state.taskTrackPage;
-  const { currentTaskName, currentUserTaskId } = state.memberTasks;
+  const { currentTaskName } = state.memberTasks;
+  const { userTaskId } = state.taskTrackManagement;
 
   return {
     currentUserId,
     role,
     isFetching,
     currentTaskName,
-    currentUserTaskId,
+    userTaskId,
     userTasks,
     currentUserFirstName,
     currentUserLastName,
@@ -139,4 +141,4 @@ MemberTasks.defaultProps = {
   currentUserLastName: '',
 };
 
-export default connect(mapStateToProps, { setCurrentTaskName, showTaskTrackPage, setCurrentTask })(MemberTasks);
+export default connect(mapStateToProps, { setCurrentTaskName, showTaskTrackPage, setUserTaskId })(MemberTasks);

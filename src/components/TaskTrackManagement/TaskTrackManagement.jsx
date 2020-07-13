@@ -13,22 +13,21 @@ import TaskTrack from '../TaskTrack/TaskTrack';
 import firebaseApi from '../../api/firebaseApi';
 import dateToString from '../../helpers/dateToString';
 import showToast from '../../helpers/showToast';
-import { setCurrentTaskTrackId } from '../../redux/reducers/taskTrackManagementReducer';
+import { setCurrentTaskTrackId, setUserTaskId } from '../../redux/reducers/taskTrackManagementReducer';
 import { setCurrentTaskName } from '../../redux/reducers/memberTasksReducer';
-import { setCurrentTask } from '../../redux/reducers/appReducer';
 import { showTaskTrackPage } from '../../redux/reducers/taskTrackPageReducer';
 
 const TaskTrackManagement = ({
   role,
   currentTaskTrackId,
   currentTaskName,
-  currentTaskId,
+  userTaskId,
   trackData,
   taskTrackPageIsVisible,
   isFetching,
   setCurrentTaskTrackId,
   setCurrentTaskName,
-  setCurrentTask,
+  setUserTaskId,
   showTaskTrackPage,
 }) => {
   const editTask = (e) => {
@@ -36,7 +35,7 @@ const TaskTrackManagement = ({
     const { taskid, name, id } = e.target.dataset;
     setCurrentTaskTrackId(taskid);
     setCurrentTaskName(name);
-    setCurrentTask(id);
+    setUserTaskId(id);
     showTaskTrackPage(true);
   };
 
@@ -91,7 +90,7 @@ const TaskTrackManagement = ({
       <ToastContainer />
       <Modal isOpen={taskTrackPageIsVisible} toggle={hideTaskTrackPage}>
         <TaskTrack
-          userTaskId={currentTaskId}
+          userTaskId={userTaskId}
           taskTrackId={currentTaskTrackId}
           taskName={currentTaskName}
           hideTaskTrackPage={hideTaskTrackPage}
@@ -107,12 +106,12 @@ const TaskTrackManagement = ({
 };
 
 const mapStateToProps = (state) => {
-  const { currentTaskTrackId, trackData } = state.taskTrackManagement;
+  const { currentTaskTrackId, trackData, userTaskId } = state.taskTrackManagement;
   const { role } = state.auth;
   const { currentTaskName } = state.memberTasks;
-  const { currentTaskId, isFetching } = state.app;
+  const { isFetching } = state.app;
   const { taskTrackPageIsVisible } = state.taskTrackPage;
-  return { role, currentTaskTrackId, currentTaskName, currentTaskId, trackData, taskTrackPageIsVisible, isFetching };
+  return { role, currentTaskTrackId, currentTaskName, userTaskId, trackData, taskTrackPageIsVisible, isFetching };
 };
 
 TaskTrackManagement.propTypes = {
@@ -126,6 +125,6 @@ TaskTrackManagement.defaultProps = {
 export default connect(mapStateToProps, {
   setCurrentTaskTrackId,
   setCurrentTaskName,
-  setCurrentTask,
+  setUserTaskId,
   showTaskTrackPage,
 })(TaskTrackManagement);

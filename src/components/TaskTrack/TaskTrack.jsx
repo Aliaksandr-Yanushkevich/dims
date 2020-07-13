@@ -35,6 +35,7 @@ class TaskTrack extends React.Component {
   };
 
   trackTask = (event, errors, values) => {
+    debugger;
     if (!errors.length) {
       const { userTaskId, taskTrackId } = this.props;
       const { trackNote } = values;
