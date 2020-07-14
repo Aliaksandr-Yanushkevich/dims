@@ -15,8 +15,7 @@ class TaskPageContainer extends React.Component {
   }
 
   render() {
-    const { hideMemberPage } = this.props;
-    return <TaskPage hideMemberPage={hideMemberPage} />;
+    return <TaskPage {...this.props} />;
   }
 }
 

@@ -7,12 +7,10 @@ const SHOW_MEMBER_PAGE = 'SHOW_MEMBER_PAGE';
 
 export const setMembers = (members) => ({ type: SET_MEMBERS, members });
 export const setDirections = (directions) => ({ type: SET_DIRECTIONS, directions });
-export const showMemberPage = (memberPageIsVisible) => ({ type: SHOW_MEMBER_PAGE, memberPageIsVisible });
 
 const initialState = {
   members: null,
   directions: null,
-  memberPageIsVisible: false,
 };
 
 export const getMembers = () => (dispatch) => {
@@ -36,8 +34,6 @@ const membersReducer = (state = initialState, action) => {
       return { ...state, members: action.members };
     case SET_DIRECTIONS:
       return { ...state, directions: action.directions };
-    case SHOW_MEMBER_PAGE:
-      return { ...state, memberPageIsVisible: action.memberPageIsVisible };
     default:
       return state;
   }

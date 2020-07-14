@@ -1,70 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { AvForm, AvField, AvRadio, AvRadioGroup } from 'availity-reactstrap-validation';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Preloader from '../common/Preloader/Preloader';
 import styles from './MemberPage.module.scss';
 import firebaseApi from '../../api/firebaseApi';
-import dateToStringForInput from '../../helpers/dateToStringForInput';
 import generateID from '../../helpers/generateID';
 import memberPageFields from './memberPageFields';
 import Button from '../common/Button/Button';
 import { genders } from '../../constants';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
-// import DateField from '../common/DateField/DateField';
-import withState from '../hoc/withState';
-import DateFieldForHOC from '../common/DateField/DateFieldForHOC';
+import { onChangeValue } from '../../redux/reducers/memberPageReducer';
 
-class MemberPage extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      firstName: '',
-      lastName: '',
-      sex: '',
-      mobilePhone: '',
-      email: '',
-      startDate: dateToStringForInput(new Date()),
-      skype: '',
-      birthDate: '',
-      directionId: '',
-      address: '',
-      education: '',
-      mathScore: '',
-      universityAverageScore: '',
-      isFetching: false,
-    };
-    this.EnhacedStartDate = withState(DateFieldForHOC);
-    this.EnhacedBirthDate = withState(DateFieldForHOC);
-  }
-
-  componentDidMount() {
-    const { userId } = this.props;
-
-    if (userId && userId !== 'newMember') {
-      this.setState({ isFetching: true });
-      firebaseApi.getUserInfo(userId).then((userInfo) => {
-        const { startDate, birthDate } = userInfo;
-        this.setState({
-          ...userInfo,
-          startDate: dateToStringForInput(startDate.toDate()),
-          birthDate: dateToStringForInput(birthDate.toDate()),
-          isFetching: false,
-        });
-      });
-    }
-
-    firebaseApi.getDirections().then((directions) => {
-      this.setState({ directions });
-    });
-  }
-
-  createUser = (event, errors) => {
+const MemberPage = (props) => {
+  const createUser = (event, errors) => {
     if (!errors.length) {
-      let { userId } = this.props;
-      const {
+      let {
+        currentUserId,
         firstName,
         lastName,
         sex,
@@ -78,10 +33,10 @@ class MemberPage extends React.Component {
         education,
         mathScore,
         universityAverageScore,
-      } = this.state;
+      } = props;
 
       const userInfo = {
-        userId,
+        currentUserId,
         firstName,
         lastName,
         sex,
@@ -97,152 +52,152 @@ class MemberPage extends React.Component {
         universityAverageScore: Number(universityAverageScore),
       };
 
-      if (userId === 'newMember') {
-        userId = generateID();
-        firebaseApi.createUser(userId, { ...userInfo, userId }).then((result) => {
+      if (currentUserId === 'newMember') {
+        currentUserId = generateID();
+        firebaseApi.createUser(currentUserId, { ...userInfo, currentUserId }).then((result) => {
           showToast(result);
         });
       } else {
-        firebaseApi.updateUser(userId, userInfo).then((result) => {
+        firebaseApi.updateUser(currentUserId, userInfo).then((result) => {
           showToast(result);
         });
       }
     }
   };
 
-  disableChangingEmail = (name) => {
-    const { userId } = this.props;
+  const disableChangingEmail = (name) => {
+    const { userId } = props;
     if (userId !== 'newMember' && name === 'email') {
       return true;
     }
     return false;
   };
 
-  onChange = (e) => {
+  const onChange = (e) => {
+    const { onChangeValue } = props;
     const { name, value } = e.currentTarget;
-    this.setState(() => ({ [name]: value }));
+    onChangeValue(name, value);
   };
 
-  render() {
-    const { userId, hideMemberPage } = this.props;
-    const { sex, directions, directionId, isFetching } = this.state;
-    const { EnhacedStartDate, EnhacedBirthDate } = this;
+  const { userId, hideMemberPage, sex, directions, directionId, isFetching } = props;
 
-    const defaultValues = { directionId, sex };
-    const preparedGenders = genders.map((gender) => {
-      const { label, value } = gender;
-      return <AvRadio key={label} label={label} value={value} onChange={this.onChange} />;
-    });
-    const preparedDirections = directions
-      ? directions.map((direction) => {
-          const { name, directionId } = direction;
-          return <AvRadio key={directionId} label={name} value={directionId} onChange={this.onChange} />;
-        })
-      : null;
+  const defaultValues = { directionId, sex };
+  const preparedGenders = genders.map((gender) => {
+    const { label, value } = gender;
+    return <AvRadio key={label} label={label} value={value} onChange={onChange} />;
+  });
+  const preparedDirections = directions
+    ? directions.map((direction) => {
+        const { name, directionId } = direction;
+        return <AvRadio key={directionId} label={name} value={directionId} onChange={onChange} />;
+      })
+    : null;
 
-    const fields = memberPageFields.map(({ id, name, type, label, placeholder, regexp, errorMessage, step }) => {
-      if (type === 'radio') {
-        return (
-          <AvRadioGroup key={id} inline id={id} name={name} label={label} required>
-            {name === 'directionId' && preparedDirections}
-            {name === 'sex' && preparedGenders}
-          </AvRadioGroup>
-        );
-      }
-
-      if (name === 'startDate' || name === 'birthDate') {
-        if (name === 'startDate') {
-          return (
-            <EnhacedStartDate
-              key={id}
-              name={name}
-              label={label}
-              type={type}
-              onChange={this.onChange}
-              value={this.state[name]}
-              required
-            />
-          );
-        }
-        return (
-          <EnhacedBirthDate
-            key={id}
-            id={id}
-            name={name}
-            label={label}
-            type={type}
-            onChange={this.onChange}
-            value={this.state[name]}
-            required
-          />
-        );
-
-        // return (
-        // I practice with HOC here  - commented out code more appropriate. HOC will be removed in the next PR and I return AvField
-
-        // <AvField
-        //   key={id}
-        //   name={name}
-        //   label={label}
-        //   type={type}
-        //   onChange={this.onChange}
-        //   value={this.state[name]}
-        //   required
-        // />
-        // );
-      }
-
+  const fields = memberPageFields.map(({ id, name, type, label, placeholder, regexp, errorMessage, step }) => {
+    if (type === 'radio') {
       return (
-        <AvField
-          key={id}
-          id={id}
-          value={this.state[name]}
-          name={name}
-          type={type}
-          step={step}
-          label={label}
-          placeholder={placeholder}
-          onChange={this.onChange}
-          disabled={this.disableChangingEmail(name)}
-          validate={{
-            required: { value: true, errorMessage: 'Field is required' },
-            pattern: {
-              value: `${regexp}`,
-              errorMessage,
-            },
-          }}
-        />
+        <AvRadioGroup key={id} inline id={id} name={name} label={label} required>
+          {name === 'directionId' && preparedDirections}
+          {name === 'sex' && preparedGenders}
+        </AvRadioGroup>
       );
-    });
+    }
 
-    if (isFetching) {
-      return <Preloader />;
+    if (type === 'date') {
+      return (
+        <AvField key={id} name={name} label={label} type={type} onChange={onChange} value={props[name]} required />
+      );
     }
 
     return (
-      <>
-        <ToastContainer />
-        <div className={styles.wrapper}>
-          <h1 className={styles.title}>{userId === 'newMember' ? 'Register Member' : 'Edit Member'}</h1>
-          <AvForm id='createMember' model={defaultValues} onSubmit={this.createUser}>
-            {fields}
-          </AvForm>
-          <div className={styles.buttonWrapper}>
-            <SubmitButton className={styles.successButton} form='createMember'>
-              {userId !== 'newMember' ? 'Save' : 'Create'}
-            </SubmitButton>
-
-            <Button onClick={hideMemberPage}>Back to grid</Button>
-          </div>
-        </div>
-      </>
+      <AvField
+        key={id}
+        id={id}
+        value={props[name]}
+        name={name}
+        type={type}
+        step={step}
+        label={label}
+        placeholder={placeholder}
+        onChange={onChange}
+        disabled={disableChangingEmail(name)}
+        validate={{
+          required: { value: true, errorMessage: 'Field is required' },
+          pattern: {
+            value: `${regexp}`,
+            errorMessage,
+          },
+        }}
+      />
     );
+  });
+
+  if (isFetching) {
+    return <Preloader />;
   }
-}
+
+  return (
+    <>
+      <ToastContainer />
+      <div className={styles.wrapper}>
+        <h1 className={styles.title}>{userId === 'newMember' ? 'Register Member' : 'Edit Member'}</h1>
+        <AvForm id='createMember' model={defaultValues} onSubmit={createUser}>
+          {fields}
+        </AvForm>
+        <div className={styles.buttonWrapper}>
+          <SubmitButton className={styles.successButton} form='createMember'>
+            {userId !== 'newMember' ? 'Save' : 'Create'}
+          </SubmitButton>
+
+          <Button onClick={hideMemberPage}>Back to grid</Button>
+        </div>
+      </div>
+    </>
+  );
+};
+
+const mapStateToProps = (state) => {
+  const {
+    firstName,
+    lastName,
+    sex,
+    mobilePhone,
+    email,
+    startDate,
+    skype,
+    birthDate,
+    directionId,
+    address,
+    education,
+    mathScore,
+    universityAverageScore,
+  } = state.memberPage;
+
+  const { directions } = state.members;
+  const { currentUserId } = state.app;
+
+  return {
+    firstName,
+    lastName,
+    sex,
+    mobilePhone,
+    email,
+    startDate,
+    skype,
+    birthDate,
+    directionId,
+    address,
+    education,
+    mathScore,
+    universityAverageScore,
+    directions,
+    currentUserId,
+  };
+};
 
 MemberPage.propTypes = {
   userId: PropTypes.string.isRequired,
   hideMemberPage: PropTypes.func.isRequired,
 };
 
-export default MemberPage;
+export default connect(mapStateToProps, { onChangeValue })(MemberPage);

@@ -13,8 +13,7 @@ class TaskTrackContainer extends React.Component {
   }
 
   render() {
-    const { hideTaskTrackPage } = this.props;
-    return <TaskTrackPage hideTaskTrackPage={hideTaskTrackPage} />;
+    return <TaskTrackPage {...this.props} />;
   }
 }
 
@@ -26,6 +25,7 @@ const mapStateToProps = (state) => {
 TaskTrackContainer.propTypes = {
   currentTaskTrackId: PropTypes.string,
   hideTaskTrackPage: PropTypes.func.isRequired,
+  getTaskTrack: PropTypes.func.isRequired,
 };
 
 TaskTrackContainer.defaultProps = {

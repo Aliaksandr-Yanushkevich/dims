@@ -11,22 +11,13 @@ import MemberData from './MemberData';
 import Preloader from '../common/Preloader/Preloader';
 import { membersTitle } from '../../constants';
 import styles from './Members.module.scss';
-import MemberPage from '../MemberPage/MemberPage';
 import firebaseApi from '../../api/firebaseApi';
 import showToast from '../../helpers/showToast';
 import { setCurrentUser } from '../../redux/reducers/appReducer';
-import { showMemberPage } from '../../redux/reducers/membersReducer';
+import { showMemberPage } from '../../redux/reducers/memberPageReducer';
+import MemberPageContainer from '../MemberPage/MemberPageContainer';
 
-const Members = ({
-  members,
-  memberPageIsVisible,
-  directions,
-  currentUserId,
-  setCurrentUser,
-  role,
-  showMemberPage,
-  message,
-}) => {
+const Members = ({ members, memberPageIsVisible, directions, setCurrentUser, role, showMemberPage, message }) => {
   const isAdmin = role === 'admin';
   const isMentor = role === 'mentor';
   const createUser = (e) => {
@@ -98,7 +89,7 @@ const Members = ({
     <>
       <ToastContainer />
       <Modal isOpen={memberPageIsVisible} toggle={hideMemberPage}>
-        <MemberPage userId={currentUserId} hideMemberPage={hideMemberPage} />
+        <MemberPageContainer hideMemberPage={hideMemberPage} />
       </Modal>
       <h1 className={styles.title}>Members Manage Grid</h1>
       <div className={styles.tableWrapper}>
@@ -118,9 +109,10 @@ const Members = ({
 };
 
 const mapStateToProps = (state) => {
-  const { members, memberPageIsVisible, directions, message } = state.members;
+  const { members, directions, message } = state.members;
   const { currentUserId } = state.app;
   const { role } = state.auth;
+  const { memberPageIsVisible } = state.memberPage;
   return { members, directions, memberPageIsVisible, currentUserId, role, message };
 };
 
@@ -130,7 +122,6 @@ Members.propTypes = {
   directions: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   role: PropTypes.string,
   setCurrentUser: PropTypes.func.isRequired,
-  currentUserId: PropTypes.string,
   showMemberPage: PropTypes.func.isRequired,
   message: PropTypes.string,
 };
@@ -139,7 +130,6 @@ Members.defaultProps = {
   members: [{}],
   directions: [{}],
   role: '',
-  currentUserId: '',
   message: '',
 };
 

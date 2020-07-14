@@ -1,50 +1,58 @@
 import firebaseApi from '../../api/firebaseApi';
-// import showToast from '../../helpers/showToast';
+import dateToStringForInput from '../../helpers/dateToStringForInput';
+import showToast from '../../helpers/showToast';
 
-const SET_MEMBERS = 'SET_MEMBERS';
-const SET_DIRECTIONS = 'SET_DIRECTIONS';
+const SET_USER_INFO = 'SET_USER_INFO';
+const ON_CHANGE = 'ON_CHANGE';
 const SHOW_MEMBER_PAGE = 'SHOW_MEMBER_PAGE';
-const SET_MESSAGE = 'SET_MESSAGE';
 
-export const setMembers = (members) => ({ type: SET_MEMBERS, members });
-export const setDirections = (directions) => ({ type: SET_DIRECTIONS, directions });
+export const setUserInfo = (userInfo) => ({ type: SET_USER_INFO, userInfo });
+export const onChangeValue = (fieldName, value) => ({ type: ON_CHANGE, [fieldName]: value });
 export const showMemberPage = (memberPageIsVisible) => ({ type: SHOW_MEMBER_PAGE, memberPageIsVisible });
-export const setMessage = (message) => ({ type: SET_MESSAGE, message });
 
 const initialState = {
-  members: null,
-  directions: null,
+  firstName: '',
+  lastName: '',
+  sex: '',
+  mobilePhone: '',
+  email: '',
+  startDate: dateToStringForInput(new Date()),
+  skype: '',
+  birthDate: '',
+  directionId: '',
+  address: '',
+  education: '',
+  mathScore: '',
+  universityAverageScore: '',
   memberPageIsVisible: false,
-  message: null,
 };
 
-export const getMembers = () => (dispatch) => {
-  firebaseApi.getUsers().then((result) => {
+export const getUserInfo = (currentUserId) => (dispatch) => {
+  firebaseApi.getUserInfo(currentUserId).then((result) => {
     if (result.hasOwnProperty('message')) {
-      dispatch(setMessage(result));
-    } else {
-      dispatch(setMembers(result));
-      dispatch(setMessage(null));
+      return showToast(result);
     }
-  });
-};
-
-export const getDirections = () => (dispatch) => {
-  firebaseApi.getDirections().then((result) => {
-    dispatch(setDirections(result));
+    dispatch(setUserInfo(result));
   });
 };
 
 const membersReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_MEMBERS:
-      return { ...state, members: action.members };
-    case SET_DIRECTIONS:
-      return { ...state, directions: action.directions };
+    case SET_USER_INFO:
+      return {
+        ...state,
+        ...action.userInfo,
+        startDate: dateToStringForInput(action.userInfo.startDate.toDate()),
+        birthDate: dateToStringForInput(action.userInfo.birthDate.toDate()),
+      };
+    case ON_CHANGE:
+      const { type, ...rest } = action;
+      return {
+        ...state,
+        ...rest,
+      };
     case SHOW_MEMBER_PAGE:
       return { ...state, memberPageIsVisible: action.memberPageIsVisible };
-    case SET_MESSAGE:
-      return { ...state, message: action.message };
     default:
       return state;
   }
