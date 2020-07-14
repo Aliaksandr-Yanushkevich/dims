@@ -1,15 +1,11 @@
 import firebaseApi from '../../api/firebaseApi';
 import showToast from '../../helpers/showToast';
 
-const LOGIN = 'LOGIN';
 const LOGOUT = 'LOGOUT';
 const SET_ROLE = 'SET_ROLE';
-// const REMEMBER = 'REMEMBER';
 
-export const loginSuccess = () => ({ type: LOGIN });
 export const logoutSuccess = () => ({ type: LOGOUT });
 export const setRole = (userData) => ({ type: SET_ROLE, userData });
-// export const isRemember = (remember) => ({ type: REMEMBER, remember });
 
 const initialState = {
   userId: null,
@@ -24,11 +20,10 @@ export const login = (event, errors, values) => (dispatch) => {
   const { email, password, remember } = values;
   if (!errors.length) {
     firebaseApi.login(email, password, remember).then((result) => {
-      if (result.hasOwnProperty('message')) {
+      if (result.message) {
         return showToast(result);
       }
-      dispatch(loginSuccess());
-      // dispatch(isRemember(remember));
+      dispatch(setRole(result));
     });
   }
 };
@@ -39,17 +34,14 @@ export const logout = () => (dispatch) => {
     .then(() => {
       sessionStorage.removeItem('user');
       dispatch(logoutSuccess());
-      console.log('Logged out');
     })
-    .catch((error) => {
-      console.error('Logout error', error);
+    .catch((result) => {
+      return showToast(result);
     });
 };
 
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
-    case LOGIN:
-      return { ...state, isAuth: true };
     case LOGOUT:
       return { ...state, isAuth: false, role: null, userId: null, firstName: null, lastName: null, email: null };
     case SET_ROLE:
@@ -58,8 +50,6 @@ const authReducer = (state = initialState, action) => {
         isAuth: true,
         ...action.userData,
       };
-    // case REMEMBER:
-    //   return { ...state, isRemember: action.remember };
     default:
       return state;
   }
