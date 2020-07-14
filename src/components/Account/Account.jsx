@@ -10,9 +10,8 @@ import Button from '../common/Button/Button';
 import fields from './accountFields';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
-import { showAccountPage } from '../../redux/reducers/appReducer';
 
-const Account = ({ firstName, lastName, role, showAccountPage, email }) => {
+const Account = ({ firstName, lastName, role, hideAccountPage, email }) => {
   const updatePassword = (event, errors, values) => {
     if (!errors.length) {
       const { oldPassword, password, repeatedPassword } = values;
@@ -21,10 +20,6 @@ const Account = ({ firstName, lastName, role, showAccountPage, email }) => {
         showToast(result);
       });
     }
-  };
-
-  const hideAccountPage = () => {
-    showAccountPage(false);
   };
 
   const formFields = fields.map(({ id, name, type, label, placeholder, regexp, errorMessage }) => {
@@ -97,7 +92,7 @@ Account.propTypes = {
   lastName: PropTypes.string,
   role: PropTypes.string,
   email: PropTypes.string,
-  showAccountPage: PropTypes.func.isRequired,
+  hideAccountPage: PropTypes.func.isRequired,
 };
 
 Account.defaultProps = {
@@ -105,7 +100,6 @@ Account.defaultProps = {
   lastName: '',
   role: '',
   email: '',
-  // showAccountPage: () => {},
 };
 
-export default connect(mapStateToProps, { showAccountPage })(Account);
+export default connect(mapStateToProps, {})(Account);

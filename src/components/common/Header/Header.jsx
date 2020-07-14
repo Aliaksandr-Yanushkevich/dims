@@ -20,15 +20,13 @@ const Header = ({ role, showAccountPage, accountPageIsVisible }) => {
   const isMentor = role === 'mentor';
 
   const hideAccountPage = () => {
-    /* bug with click outside modal - modal doesn't disapear */
     showAccountPage(false);
   };
 
   return (
     <header className={styles.header}>
-      {/* bug with click outside modal - modal doesn't disapear */}
-      <Modal isOpen={accountPageIsVisible} toogle={hideAccountPage}>
-        <Account />
+      <Modal isOpen={accountPageIsVisible} toggle={hideAccountPage}>
+        <Account hideAccountPage={hideAccountPage} />
       </Modal>
       <NavLink className={styles.link} to='/members'>
         <img src={logo} alt='logo' />
