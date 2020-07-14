@@ -111,6 +111,7 @@ TaskTrackPage.propTypes = {
   currentTaskTrackId: PropTypes.string,
   currentTaskName: PropTypes.string,
   hideTaskTrackPage: PropTypes.func.isRequired,
+  onChangeValue: PropTypes.func.isRequired,
 };
 
 TaskTrackPage.defaultProps = {

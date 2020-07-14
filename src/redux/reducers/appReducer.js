@@ -34,7 +34,7 @@ export const getUserInfo = (currentUserId) => (dispatch) => {
   firebaseApi
     .getUserInfo(currentUserId)
     .then((result) => {
-      if (result.hasOwnProperty('message')) {
+      if (result.message) {
         return showToast(result);
       }
       const { firstName, lastName } = result;
@@ -50,7 +50,7 @@ export const getUserTasksList = (currentUserId) => (dispatch) => {
   firebaseApi
     .getUserTaskList(currentUserId)
     .then((result) => {
-      if (result.hasOwnProperty('message')) {
+      if (result.message) {
         return showToast(result);
       }
       dispatch(setUserTasks(result));
