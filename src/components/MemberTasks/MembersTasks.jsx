@@ -7,7 +7,7 @@ import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
 import MemberCurrentTasks from './MemberCurrentTasks';
 import { membersTasksTitle, membersTasksTitleForMembers } from '../../constants';
-import TaskTrack from '../TaskTrack/TaskTrack';
+import TaskTrackPage from '../TaskTrackPage/TaskTrackPage';
 import { setCurrentTaskName } from '../../redux/reducers/memberTasksReducer';
 import { setUserTaskId } from '../../redux/reducers/taskTrackManagementReducer';
 import { showTaskTrackPage } from '../../redux/reducers/taskTrackPageReducer';
@@ -79,7 +79,7 @@ const MemberTasks = ({
   return (
     <>
       <Modal isOpen={taskTrackPageIsVisible} toggle={hideTaskTrackPage}>
-        <TaskTrack userTaskId={userTaskId} taskName={currentTaskName} hideTaskTrackPage={hideTaskTrackPage} />
+        <TaskTrackPage userTaskId={userTaskId} taskName={currentTaskName} hideTaskTrackPage={hideTaskTrackPage} />
       </Modal>
       <h1 className={styles.title}>Member&apos;s Task Manage Grid</h1>
       {isMember && (

@@ -9,7 +9,7 @@ import TableHeader from '../common/TableHeader/TableHeader';
 import { tasksTrackTitle } from '../../constants';
 import Preloader from '../common/Preloader/Preloader';
 import TasksTracksManagementRow from './TaskTrackManagementRow';
-import TaskTrack from '../TaskTrack/TaskTrack';
+import TaskTrackPage from '../TaskTrackPage/TaskTrackPage';
 import firebaseApi from '../../api/firebaseApi';
 import dateToString from '../../helpers/dateToString';
 import showToast from '../../helpers/showToast';
@@ -41,14 +41,14 @@ const TaskTrackManagement = ({
 
   const deleteNote = (e) => {
     e.persist();
-    const currentTaskTrackId = e.target.dataset.taskid;
-    firebaseApi.deleteItemWithId('TaskTrack', currentTaskTrackId).then((result) => {
+    const taskTrackId = e.target.dataset.taskid;
+    firebaseApi.deleteItemWithId('TaskTrack', taskTrackId).then((result) => {
       showToast(result);
     });
   };
 
   const hideTaskTrackPage = () => {
-    //clean data method
+    // clean data method
     showTaskTrackPage(false);
   };
 
@@ -89,7 +89,7 @@ const TaskTrackManagement = ({
     <>
       <ToastContainer />
       <Modal isOpen={taskTrackPageIsVisible} toggle={hideTaskTrackPage}>
-        <TaskTrack
+        <TaskTrackPage
           userTaskId={userTaskId}
           taskTrackId={currentTaskTrackId}
           taskName={currentTaskName}
@@ -116,10 +116,24 @@ const mapStateToProps = (state) => {
 
 TaskTrackManagement.propTypes = {
   role: PropTypes.string,
+  currentTaskTrackId: PropTypes.string,
+  currentTaskName: PropTypes.string,
+  userTaskId: PropTypes.string,
+  trackData: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
+  taskTrackPageIsVisible: PropTypes.bool.isRequired,
+  isFetching: PropTypes.bool.isRequired,
+  setCurrentTaskTrackId: PropTypes.func.isRequired,
+  setCurrentTaskName: PropTypes.func.isRequired,
+  setUserTaskId: PropTypes.func.isRequired,
+  showTaskTrackPage: PropTypes.func.isRequired,
 };
 
 TaskTrackManagement.defaultProps = {
   role: '',
+  currentTaskTrackId: '',
+  currentTaskName: '',
+  userTaskId: '',
+  trackData: [],
 };
 
 export default connect(mapStateToProps, {
