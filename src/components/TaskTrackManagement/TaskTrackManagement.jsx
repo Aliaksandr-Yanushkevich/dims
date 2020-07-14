@@ -9,7 +9,7 @@ import TableHeader from '../common/TableHeader/TableHeader';
 import { tasksTrackTitle } from '../../constants';
 import Preloader from '../common/Preloader/Preloader';
 import TasksTracksManagementRow from './TaskTrackManagementRow';
-import TaskTrackPage from '../TaskTrackPage/TaskTrackPage';
+import TaskTrackPageContainer from '../TaskTrackPage/TaskTrackPageContainer';
 import firebaseApi from '../../api/firebaseApi';
 import dateToString from '../../helpers/dateToString';
 import showToast from '../../helpers/showToast';
@@ -19,9 +19,6 @@ import { showTaskTrackPage } from '../../redux/reducers/taskTrackPageReducer';
 
 const TaskTrackManagement = ({
   role,
-  currentTaskTrackId,
-  currentTaskName,
-  userTaskId,
   trackData,
   taskTrackPageIsVisible,
   isFetching,
@@ -89,12 +86,7 @@ const TaskTrackManagement = ({
     <>
       <ToastContainer />
       <Modal isOpen={taskTrackPageIsVisible} toggle={hideTaskTrackPage}>
-        <TaskTrackPage
-          userTaskId={userTaskId}
-          taskTrackId={currentTaskTrackId}
-          taskName={currentTaskName}
-          hideTaskTrackPage={hideTaskTrackPage}
-        />
+        <TaskTrackPageContainer hideTaskTrackPage={hideTaskTrackPage} />
       </Modal>
       <h1 className={styles.title}>Task Track Management</h1>
       <table>
@@ -109,16 +101,12 @@ const mapStateToProps = (state) => {
   const { currentTaskTrackId, trackData, userTaskId } = state.taskTrackManagement;
   const { role } = state.auth;
   const { currentTaskName } = state.memberTasks;
-  const { isFetching } = state.app;
   const { taskTrackPageIsVisible } = state.taskTrackPage;
-  return { role, currentTaskTrackId, currentTaskName, userTaskId, trackData, taskTrackPageIsVisible, isFetching };
+  return { role, currentTaskTrackId, currentTaskName, userTaskId, trackData, taskTrackPageIsVisible };
 };
 
 TaskTrackManagement.propTypes = {
   role: PropTypes.string,
-  currentTaskTrackId: PropTypes.string,
-  currentTaskName: PropTypes.string,
-  userTaskId: PropTypes.string,
   trackData: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   taskTrackPageIsVisible: PropTypes.bool.isRequired,
   isFetching: PropTypes.bool.isRequired,
@@ -130,9 +118,6 @@ TaskTrackManagement.propTypes = {
 
 TaskTrackManagement.defaultProps = {
   role: '',
-  currentTaskTrackId: '',
-  currentTaskName: '',
-  userTaskId: '',
   trackData: [],
 };
 
