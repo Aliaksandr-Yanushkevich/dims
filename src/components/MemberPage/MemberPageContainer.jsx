@@ -25,7 +25,7 @@ const mapStateToProps = (state) => {
 
 MemberPageContainer.propTypes = {
   currentUserId: PropTypes.string,
-  getUserInfo: PropTypes.string.isRequired,
+  getUserInfo: PropTypes.func.isRequired,
 };
 
 MemberPageContainer.defaultProps = {

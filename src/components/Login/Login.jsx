@@ -60,8 +60,6 @@ const Login = ({ isAuth, role, login, setRole, setCurrentUser, userId }) => {
     if (isMember) return <Redirect to='/member_tasks' />;
   }
 
-  // here should check saved user data in store
-
   if (user) {
     setRole(user);
   }
@@ -119,11 +117,12 @@ Login.propTypes = {
   login: PropTypes.func.isRequired,
   setRole: PropTypes.func.isRequired,
   setCurrentUser: PropTypes.func.isRequired,
-  userId: PropTypes.func.isRequired,
+  userId: PropTypes.string,
 };
 
 Login.defaultProps = {
   role: null,
+  userId: null,
 };
 
 export default connect(mapStateToProps, { login, setRole, setCurrentUser })(Login);

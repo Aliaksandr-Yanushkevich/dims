@@ -14,10 +14,19 @@ import styles from './Members.module.scss';
 import firebaseApi from '../../api/firebaseApi';
 import showToast from '../../helpers/showToast';
 import { setCurrentUser } from '../../redux/reducers/appReducer';
-import { showMemberPage } from '../../redux/reducers/memberPageReducer';
+import { showMemberPage, clearMemberPage } from '../../redux/reducers/memberPageReducer';
 import MemberPageContainer from '../MemberPage/MemberPageContainer';
 
-const Members = ({ members, memberPageIsVisible, directions, setCurrentUser, role, showMemberPage, message }) => {
+const Members = ({
+  members,
+  memberPageIsVisible,
+  directions,
+  setCurrentUser,
+  role,
+  showMemberPage,
+  message,
+  clearMemberPage,
+}) => {
   const isAdmin = role === 'admin';
   const isMentor = role === 'mentor';
   const createUser = (e) => {
@@ -28,6 +37,7 @@ const Members = ({ members, memberPageIsVisible, directions, setCurrentUser, rol
   };
 
   const hideMemberPage = () => {
+    clearMemberPage();
     showMemberPage(false);
   };
 
@@ -123,6 +133,7 @@ Members.propTypes = {
   role: PropTypes.string,
   setCurrentUser: PropTypes.func.isRequired,
   showMemberPage: PropTypes.func.isRequired,
+  clearMemberPage: PropTypes.func.isRequired,
   message: PropTypes.string,
 };
 
@@ -133,4 +144,4 @@ Members.defaultProps = {
   message: '',
 };
 
-export default connect(mapStateToProps, { setCurrentUser, showMemberPage })(Members);
+export default connect(mapStateToProps, { setCurrentUser, showMemberPage, clearMemberPage })(Members);

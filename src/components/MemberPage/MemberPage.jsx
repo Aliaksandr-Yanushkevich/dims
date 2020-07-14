@@ -18,8 +18,8 @@ import { onChangeValue } from '../../redux/reducers/memberPageReducer';
 const MemberPage = (props) => {
   const createUser = (event, errors) => {
     if (!errors.length) {
-      let {
-        currentUserId,
+      const {
+        userId,
         firstName,
         lastName,
         sex,
@@ -36,7 +36,7 @@ const MemberPage = (props) => {
       } = props;
 
       const userInfo = {
-        currentUserId,
+        userId,
         firstName,
         lastName,
         sex,
@@ -52,9 +52,11 @@ const MemberPage = (props) => {
         universityAverageScore: Number(universityAverageScore),
       };
 
+      let { currentUserId } = props;
+
       if (currentUserId === 'newMember') {
         currentUserId = generateID();
-        firebaseApi.createUser(currentUserId, { ...userInfo, currentUserId }).then((result) => {
+        firebaseApi.createUser(currentUserId, { ...userInfo, userId: currentUserId }).then((result) => {
           showToast(result);
         });
       } else {
@@ -66,8 +68,8 @@ const MemberPage = (props) => {
   };
 
   const disableChangingEmail = (name) => {
-    const { userId } = props;
-    if (userId !== 'newMember' && name === 'email') {
+    const { currentUserId } = props;
+    if (currentUserId !== 'newMember' && name === 'email') {
       return true;
     }
     return false;
@@ -79,8 +81,7 @@ const MemberPage = (props) => {
     onChangeValue(name, value);
   };
 
-  const { userId, hideMemberPage, sex, directions, directionId, isFetching } = props;
-
+  const { currentUserId, hideMemberPage, sex, directions, directionId, isFetching } = props;
   const defaultValues = { directionId, sex };
   const preparedGenders = genders.map((gender) => {
     const { label, value } = gender;
@@ -140,13 +141,13 @@ const MemberPage = (props) => {
     <>
       <ToastContainer />
       <div className={styles.wrapper}>
-        <h1 className={styles.title}>{userId === 'newMember' ? 'Register Member' : 'Edit Member'}</h1>
+        <h1 className={styles.title}>{currentUserId === 'newMember' ? 'Register Member' : 'Edit Member'}</h1>
         <AvForm id='createMember' model={defaultValues} onSubmit={createUser}>
           {fields}
         </AvForm>
         <div className={styles.buttonWrapper}>
           <SubmitButton className={styles.successButton} form='createMember'>
-            {userId !== 'newMember' ? 'Save' : 'Create'}
+            {currentUserId !== 'newMember' ? 'Save' : 'Create'}
           </SubmitButton>
 
           <Button onClick={hideMemberPage}>Back to grid</Button>
@@ -158,6 +159,7 @@ const MemberPage = (props) => {
 
 const mapStateToProps = (state) => {
   const {
+    userId,
     firstName,
     lastName,
     sex,
@@ -174,9 +176,10 @@ const mapStateToProps = (state) => {
   } = state.memberPage;
 
   const { directions } = state.members;
-  const { currentUserId } = state.app;
+  const { currentUserId, isFetching } = state.app;
 
   return {
+    userId,
     firstName,
     lastName,
     sex,
@@ -192,12 +195,53 @@ const mapStateToProps = (state) => {
     universityAverageScore,
     directions,
     currentUserId,
+    isFetching,
   };
 };
 
 MemberPage.propTypes = {
-  userId: PropTypes.string.isRequired,
+  userId: PropTypes.string,
   hideMemberPage: PropTypes.func.isRequired,
+  onChangeValue: PropTypes.func.isRequired,
+  isFetching: PropTypes.bool.isRequired,
+  currentUserId: PropTypes.string,
+  firstName: PropTypes.string,
+  lastName: PropTypes.string,
+  sex: PropTypes.string,
+  mobilePhone: PropTypes.string,
+  email: PropTypes.string,
+  startDate: PropTypes.string,
+  skype: PropTypes.string,
+  birthDate: PropTypes.string,
+  directionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  address: PropTypes.string,
+  education: PropTypes.string,
+  mathScore: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  universityAverageScore: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  directions: PropTypes.arrayOf(
+    PropTypes.shape({
+      directionId: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
+};
+
+MemberPage.defaultProps = {
+  userId: '',
+  currentUserId: '',
+  firstName: '',
+  lastName: '',
+  sex: '',
+  mobilePhone: '',
+  email: '',
+  startDate: '',
+  skype: '',
+  birthDate: '',
+  directionId: null,
+  address: '',
+  education: '',
+  mathScore: null,
+  universityAverageScore: null,
 };
 
 export default connect(mapStateToProps, { onChangeValue })(MemberPage);
