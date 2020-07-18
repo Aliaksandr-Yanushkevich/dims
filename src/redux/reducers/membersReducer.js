@@ -1,16 +1,17 @@
 import firebaseApi from '../../api/firebaseApi';
-import showToast from '../../helpers/showToast';
 
 const SET_MEMBERS = 'SET_MEMBERS';
 const SET_DIRECTIONS = 'SET_DIRECTIONS';
-const SHOW_MEMBER_PAGE = 'SHOW_MEMBER_PAGE';
+const SET_ERROR_MESSAGE = 'SET_ERROR_MESSAGE';
 
 export const setMembers = (members) => ({ type: SET_MEMBERS, members });
 export const setDirections = (directions) => ({ type: SET_DIRECTIONS, directions });
+export const setError = (message) => ({ type: SET_ERROR_MESSAGE, message });
 
 const initialState = {
   members: null,
   directions: null,
+  message: null,
 };
 
 export const getDirections = () => (dispatch) => {
@@ -25,6 +26,8 @@ const membersReducer = (state = initialState, action) => {
       return { ...state, members: action.members };
     case SET_DIRECTIONS:
       return { ...state, directions: action.directions };
+    case SET_ERROR_MESSAGE:
+      return { ...state, message: action.message };
     default:
       return state;
   }

@@ -86,7 +86,6 @@ const Members = ({
   if (!members && !message) {
     return <Preloader />;
   }
-
   if (message) {
     showToast(message);
   }
