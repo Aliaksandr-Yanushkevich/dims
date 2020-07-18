@@ -13,15 +13,6 @@ const initialState = {
   directions: null,
 };
 
-export const getMembers = () => (dispatch) => {
-  firebaseApi.getUsers().then((result) => {
-    if (result.hasOwnProperty('message')) {
-      return showToast(result);
-    }
-    dispatch(setMembers(result));
-  });
-};
-
 export const getDirections = () => (dispatch) => {
   firebaseApi.getDirections().then((result) => {
     dispatch(setDirections(result));

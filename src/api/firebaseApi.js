@@ -2,7 +2,7 @@ import firebase from './firebase';
 import dateToStringForInput from '../helpers/dateToStringForInput';
 import setUserToSessionStorage from '../helpers/setUserToSessionStorage';
 
-const firestore = firebase.firestore();
+export const firestore = firebase.firestore();
 const promiseWithMessage = (message) => {
   return new Promise((resolve) => {
     resolve(message);
@@ -128,32 +128,6 @@ const firebaseApi = {
         });
       })
       .then(() => userData);
-  },
-
-  getUsers() {
-    return (
-      firestore
-        .collection('UserProfile')
-        .orderBy('firstName')
-        .get()
-        .then((users) => {
-          const members = users.docs.map((user) => {
-            const { firstName, lastName, birthDate, directionId, education, startDate, userId } = user.data();
-            return {
-              firstName,
-              lastName,
-              birthDate: birthDate.toDate(),
-              directionId,
-              education,
-              startDate: startDate.toDate(),
-              userId,
-            };
-          });
-          return members;
-        })
-        // returning message in Members four times when throwing error. should fix it
-        .catch(({ message }) => ({ message, messageType: 'warning' }))
-    );
   },
 
   getUserInfo(userId) {
