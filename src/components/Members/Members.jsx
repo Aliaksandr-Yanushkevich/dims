@@ -87,7 +87,7 @@ const Members = ({
     return <Preloader />;
   }
   if (message) {
-    showToast(message);
+    showToast({ message, messageType: 'warning' });
   }
 
   if (members && !members.length) {
