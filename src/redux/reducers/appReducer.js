@@ -7,7 +7,9 @@ const SHOW_ACCOUNT_PAGE = 'SHOW_ACCOUNT_PAGE';
 const TOGGLE_IS_FETCHING = 'TOOGGLE_IS_FETCHING';
 const SET_USER_INFO = 'SET_USER_INFO ';
 const SET_USER_TASKS = 'SET_USER_TASKS';
+const SET_ERROR_MESSAGE = 'SET_ERROR_MESSAGE';
 
+export const setError = (message) => ({ type: SET_ERROR_MESSAGE, message });
 export const setCurrentUser = (userId) => ({ type: SET_CURRENT_USER, userId });
 export const setCurrentTask = (taskId) => ({ type: SET_CURRENT_TASK, taskId });
 export const showAccountPage = (accountPageIsVisible) => ({ type: SHOW_ACCOUNT_PAGE, accountPageIsVisible });
@@ -27,6 +29,7 @@ const initialState = {
   accountPageIsVisible: false,
   userTasks: null,
   isFetching: false,
+  message: null,
 };
 
 export const getUserInfo = (currentUserId) => (dispatch) => {
@@ -76,6 +79,8 @@ const appReducer = (state = initialState, action) => {
         currentUserFirstName: action.currentUserFirstName,
         currentUserLastName: action.currentUserLastName,
       };
+    case SET_ERROR_MESSAGE:
+      return { ...state, message: action.message };
     case SET_USER_TASKS:
       return { ...state, userTasks: action.userTasks };
     default:

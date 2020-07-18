@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal } from 'reactstrap';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import styles from './MembersTasks.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
@@ -11,6 +13,7 @@ import TaskTrackPageContainer from '../TaskTrackPage/TaskTrackPageContainer';
 import { setCurrentTaskName } from '../../redux/reducers/memberTasksReducer';
 import { setUserTaskId } from '../../redux/reducers/taskTrackManagementReducer';
 import { showTaskTrackPage } from '../../redux/reducers/taskTrackPageReducer';
+import showToast from '../../helpers/showToast';
 
 const MemberTasks = ({
   role,
@@ -22,6 +25,7 @@ const MemberTasks = ({
   setCurrentTaskName,
   showTaskTrackPage,
   setUserTaskId,
+  message,
 }) => {
   const track = (e) => {
     e.persist();
@@ -42,6 +46,10 @@ const MemberTasks = ({
 
   if (isFetching) {
     return <Preloader />;
+  }
+
+  if (message) {
+    showToast({ message, messageType: 'warning' });
   }
 
   if (userTasks && !userTasks.length) {
@@ -75,6 +83,7 @@ const MemberTasks = ({
 
   return (
     <>
+      <ToastContainer />
       <Modal isOpen={taskTrackPageIsVisible} toggle={hideTaskTrackPage}>
         <TaskTrackPageContainer hideTaskTrackPage={hideTaskTrackPage} />
       </Modal>
@@ -96,7 +105,7 @@ const MemberTasks = ({
 };
 
 const mapStateToProps = (state) => {
-  const { currentUserId, currentUserFirstName, currentUserLastName, userTasks } = state.app;
+  const { currentUserId, currentUserFirstName, currentUserLastName, userTasks, message } = state.app;
   const { role } = state.auth;
   const { taskTrackPageIsVisible } = state.taskTrackPage;
   const { currentTaskName } = state.memberTasks;
@@ -111,6 +120,7 @@ const mapStateToProps = (state) => {
     currentUserFirstName,
     currentUserLastName,
     taskTrackPageIsVisible,
+    message,
   };
 };
 
@@ -124,6 +134,7 @@ MemberTasks.propTypes = {
   setCurrentTaskName: PropTypes.func.isRequired,
   showTaskTrackPage: PropTypes.func.isRequired,
   setUserTaskId: PropTypes.func.isRequired,
+  message: PropTypes.string,
 };
 
 MemberTasks.defaultProps = {
@@ -131,6 +142,7 @@ MemberTasks.defaultProps = {
   userTasks: [],
   currentUserFirstName: '',
   currentUserLastName: '',
+  message: null,
 };
 
 export default connect(mapStateToProps, { setCurrentTaskName, showTaskTrackPage, setUserTaskId })(MemberTasks);
