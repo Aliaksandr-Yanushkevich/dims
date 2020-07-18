@@ -2,17 +2,36 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import TaskManagement from './TaskManagement';
-import { getTaskList } from '../../redux/reducers/taskManagementReducer';
+import { setTaskList, setError } from '../../redux/reducers/taskManagementReducer';
+import { firestore } from '../../api/firebaseApi';
+import prepareTasks from '../../helpers/prepareTasks';
 
 class TaskManagementContainer extends React.Component {
   componentDidMount() {
-    const { role, getTaskList } = this.props;
+    const { role, setTaskList, setError } = this.props;
     const isAdmin = role === 'admin';
     const isMentor = role === 'mentor';
 
     if (isAdmin || isMentor) {
-      getTaskList();
+      firestore.collection('Task').onSnapshot(
+        (issues) => {
+          const taskList = prepareTasks(issues);
+          setTaskList(taskList);
+        },
+        ({ message }) => {
+          setError({ message, messageType: 'warning' });
+        },
+      );
     }
+  }
+
+  componentWillUnmount() {
+    const unsubscribe = firestore.collection('Task').onSnapshot(() => {
+      // text doesn't appear in the console, but function unsubscribe doesn't throw an error. here can be bandwidth leak
+      // I can't understand example from documentation
+      console.log('unsubcribed');
+    });
+    unsubscribe();
   }
 
   render() {
@@ -27,11 +46,12 @@ const mapStateToProps = (state) => {
 
 TaskManagementContainer.propTypes = {
   role: PropTypes.string,
-  getTaskList: PropTypes.func.isRequired,
+  setTaskList: PropTypes.func.isRequired,
+  setError: PropTypes.func.isRequired,
 };
 
 TaskManagementContainer.defaultProps = {
   role: '',
 };
 
-export default connect(mapStateToProps, { getTaskList })(TaskManagementContainer);
+export default connect(mapStateToProps, { setTaskList, setError })(TaskManagementContainer);

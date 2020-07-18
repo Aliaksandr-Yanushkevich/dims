@@ -13,8 +13,17 @@ import dateToString from '../../helpers/dateToString';
 import { showTaskPage, clearUserTasks } from '../../redux/reducers/taskPageReducer';
 import { setCurrentTask } from '../../redux/reducers/appReducer';
 import TaskPageContainer from '../TaskPage/TaskPageContainer';
+import showToast from '../../helpers/showToast';
 
-const TaskManagement = ({ setCurrentTask, taskPageIsVisible, showTaskPage, role, taskList, clearUserTasks }) => {
+const TaskManagement = ({
+  setCurrentTask,
+  taskPageIsVisible,
+  showTaskPage,
+  role,
+  taskList,
+  clearUserTasks,
+  message,
+}) => {
   const newTask = (e) => {
     const taskId = e.target.dataset.taskid;
     setCurrentTask(taskId);
@@ -60,6 +69,10 @@ const TaskManagement = ({ setCurrentTask, taskPageIsVisible, showTaskPage, role,
     return <Preloader />;
   }
 
+  if (message) {
+    showToast({ message, messageType: 'warning' });
+  }
+
   return (
     <>
       <h1 className={styles.title}>Task management</h1>
@@ -80,11 +93,11 @@ const TaskManagement = ({ setCurrentTask, taskPageIsVisible, showTaskPage, role,
 };
 
 const mapStateToProps = (state) => {
-  const { taskList } = state.taskManagement;
+  const { taskList, message } = state.taskManagement;
   const { taskPageIsVisible } = state.taskPage;
   const { role } = state.auth;
 
-  return { taskList, taskPageIsVisible, role };
+  return { taskList, taskPageIsVisible, role, message };
 };
 
 TaskManagement.propTypes = {
@@ -94,11 +107,13 @@ TaskManagement.propTypes = {
   role: PropTypes.string,
   taskList: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   taskPageIsVisible: PropTypes.bool.isRequired,
+  message: PropTypes.string,
 };
 
 TaskManagement.defaultProps = {
   role: '',
   taskList: [],
+  message: null,
 };
 
 export default connect(mapStateToProps, { showTaskPage, setCurrentTask, clearUserTasks })(TaskManagement);
