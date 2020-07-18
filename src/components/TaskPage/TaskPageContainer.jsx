@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import TaskPage from './TaskPage';
-import { getTask, getUsersWithTask, clearUserTasks } from '../../redux/reducers/taskPageReducer';
+import { getTask, getUsersWithTask, clearTaskPage } from '../../redux/reducers/taskPageReducer';
 
 class TaskPageContainer extends React.Component {
   componentDidMount() {
-    const { taskId, getTask, getUsersWithTask, clearUserTasks } = this.props;
+    const { taskId, getTask, getUsersWithTask } = this.props;
     getTask(taskId);
     getUsersWithTask(taskId);
-    clearUserTasks();
   }
 
   render() {
@@ -28,11 +27,11 @@ TaskPageContainer.propTypes = {
   getTask: PropTypes.func.isRequired,
   getMembers: PropTypes.func.isRequired,
   getUsersWithTask: PropTypes.func.isRequired,
-  clearUserTasks: PropTypes.func.isRequired,
+  clearTaskPage: PropTypes.func.isRequired,
 };
 
 TaskPageContainer.defaultProps = {
   taskId: '',
 };
 
-export default connect(mapStateToProps, { getTask, getUsersWithTask, clearUserTasks })(TaskPageContainer);
+export default connect(mapStateToProps, { getTask, getUsersWithTask, clearTaskPage })(TaskPageContainer);

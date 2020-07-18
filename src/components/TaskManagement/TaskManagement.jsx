@@ -10,7 +10,7 @@ import TaskData from './TaskData';
 import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
 import dateToString from '../../helpers/dateToString';
-import { showTaskPage, clearUserTasks } from '../../redux/reducers/taskPageReducer';
+import { showTaskPage, clearTaskPage } from '../../redux/reducers/taskPageReducer';
 import { setCurrentTask } from '../../redux/reducers/appReducer';
 import TaskPageContainer from '../TaskPage/TaskPageContainer';
 import showToast from '../../helpers/showToast';
@@ -21,7 +21,7 @@ const TaskManagement = ({
   showTaskPage,
   role,
   taskList,
-  clearUserTasks,
+  clearTaskPage,
   message,
 }) => {
   const newTask = (e) => {
@@ -36,7 +36,7 @@ const TaskManagement = ({
   };
 
   const hideMemberPage = () => {
-    clearUserTasks();
+    clearTaskPage();
     showTaskPage(false);
   };
 
@@ -103,7 +103,7 @@ const mapStateToProps = (state) => {
 TaskManagement.propTypes = {
   setCurrentTask: PropTypes.func.isRequired,
   showTaskPage: PropTypes.func.isRequired,
-  clearUserTasks: PropTypes.func.isRequired,
+  clearTaskPage: PropTypes.func.isRequired,
   role: PropTypes.string,
   taskList: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   taskPageIsVisible: PropTypes.bool.isRequired,
@@ -116,4 +116,4 @@ TaskManagement.defaultProps = {
   message: null,
 };
 
-export default connect(mapStateToProps, { showTaskPage, setCurrentTask, clearUserTasks })(TaskManagement);
+export default connect(mapStateToProps, { showTaskPage, setCurrentTask, clearTaskPage })(TaskManagement);

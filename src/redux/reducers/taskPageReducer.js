@@ -11,7 +11,7 @@ const ON_CHANGE = 'ON_CHANGE';
 const SET_USERS_WITH_TASK = 'SET_USERS_WITH_TASK';
 const SET_USERS_WITH_TASK_FROM_DB = 'SET_USERS_WITH_TASK_FROM_DB';
 const SET_USER_TASK = 'SET_USER_TASK';
-const CLEAR_USER_TASKS = 'CLEAR_USER_TASKS';
+const CLEAR_TASK_PAGE = 'CLEAR_TASK_PAGE';
 
 export const showTaskPage = (taskPageIsVisible) => ({ type: SHOW_TASK_PAGE, taskPageIsVisible });
 export const setTaskData = (currentTaskData) => ({
@@ -25,7 +25,7 @@ export const setUsersWithTask = (usersWithTask) => ({ type: SET_USERS_WITH_TASK,
 export const setCurrentTask = (taskId) => ({ type: SET_CURRENT_TASK, taskId });
 export const onChangeValue = (fieldName, value) => ({ type: ON_CHANGE, [fieldName]: value });
 export const setUserTasks = (userTasks) => ({ type: SET_USER_TASK, userTasks });
-export const clearUserTasks = () => ({ type: CLEAR_USER_TASKS });
+export const clearTaskPage = () => ({ type: CLEAR_TASK_PAGE });
 
 const initialState = {
   members: null,
@@ -44,7 +44,7 @@ export const getTask = (currentTaskId) => (dispatch) => {
   if (currentTaskId && currentTaskId !== 'newTask') {
     setCurrentTask(currentTaskId);
     firebaseApi.getTask(currentTaskId).then((result) => {
-      if (result.hasOwnProperty('message')) {
+      if (result.message) {
         return showToast(result);
       }
       dispatch(setTaskData(result));
@@ -56,7 +56,7 @@ export const getTask = (currentTaskId) => (dispatch) => {
 
 export const getMembers = () => (dispatch) => {
   firebaseApi.getNames().then((result) => {
-    if (result.hasOwnProperty('message')) {
+    if (result.message) {
       return showToast(result);
     }
     dispatch(setMembers(result));
@@ -65,7 +65,7 @@ export const getMembers = () => (dispatch) => {
 
 export const getUsersWithTask = (currentTaskId) => (dispatch) => {
   firebaseApi.getUsersWithTask(currentTaskId).then((result) => {
-    if (result.hasOwnProperty('message')) {
+    if (result.message) {
       return showToast(result);
     }
     dispatch(setUsersWithTaskFromDB(result));
@@ -101,8 +101,8 @@ const taskPageReducer = (state = initialState, action) => {
       return { ...state, userTasks: action.userTasks };
     case SET_MEMBERS:
       return { ...state, members: action.members };
-    case CLEAR_USER_TASKS:
-      return { ...state, userTasks: [] };
+    case CLEAR_TASK_PAGE:
+      return initialState;
     default:
       return state;
   }

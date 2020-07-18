@@ -31,17 +31,19 @@ const MemberList = ({
     setUserTasks(memberTasks);
   };
 
-  const memberNames = members.map(({ firstName, lastName, userId }) => (
-    <li key={userId}>
-      <input
-        type='checkbox'
-        id={userId}
-        onChange={asignTask}
-        checked={usersWithTaskLocal ? usersWithTaskLocal.includes(userId) : false}
-      />
-      <label htmlFor={userId}>{`${firstName} ${lastName}`}</label>
-    </li>
-  ));
+  const memberNames = members
+    ? members.map(({ firstName, lastName, userId }) => (
+        <li key={userId}>
+          <input
+            type='checkbox'
+            id={userId}
+            onChange={asignTask}
+            checked={usersWithTaskLocal ? usersWithTaskLocal.includes(userId) : false}
+          />
+          <label htmlFor={userId}>{`${firstName} ${lastName}`}</label>
+        </li>
+      ))
+    : null;
   return (
     <>
       <div className={styles.members}>
@@ -55,7 +57,8 @@ const MemberList = ({
 };
 
 const mapStateToProps = (state) => {
-  const { userTasks, usersWithTaskFromDB, taskId, members, usersWithTaskLocal } = state.taskPage;
+  const { userTasks, usersWithTaskFromDB, taskId, usersWithTaskLocal } = state.taskPage;
+  const { members } = state.members;
   return { userTasks, usersWithTaskFromDB, taskId, members, usersWithTaskLocal };
 };
 

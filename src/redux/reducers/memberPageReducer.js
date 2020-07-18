@@ -58,7 +58,7 @@ const membersReducer = (state = initialState, action) => {
     case SHOW_MEMBER_PAGE:
       return { ...state, memberPageIsVisible: action.memberPageIsVisible };
     case CLEAR_MEMBER_PAGE:
-      return { ...initialState };
+      return initialState;
     default:
       return state;
   }

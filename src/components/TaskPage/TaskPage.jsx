@@ -14,7 +14,7 @@ import showToast from '../../helpers/showToast';
 import { onChangeValue } from '../../redux/reducers/taskPageReducer';
 
 const TaskPage = (props) => {
-  const { userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal, members, hideMemberPage, onChangeValue } = props;
+  const { userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal, hideMemberPage, onChangeValue } = props;
   const onChange = (e) => {
     const { name, value } = e.target;
     onChangeValue(name, value);
@@ -90,7 +90,7 @@ const TaskPage = (props) => {
         </div>
 
         <div className={styles.right}>
-          {members && <MemberList />}
+          <MemberList />
           <div className={styles.buttonWrapper}>
             <SubmitButton className={styles.successButton} form='createTask'>
               {taskId === 'newTask' ? 'Create' : 'Save'}
@@ -107,7 +107,6 @@ const TaskPage = (props) => {
 
 const mapStateToProps = (state) => {
   const {
-    members,
     taskId,
     name,
     description,
@@ -120,7 +119,6 @@ const mapStateToProps = (state) => {
   } = state.taskPage;
 
   return {
-    members,
     description,
     startDate,
     deadlineDate,
@@ -139,7 +137,6 @@ TaskPage.propTypes = {
   userTasks: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   usersWithTaskFromDB: PropTypes.arrayOf(PropTypes.string),
   usersWithTaskLocal: PropTypes.arrayOf(PropTypes.string),
-  members: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   onChangeValue: PropTypes.func.isRequired,
 };
 
@@ -147,7 +144,6 @@ TaskPage.defaultProps = {
   userTasks: [],
   usersWithTaskFromDB: [],
   usersWithTaskLocal: [],
-  members: [],
 };
 
 export default connect(mapStateToProps, { onChangeValue })(TaskPage);
