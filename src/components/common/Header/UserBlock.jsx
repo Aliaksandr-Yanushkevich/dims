@@ -19,8 +19,8 @@ const UserBlock = ({ firstName, lastName, logout, showAccountPage }) => {
     <div className={styles.loginBlock}>
       <span>
         <div id={styles.account} onClick={displayAccountPage}>{`${firstName} ${lastName}`}</div>
-        <Tooltip isOpen={tooltipOpen} toggle={showTip} target={styles.account}>
-          <div className={styles.tip}>In the profile settings you can change your password</div>
+        <Tooltip id={styles.tip} isOpen={tooltipOpen} toggle={showTip} target={styles.account}>
+          In the profile settings you can change your password
         </Tooltip>
       </span>
       <FontAwesomeIcon icon={faSignOutAlt} onClick={logout} />
