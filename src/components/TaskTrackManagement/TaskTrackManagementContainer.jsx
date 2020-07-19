@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import TaskTrackManagement from './TaskTrackManagement';
 import { getTrackData, setError } from '../../redux/reducers/taskTrackManagementReducer';
 import { firestore } from '../../api/firebaseApi';
+import { toggleIsFetching } from '../../redux/reducers/appReducer';
 
 class TaskTrackManagementContainer extends React.Component {
   componentDidMount() {
@@ -33,6 +34,8 @@ class TaskTrackManagementContainer extends React.Component {
   }
 
   render() {
+    const { toggleIsFetching } = this.props;
+    toggleIsFetching(true);
     return <TaskTrackManagement />;
   }
 }
@@ -48,6 +51,7 @@ TaskTrackManagementContainer.propTypes = {
   role: PropTypes.string,
   getTrackData: PropTypes.func.isRequired,
   setError: PropTypes.func.isRequired,
+  toggleIsFetching: PropTypes.func.isRequired,
 };
 
 TaskTrackManagementContainer.defaultProps = {
@@ -55,4 +59,4 @@ TaskTrackManagementContainer.defaultProps = {
   role: '',
 };
 
-export default connect(mapStateToProps, { getTrackData, setError })(TaskTrackManagementContainer);
+export default connect(mapStateToProps, { getTrackData, setError, toggleIsFetching })(TaskTrackManagementContainer);

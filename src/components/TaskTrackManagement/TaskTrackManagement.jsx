@@ -75,6 +75,10 @@ const TaskTrackManagement = ({
       })
     : null;
 
+  if (isFetching) {
+    return <Preloader />;
+  }
+
   if (role !== 'member') {
     return (
       <p>
@@ -82,10 +86,6 @@ const TaskTrackManagement = ({
         role.
       </p>
     );
-  }
-
-  if (isFetching) {
-    return <Preloader />;
   }
 
   if (message) {
@@ -115,7 +115,17 @@ const mapStateToProps = (state) => {
   const { role } = state.auth;
   const { currentTaskName } = state.memberTasks;
   const { taskTrackPageIsVisible } = state.taskTrackPage;
-  return { role, currentTaskTrackId, currentTaskName, userTaskId, trackData, taskTrackPageIsVisible, message };
+  const { isFetching } = state.app;
+  return {
+    role,
+    currentTaskTrackId,
+    currentTaskName,
+    userTaskId,
+    trackData,
+    taskTrackPageIsVisible,
+    message,
+    isFetching,
+  };
 };
 
 TaskTrackManagement.propTypes = {

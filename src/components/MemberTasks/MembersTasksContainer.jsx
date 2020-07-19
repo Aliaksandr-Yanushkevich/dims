@@ -2,19 +2,26 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MemberTasks from './MembersTasks';
-import { getUserInfo, getUserTasksList, setError } from '../../redux/reducers/appReducer';
+import { getUserInfo, getUserTasksList, setError, toggleIsFetching } from '../../redux/reducers/appReducer';
 import { firestore } from '../../api/firebaseApi';
 
 class MemberTasksContainer extends Component {
   componentDidMount() {
-    const { currentUserId, getUserInfo, getUserTasksList, setError } = this.props;
+    const { currentUserId, getUserInfo, getUserTasksList, setError, toggleIsFetching } = this.props;
     setError(null);
     if (currentUserId) {
-      getUserInfo(currentUserId);
-      getUserTasksList(currentUserId);
+      const p1 = getUserInfo(currentUserId);
+      const p2 = getUserTasksList(currentUserId);
+
+      Promise.all([p1, p2]).then(() => {
+        toggleIsFetching(false);
+      });
+
       firestore.collection('TaskState').onSnapshot(
         () => {
-          getUserTasksList(currentUserId);
+          getUserTasksList(currentUserId).then(() => {
+            toggleIsFetching(false);
+          });
         },
         ({ message }) => {
           setError(message);
@@ -33,6 +40,8 @@ class MemberTasksContainer extends Component {
   }
 
   render() {
+    const { toggleIsFetching } = this.props;
+    toggleIsFetching(true);
     return <MemberTasks />;
   }
 }
@@ -50,10 +59,13 @@ MemberTasksContainer.propTypes = {
   getUserInfo: PropTypes.func.isRequired,
   getUserTasksList: PropTypes.func.isRequired,
   setError: PropTypes.func.isRequired,
+  toggleIsFetching: PropTypes.func.isRequired,
 };
 
 MemberTasksContainer.defaultProps = {
   currentUserId: '',
 };
 
-export default connect(mapStateToProps, { getUserInfo, getUserTasksList, setError })(MemberTasksContainer);
+export default connect(mapStateToProps, { getUserInfo, getUserTasksList, setError, toggleIsFetching })(
+  MemberTasksContainer,
+);

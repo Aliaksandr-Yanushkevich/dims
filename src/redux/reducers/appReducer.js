@@ -44,7 +44,6 @@ export const getUserInfo = (currentUserId) => (dispatch) => {
 };
 
 export const getUserTasksList = (currentUserId) => (dispatch) => {
-  dispatch(toggleIsFetching(true));
   return firebaseApi.getUserTaskList(currentUserId).then((result) => {
     if (result.message) {
       return showToast(result);
