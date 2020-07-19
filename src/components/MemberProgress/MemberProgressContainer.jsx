@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getUserInfo, getUserTasksList } from '../../redux/reducers/appReducer';
+import { getUserInfo, getUserTasksList, toggleIsFetching } from '../../redux/reducers/appReducer';
 import MemberProgres from './MemberProgress';
 
 class MemberProgresContainer extends Component {
   componentDidMount() {
-    const { currentUserId, role, getUserInfo, getUserTasksList } = this.props;
+    const { currentUserId, role, getUserInfo, getUserTasksList, toggleIsFetching } = this.props;
 
     if (currentUserId && role !== 'member') {
-      getUserInfo(currentUserId);
-      getUserTasksList(currentUserId);
+      const p1 = getUserInfo(currentUserId);
+      const p2 = getUserTasksList(currentUserId);
+      Promise.all([p1, p2]).then(() => {
+        toggleIsFetching(false);
+      });
     }
   }
 
@@ -33,6 +36,7 @@ MemberProgresContainer.propTypes = {
   currentUserId: PropTypes.string,
   getUserInfo: PropTypes.func.isRequired,
   getUserTasksList: PropTypes.func.isRequired,
+  toggleIsFetching: PropTypes.func.isRequired,
 };
 
 MemberProgresContainer.defaultProps = {
@@ -40,4 +44,4 @@ MemberProgresContainer.defaultProps = {
   currentUserId: '',
 };
 
-export default connect(mapStateToProps, { getUserInfo, getUserTasksList })(MemberProgresContainer);
+export default connect(mapStateToProps, { getUserInfo, getUserTasksList, toggleIsFetching })(MemberProgresContainer);

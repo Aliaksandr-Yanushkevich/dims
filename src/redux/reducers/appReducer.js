@@ -34,33 +34,23 @@ const initialState = {
 
 export const getUserInfo = (currentUserId) => (dispatch) => {
   dispatch(toggleIsFetching(true));
-  firebaseApi
-    .getUserInfo(currentUserId)
-    .then((result) => {
-      if (result.message) {
-        return showToast(result);
-      }
-      const { firstName, lastName } = result;
-      dispatch(setUserInfo(firstName, lastName));
-    })
-    .then(() => {
-      dispatch(toggleIsFetching(false));
-    });
+  return firebaseApi.getUserInfo(currentUserId).then((result) => {
+    if (result.message) {
+      return showToast(result);
+    }
+    const { firstName, lastName } = result;
+    dispatch(setUserInfo(firstName, lastName));
+  });
 };
 
 export const getUserTasksList = (currentUserId) => (dispatch) => {
   dispatch(toggleIsFetching(true));
-  firebaseApi
-    .getUserTaskList(currentUserId)
-    .then((result) => {
-      if (result.message) {
-        return showToast(result);
-      }
-      dispatch(setUserTasks(result));
-    })
-    .then(() => {
-      dispatch(toggleIsFetching(false));
-    });
+  return firebaseApi.getUserTaskList(currentUserId).then((result) => {
+    if (result.message) {
+      return showToast(result);
+    }
+    dispatch(setUserTasks(result));
+  });
 };
 
 const appReducer = (state = initialState, action) => {
