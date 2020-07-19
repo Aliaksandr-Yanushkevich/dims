@@ -5,15 +5,20 @@ import { toggleIsFetching } from './appReducer';
 const SET_TRACK_DATA = 'SET_TRACK_DATA';
 const SET_CURRENT_TASK_TRACK_ID = 'SET_CURRENT_TASK_TRACK_ID';
 const SET_USER_TASK_ID = 'SET_USER_TASK_ID';
+const SET_ERROR_MESSAGE = 'SET_ERROR_MESSAGE';
+const CLEAR_TASK_TRACK_ID = 'CLEAR_TASK_TRACK_ID';
 
+export const setError = (message) => ({ type: SET_ERROR_MESSAGE, message });
 export const setTrackData = (trackData) => ({ type: SET_TRACK_DATA, trackData });
 export const setCurrentTaskTrackId = (currentTaskTrackId) => ({ type: SET_CURRENT_TASK_TRACK_ID, currentTaskTrackId });
 export const setUserTaskId = (userTaskId) => ({ type: SET_USER_TASK_ID, userTaskId });
+export const clearTaskTrackId = () => ({ type: CLEAR_TASK_TRACK_ID });
 
 const initialState = {
   currentTaskTrackId: null,
   trackData: null,
   userTaskId: null,
+  message: null,
 };
 
 export const getTrackData = (currentUserId) => (dispatch) => {
@@ -21,7 +26,7 @@ export const getTrackData = (currentUserId) => (dispatch) => {
   firebaseApi
     .getTrackDataArray(currentUserId)
     .then((result) => {
-      if (result.hasOwnProperty('message')) {
+      if (result.message) {
         return showToast(result);
       }
       dispatch(setTrackData(result));
@@ -39,6 +44,10 @@ const taskTrackManagementReducer = (state = initialState, action) => {
       return { ...state, currentTaskTrackId: action.currentTaskTrackId };
     case SET_USER_TASK_ID:
       return { ...state, userTaskId: action.userTaskId };
+    case SET_ERROR_MESSAGE:
+      return { ...state, message: action.message };
+    case CLEAR_TASK_TRACK_ID:
+      return { ...state, currentTaskTrackId: null };
 
     default:
       return state;

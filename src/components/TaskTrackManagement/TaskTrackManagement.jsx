@@ -13,9 +13,13 @@ import TaskTrackPageContainer from '../TaskTrackPage/TaskTrackPageContainer';
 import firebaseApi from '../../api/firebaseApi';
 import dateToString from '../../helpers/dateToString';
 import showToast from '../../helpers/showToast';
-import { setCurrentTaskTrackId, setUserTaskId } from '../../redux/reducers/taskTrackManagementReducer';
+import {
+  setCurrentTaskTrackId,
+  setUserTaskId,
+  clearTaskTrackId,
+} from '../../redux/reducers/taskTrackManagementReducer';
 import { setCurrentTaskName } from '../../redux/reducers/memberTasksReducer';
-import { showTaskTrackPage } from '../../redux/reducers/taskTrackPageReducer';
+import { showTaskTrackPage, clearTaskTrackPage } from '../../redux/reducers/taskTrackPageReducer';
 
 const TaskTrackManagement = ({
   role,
@@ -26,6 +30,9 @@ const TaskTrackManagement = ({
   setCurrentTaskName,
   setUserTaskId,
   showTaskTrackPage,
+  clearTaskTrackPage,
+  clearTaskTrackId,
+  message,
 }) => {
   const editTask = (e) => {
     e.persist();
@@ -45,7 +52,8 @@ const TaskTrackManagement = ({
   };
 
   const hideTaskTrackPage = () => {
-    // clean data method
+    clearTaskTrackPage();
+    clearTaskTrackId();
     showTaskTrackPage(false);
   };
 
@@ -79,6 +87,11 @@ const TaskTrackManagement = ({
   if (isFetching) {
     return <Preloader />;
   }
+
+  if (message) {
+    showToast({ message, messageType: 'warning' });
+  }
+
   if (trackData && !trackData.length) {
     return <p>You haven&apos;t track notes</p>;
   }
@@ -98,11 +111,11 @@ const TaskTrackManagement = ({
 };
 
 const mapStateToProps = (state) => {
-  const { currentTaskTrackId, trackData, userTaskId } = state.taskTrackManagement;
+  const { currentTaskTrackId, trackData, userTaskId, message } = state.taskTrackManagement;
   const { role } = state.auth;
   const { currentTaskName } = state.memberTasks;
   const { taskTrackPageIsVisible } = state.taskTrackPage;
-  return { role, currentTaskTrackId, currentTaskName, userTaskId, trackData, taskTrackPageIsVisible };
+  return { role, currentTaskTrackId, currentTaskName, userTaskId, trackData, taskTrackPageIsVisible, message };
 };
 
 TaskTrackManagement.propTypes = {
@@ -114,6 +127,8 @@ TaskTrackManagement.propTypes = {
   setCurrentTaskName: PropTypes.func.isRequired,
   setUserTaskId: PropTypes.func.isRequired,
   showTaskTrackPage: PropTypes.func.isRequired,
+  clearTaskTrackPage: PropTypes.func.isRequired,
+  clearTaskTrackId: PropTypes.func.isRequired,
 };
 
 TaskTrackManagement.defaultProps = {
@@ -126,4 +141,6 @@ export default connect(mapStateToProps, {
   setCurrentTaskName,
   setUserTaskId,
   showTaskTrackPage,
+  clearTaskTrackPage,
+  clearTaskTrackId,
 })(TaskTrackManagement);

@@ -6,17 +6,19 @@ import { toggleIsFetching } from './appReducer';
 const SHOW_TASK_TRACK_PAGE = 'SHOW_TASK_TRACK_PAGE';
 const SET_TASK_TRACK = 'SET_TASK_TRACK';
 const ON_CHANGE = 'ON_CHANGE';
+const CLEAR_TASK_TRACK_PAGE = 'CLEAR_TASK_TRACK_PAGE';
 
 export const showTaskTrackPage = (taskTrackPageIsVisible) => ({ type: SHOW_TASK_TRACK_PAGE, taskTrackPageIsVisible });
 export const setTrackNote = (trackNote) => ({ type: SET_TASK_TRACK, trackNote });
 export const onChangeValue = (fieldName, value) => ({ type: ON_CHANGE, [fieldName]: value });
+export const clearTaskTrackPage = () => ({ type: CLEAR_TASK_TRACK_PAGE });
 
 export const getTaskTrack = (taskTrackId) => (dispatch) => {
   dispatch(toggleIsFetching(true));
   firebaseApi
     .getTaskTrack(taskTrackId)
     .then((result) => {
-      if (result.hasOwnProperty('message')) {
+      if (result.message) {
         return showToast(result);
       }
       dispatch(setTrackNote(result));
@@ -28,7 +30,7 @@ export const getTaskTrack = (taskTrackId) => (dispatch) => {
 
 const initialState = {
   taskTrackPageIsVisible: false,
-  trackNote: null,
+  trackNote: '',
   trackDate: dateToStringForInput(new Date()),
 };
 
@@ -44,6 +46,8 @@ const taskTrackPageReducer = (state = initialState, action) => {
         ...state,
         ...rest,
       };
+    case CLEAR_TASK_TRACK_PAGE:
+      return initialState;
 
     default:
       return state;

@@ -12,7 +12,7 @@ import { membersTasksTitle, membersTasksTitleForMembers } from '../../constants'
 import TaskTrackPageContainer from '../TaskTrackPage/TaskTrackPageContainer';
 import { setCurrentTaskName } from '../../redux/reducers/memberTasksReducer';
 import { setUserTaskId } from '../../redux/reducers/taskTrackManagementReducer';
-import { showTaskTrackPage } from '../../redux/reducers/taskTrackPageReducer';
+import { showTaskTrackPage, clearTaskTrackPage } from '../../redux/reducers/taskTrackPageReducer';
 import showToast from '../../helpers/showToast';
 
 const MemberTasks = ({
@@ -25,6 +25,7 @@ const MemberTasks = ({
   setCurrentTaskName,
   showTaskTrackPage,
   setUserTaskId,
+  clearTaskTrackPage,
   message,
 }) => {
   const track = (e) => {
@@ -36,7 +37,7 @@ const MemberTasks = ({
   };
 
   const hideTaskTrackPage = () => {
-    // clear data ?
+    clearTaskTrackPage();
     showTaskTrackPage(false);
   };
 
@@ -134,6 +135,7 @@ MemberTasks.propTypes = {
   setCurrentTaskName: PropTypes.func.isRequired,
   showTaskTrackPage: PropTypes.func.isRequired,
   setUserTaskId: PropTypes.func.isRequired,
+  clearTaskTrackPage: PropTypes.func.isRequired,
   message: PropTypes.string,
 };
 
@@ -145,4 +147,6 @@ MemberTasks.defaultProps = {
   message: null,
 };
 
-export default connect(mapStateToProps, { setCurrentTaskName, showTaskTrackPage, setUserTaskId })(MemberTasks);
+export default connect(mapStateToProps, { setCurrentTaskName, showTaskTrackPage, setUserTaskId, clearTaskTrackPage })(
+  MemberTasks,
+);
