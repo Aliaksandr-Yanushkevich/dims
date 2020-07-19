@@ -81,8 +81,7 @@ const MemberPage = (props) => {
     onChangeValue(name, value);
   };
 
-  const { currentUserId, hideMemberPage, sex, directions, directionId, isFetching } = props;
-  const defaultValues = { directionId, sex };
+  const { currentUserId, hideMemberPage, directions, isFetching } = props;
   const preparedGenders = genders.map((gender) => {
     const { label, value } = gender;
     return <AvRadio key={label} label={label} value={value} onChange={onChange} />;
@@ -90,14 +89,14 @@ const MemberPage = (props) => {
   const preparedDirections = directions
     ? directions.map((direction) => {
         const { name, directionId } = direction;
-        return <AvRadio key={directionId} label={name} value={directionId} onChange={onChange} />;
+        return <AvRadio key={directionId} label={name} value={directionId.toString()} onChange={onChange} />;
       })
     : null;
 
   const fields = memberPageFields.map(({ id, name, type, label, placeholder, regexp, errorMessage, step }) => {
     if (type === 'radio') {
       return (
-        <AvRadioGroup key={id} inline id={id} name={name} label={label} required>
+        <AvRadioGroup key={id} inline id={id} name={name} value={props[name]} label={label} required>
           {name === 'directionId' && preparedDirections}
           {name === 'sex' && preparedGenders}
         </AvRadioGroup>
@@ -142,7 +141,7 @@ const MemberPage = (props) => {
       <ToastContainer />
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{currentUserId === 'newMember' ? 'Register Member' : 'Edit Member'}</h1>
-        <AvForm id='createMember' model={defaultValues} onSubmit={createUser}>
+        <AvForm id='createMember' onSubmit={createUser}>
           {fields}
         </AvForm>
         <div className={styles.buttonWrapper}>

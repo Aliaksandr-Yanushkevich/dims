@@ -48,6 +48,7 @@ const membersReducer = (state = initialState, action) => {
         ...action.userInfo,
         startDate: dateToStringForInput(action.userInfo.startDate.toDate()),
         birthDate: dateToStringForInput(action.userInfo.birthDate.toDate()),
+        directionId: action.userInfo.directionId.toString(),
       };
     case ON_CHANGE:
       const { type, ...rest } = action;
