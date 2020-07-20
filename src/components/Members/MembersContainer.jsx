@@ -37,8 +37,9 @@ class MembersContainer extends React.Component {
 }
 
 MembersContainer.propTypes = {
-  getMembers: PropTypes.func.isRequired,
   getDirections: PropTypes.func.isRequired,
+  setMembers: PropTypes.func.isRequired,
+  setError: PropTypes.func.isRequired,
 };
 
 export default connect(null, { getDirections, setMembers, setError })(MembersContainer);

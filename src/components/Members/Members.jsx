@@ -35,6 +35,7 @@ const Members = ({
 }) => {
   const isAdmin = role === 'admin';
   const isMentor = role === 'mentor';
+
   const createUser = (e) => {
     e.persist();
     const { id } = e.target.dataset;

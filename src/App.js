@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import Header from './components/common/Header/Header';
-import TaskTrackManagement from './components/TaskTrackManagement/TaskTrackManagement';
 import Footer from './components/common/Footer/Footer';
 import styles from './App.module.scss';
 import Login from './components/Login/Login';
@@ -18,7 +17,7 @@ class App extends Component {
   }
 
   render() {
-    const { isAuth, currentUserId, role } = this.props;
+    const { isAuth, role } = this.props;
     const savedUserData = sessionStorage.getItem('user');
 
     return (

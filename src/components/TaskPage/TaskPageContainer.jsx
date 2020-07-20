@@ -25,7 +25,6 @@ TaskPageContainer.propTypes = {
   taskId: PropTypes.string,
   hideMemberPage: PropTypes.func.isRequired,
   getTask: PropTypes.func.isRequired,
-  getMembers: PropTypes.func.isRequired,
   getUsersWithTask: PropTypes.func.isRequired,
   clearTaskPage: PropTypes.func.isRequired,
 };
