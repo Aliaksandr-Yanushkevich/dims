@@ -108,7 +108,7 @@ const Members = ({
   return (
     <>
       <ToastContainer />
-      <Modal id={styles.modal} isOpen={memberPageIsVisible} toggle={hideMemberPage} centered>
+      <Modal id={styles.modalMemberPage} isOpen={memberPageIsVisible} toggle={hideMemberPage} centered>
         <MemberPageContainer hideMemberPage={hideMemberPage} />
       </Modal>
 
