@@ -80,14 +80,15 @@ const MemberData = ({
             Tasks
           </NavButton>
           {isAdmin && (
-            <Button className={styles.defaultButton} dataId={userId} onClick={createUser}>
-              Edit
-            </Button>
-          )}
-          {isAdmin && (
-            <Button className={styles.dangerousButton} dataId={userId} onClick={deleteUser}>
-              Delete
-            </Button>
+            <>
+              <Button className={styles.defaultButton} dataId={userId} onClick={createUser}>
+                Edit
+              </Button>
+
+              <Button className={styles.dangerousButton} dataId={userId} onClick={deleteUser}>
+                Delete
+              </Button>
+            </>
           )}
         </div>
       </TableData>

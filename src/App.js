@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import Header from './components/common/Header/Header';
@@ -53,6 +54,15 @@ class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  isAuth: PropTypes.bool.isRequired,
+  role: PropTypes.string,
+};
+
+App.defaultProps = {
+  role: '',
+};
 
 const mapStateToProps = (state) => {
   const { currentTaskId, currentUserId, accountPageIsVisible } = state.app;
