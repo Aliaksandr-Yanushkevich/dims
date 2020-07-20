@@ -1,5 +1,4 @@
 import firebaseApi from '../../api/firebaseApi';
-import showToast from '../../helpers/showToast';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
 import generateID from '../../helpers/generateID';
 
@@ -12,13 +11,14 @@ const SET_USERS_WITH_TASK = 'SET_USERS_WITH_TASK';
 const SET_USERS_WITH_TASK_FROM_DB = 'SET_USERS_WITH_TASK_FROM_DB';
 const SET_USER_TASK = 'SET_USER_TASK';
 const CLEAR_TASK_PAGE = 'CLEAR_TASK_PAGE';
+const SET_ERROR_MESSAGE = 'SET_ERROR_MESSAGE';
 
 export const showTaskPage = (taskPageIsVisible) => ({ type: SHOW_TASK_PAGE, taskPageIsVisible });
 export const setTaskData = (currentTaskData) => ({
   type: SET_TASK_DATA,
   currentTaskData,
 });
-
+export const setError = (message) => ({ type: SET_ERROR_MESSAGE, message });
 export const setMembers = (members) => ({ type: SET_MEMBERS, members });
 export const setUsersWithTaskFromDB = (usersWithTask) => ({ type: SET_USERS_WITH_TASK_FROM_DB, usersWithTask });
 export const setUsersWithTask = (usersWithTask) => ({ type: SET_USERS_WITH_TASK, usersWithTask });
@@ -38,6 +38,7 @@ const initialState = {
   usersWithTaskLocal: null,
   userTasks: [],
   taskPageIsVisible: false,
+  message: null,
 };
 
 export const getTask = (currentTaskId) => (dispatch) => {
@@ -45,30 +46,23 @@ export const getTask = (currentTaskId) => (dispatch) => {
     setCurrentTask(currentTaskId);
     firebaseApi.getTask(currentTaskId).then((result) => {
       if (result.message) {
-        return showToast(result);
+        dispatch(setError(result.message));
+      } else {
+        dispatch(setTaskData(result));
       }
-      dispatch(setTaskData(result));
     });
   } else {
     setCurrentTask(generateID());
   }
 };
 
-export const getMembers = () => (dispatch) => {
-  firebaseApi.getNames().then((result) => {
-    if (result.message) {
-      return showToast(result);
-    }
-    dispatch(setMembers(result));
-  });
-};
-
 export const getUsersWithTask = (currentTaskId) => (dispatch) => {
   firebaseApi.getUsersWithTask(currentTaskId).then((result) => {
     if (result.message) {
-      return showToast(result);
+      dispatch(setError(result));
+    } else {
+      dispatch(setUsersWithTaskFromDB(result));
     }
-    dispatch(setUsersWithTaskFromDB(result));
   });
 };
 
@@ -103,6 +97,8 @@ const taskPageReducer = (state = initialState, action) => {
       return { ...state, members: action.members };
     case CLEAR_TASK_PAGE:
       return initialState;
+    case SET_ERROR_MESSAGE:
+      return { ...state, message: action.message };
     default:
       return state;
   }

@@ -36,10 +36,11 @@ export const getUserInfo = (currentUserId) => (dispatch) => {
   dispatch(toggleIsFetching(true));
   return firebaseApi.getUserInfo(currentUserId).then((result) => {
     if (result.message) {
-      return showToast(result);
+      dispatch(setError(result));
+    } else {
+      const { firstName, lastName } = result;
+      dispatch(setUserInfo(firstName, lastName));
     }
-    const { firstName, lastName } = result;
-    dispatch(setUserInfo(firstName, lastName));
   });
 };
 

@@ -10,6 +10,7 @@ import { memberProgressTitle } from '../../constants';
 import { setCurrentTask } from '../../redux/reducers/appReducer';
 import { showTaskPage } from '../../redux/reducers/taskPageReducer';
 import TaskPageContainer from '../TaskPage/TaskPageContainer';
+import showToast from '../../helpers/showToast';
 
 const MemberProgres = ({
   role,
@@ -20,6 +21,7 @@ const MemberProgres = ({
   isFetching,
   setCurrentTask,
   showTaskPage,
+  message,
 }) => {
   const createTask = (e) => {
     const { taskid } = e.target.dataset;
@@ -41,6 +43,11 @@ const MemberProgres = ({
   if (isFetching) {
     return <Preloader />;
   }
+
+  if (message) {
+    showToast(message);
+  }
+
   if (userTasks && !userTasks.length && !isFetching) {
     return <p>{`${currentUserFirstName} ${currentUserLastName} hasn't tracked tasks.`}</p>;
   }
@@ -78,7 +85,15 @@ const MemberProgres = ({
 };
 
 const mapStateToProps = (state) => {
-  const { currentUserId, isFetching, currentTaskId, currentUserFirstName, currentUserLastName, userTasks } = state.app;
+  const {
+    currentUserId,
+    isFetching,
+    currentTaskId,
+    currentUserFirstName,
+    currentUserLastName,
+    userTasks,
+    message,
+  } = state.app;
   const { role } = state.auth;
   const { taskPageIsVisible } = state.taskPage;
 
@@ -91,6 +106,7 @@ const mapStateToProps = (state) => {
     currentUserLastName,
     taskPageIsVisible,
     userTasks,
+    message,
   };
 };
 
@@ -103,6 +119,7 @@ MemberProgres.propTypes = {
   userTasks: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   isFetching: PropTypes.bool.isRequired,
   showTaskPage: PropTypes.func.isRequired,
+  message: PropTypes.node,
 };
 
 MemberProgres.defaultProps = {
@@ -111,6 +128,7 @@ MemberProgres.defaultProps = {
   currentUserLastName: '',
   userTasks: null,
   taskPageIsVisible: false,
+  message: null,
 };
 
 export default connect(mapStateToProps, { setCurrentTask, showTaskPage })(MemberProgres);

@@ -30,6 +30,11 @@ const firebaseApi = {
 
       .then(() => {
         this.register(email, 'incubator');
+      })
+      .then((response) => {
+        if (response) {
+          throw new Error(response.message);
+        }
         return email;
       })
       .then((userEmail) => {
@@ -63,9 +68,7 @@ const firebaseApi = {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .catch((error) => {
-        console.error(`${error.message} ${error.code}`);
-      });
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   login(email, password, remember) {
@@ -151,9 +154,7 @@ const firebaseApi = {
         });
         return directions;
       })
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   createTask(taskInfo) {
@@ -231,25 +232,7 @@ const firebaseApi = {
           deadlineDate: dateToStringForInput(deadlineDate.toDate()),
         };
       })
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
-  },
-
-  getNames() {
-    return firestore
-      .collection('UserProfile')
-      .orderBy('firstName')
-      .get()
-      .then((users) =>
-        users.docs.map((user) => {
-          const { firstName, lastName, userId } = user.data();
-          return { firstName, lastName, userId };
-        }),
-      )
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   getUsersWithTask(taskId) {
@@ -266,26 +249,7 @@ const firebaseApi = {
         });
       })
       .then(() => usersWithTask)
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
-  },
-
-  getTaskList() {
-    return firestore
-      .collection('Task')
-      .orderBy('deadlineDate', 'desc')
-      .get()
-      .then((tasksList) => {
-        const tasks = tasksList.docs.map((task) => {
-          const { name, startDate, deadlineDate, taskId } = task.data();
-          return { name, startDate: startDate.toDate(), deadlineDate: deadlineDate.toDate(), taskId };
-        });
-        return tasks;
-      })
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   getUserTaskList(userId) {
@@ -310,9 +274,7 @@ const firebaseApi = {
         const taskData = Promise.all(promiseArray);
         return taskData;
       })
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   getUserTaskData(taskId, userTaskId, stateId) {
@@ -364,9 +326,7 @@ const firebaseApi = {
             return taskData;
           });
       })
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   trackTask(userTaskId, taskTrackId, trackDate, trackNote) {
@@ -459,22 +419,15 @@ const firebaseApi = {
         const { trackNote } = taskData.data();
         return trackNote;
       })
-      .catch((error) => {
-        console.error(`Error receiving data: ${error}`);
-      });
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   completeTask(currentTaskId, stateName) {
-    firestore
+    return firestore
       .collection('TaskState')
       .doc(currentTaskId)
       .update({ stateName })
-      .then(() => {
-        console.log('task is completed');
-      })
-      .catch((error) => {
-        console.error(`Something went wrong: ${error}`);
-      });
+      .catch(({ message }) => ({ message, messageType: 'warning' }));
   },
 
   deleteUser(userId) {

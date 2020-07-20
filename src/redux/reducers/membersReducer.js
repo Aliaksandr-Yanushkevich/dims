@@ -16,7 +16,11 @@ const initialState = {
 
 export const getDirections = () => (dispatch) => {
   firebaseApi.getDirections().then((result) => {
-    dispatch(setDirections(result));
+    if (result.message) {
+      dispatch(setError(result.message));
+    } else {
+      dispatch(setDirections(result));
+    }
   });
 };
 

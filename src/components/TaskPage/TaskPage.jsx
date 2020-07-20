@@ -14,7 +14,7 @@ import showToast from '../../helpers/showToast';
 import { onChangeValue } from '../../redux/reducers/taskPageReducer';
 
 const TaskPage = (props) => {
-  const { userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal, hideMemberPage, onChangeValue } = props;
+  const { userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal, hideMemberPage, onChangeValue, message } = props;
   const onChange = (e) => {
     const { name, value } = e.target;
     onChangeValue(name, value);
@@ -78,6 +78,10 @@ const TaskPage = (props) => {
     }
   };
 
+  if (message) {
+    showToast(message);
+  }
+
   return (
     <>
       <ToastContainer />
@@ -116,6 +120,7 @@ const mapStateToProps = (state) => {
     usersWithTaskLocal,
     userTasks,
     currentTaskData,
+    message,
   } = state.taskPage;
 
   return {
@@ -128,6 +133,7 @@ const mapStateToProps = (state) => {
     currentTaskData,
     taskId,
     name,
+    message,
   };
 };
 
@@ -138,12 +144,14 @@ TaskPage.propTypes = {
   usersWithTaskFromDB: PropTypes.arrayOf(PropTypes.string),
   usersWithTaskLocal: PropTypes.arrayOf(PropTypes.string),
   onChangeValue: PropTypes.func.isRequired,
+  message: PropTypes.node,
 };
 
 TaskPage.defaultProps = {
   userTasks: [],
   usersWithTaskFromDB: [],
   usersWithTaskLocal: [],
+  message: null,
 };
 
 export default connect(mapStateToProps, { onChangeValue })(TaskPage);

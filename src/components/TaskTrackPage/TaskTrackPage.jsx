@@ -16,7 +16,7 @@ import showToast from '../../helpers/showToast';
 import { onChangeValue } from '../../redux/reducers/taskTrackPageReducer';
 
 const TaskTrackPage = (props) => {
-  const { hideTaskTrackPage, currentTaskName } = props;
+  const { hideTaskTrackPage, currentTaskName, message } = props;
   const onChange = (e) => {
     const { onChangeValue } = props;
     const { name, value } = e.target;
@@ -77,6 +77,10 @@ const TaskTrackPage = (props) => {
     return <Preloader />;
   }
 
+  if (message) {
+    showToast(message);
+  }
+
   return (
     <>
       <ToastContainer />
@@ -102,8 +106,8 @@ const TaskTrackPage = (props) => {
 const mapStateToProps = (state) => {
   const { currentTaskName } = state.memberTasks;
   const { userTaskId, currentTaskTrackId } = state.taskTrackManagement;
-  const { trackNote, trackDate } = state.taskTrackPage;
-  return { currentTaskName, userTaskId, currentTaskTrackId, trackNote, trackDate };
+  const { trackNote, trackDate, message } = state.taskTrackPage;
+  return { currentTaskName, userTaskId, currentTaskTrackId, trackNote, trackDate, message };
 };
 
 TaskTrackPage.propTypes = {
@@ -112,12 +116,14 @@ TaskTrackPage.propTypes = {
   currentTaskName: PropTypes.string,
   hideTaskTrackPage: PropTypes.func.isRequired,
   onChangeValue: PropTypes.func.isRequired,
+  message: PropTypes.node,
 };
 
 TaskTrackPage.defaultProps = {
   currentTaskTrackId: '',
   userTaskId: '',
   currentTaskName: '',
+  message: null,
 };
 
 export default connect(mapStateToProps, { onChangeValue })(TaskTrackPage);
