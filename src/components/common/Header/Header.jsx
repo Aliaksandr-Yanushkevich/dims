@@ -25,7 +25,7 @@ const Header = ({ role, showAccountPage, accountPageIsVisible }) => {
 
   return (
     <header className={styles.header}>
-      <Modal isOpen={accountPageIsVisible} toggle={hideAccountPage}>
+      <Modal id={styles.modalAccountPage} isOpen={accountPageIsVisible} toggle={hideAccountPage} centered>
         <Account hideAccountPage={hideAccountPage} />
       </Modal>
       <NavLink className={styles.link} to='/members'>
