@@ -1,0 +1,16 @@
+@import '../../../styleguide/styleguide.scss';
+
+.customModal {
+  background-color: $secondaryColor;
+  color: $primaryColor;
+}
+
+.modalHeader {
+  color: $dangerousColor;
+}
+
+.modalBody {
+  font-weight: bold;
+  background-color: #f9e9e7;
+  color: $dangerousColor;
+}

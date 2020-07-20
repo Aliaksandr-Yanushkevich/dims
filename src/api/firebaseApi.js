@@ -478,9 +478,10 @@ const firebaseApi = {
   },
 
   deleteUser(userId) {
-    return this.deleteItemWithId('UserProfile', userId)
+    return firebaseApi
+      .deleteItemWithId('UserProfile', userId)
       .then(() => {
-        this.deleteItemWithId('Roles', userId);
+        firebaseApi.deleteItemWithId('Roles', userId);
       })
       .then(() => {
         return firestore
@@ -491,8 +492,8 @@ const firebaseApi = {
       .then((tasks) => {
         tasks.forEach((task) => {
           const { userTaskId, stateId } = task.data();
-          this.deleteItemWithId('UserTask', userTaskId);
-          this.deleteItemWithId('TaskState', stateId);
+          firebaseApi.deleteItemWithId('UserTask', userTaskId);
+          firebaseApi.deleteItemWithId('TaskState', stateId);
           return firestore
             .collection('TaskTrack')
             .where('userTaskId', '==', userTaskId)
@@ -500,7 +501,7 @@ const firebaseApi = {
             .then((trackedTasks) => {
               trackedTasks.forEach((trackedtask) => {
                 const { taskTrackId } = trackedtask.data();
-                this.deleteItemWithId('TaskTrack', taskTrackId);
+                firebaseApi.deleteItemWithId('TaskTrack', taskTrackId);
               });
             });
         });
