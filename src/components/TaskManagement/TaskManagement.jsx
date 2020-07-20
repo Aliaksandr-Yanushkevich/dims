@@ -92,7 +92,7 @@ const TaskManagement = ({
       <ToastContainer />
       <h1 className={styles.title}>Task management</h1>
       <div className={styles.tableWrapper}>
-        <Modal isOpen={taskPageIsVisible} toggle={hideMemberPage}>
+        <Modal id={styles.modal} isOpen={taskPageIsVisible} toggle={hideMemberPage} centered>
           <TaskPageContainer hideMemberPage={hideMemberPage} />
         </Modal>
 

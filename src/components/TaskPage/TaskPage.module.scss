@@ -1,16 +1,10 @@
 @import '../../styleguide/styleguide.scss';
 
 .wrapper {
-  width: 70%;
+  width: 100%;
   border: 1px solid $primaryColor;
   margin: 0 auto;
   padding: 1.5rem;
-  position: fixed;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  top: 50%;
-  transform: translate(0, -50%);
   background-color: $secondaryColor;
   display: grid;
   grid-template-columns: 1fr 1fr;
