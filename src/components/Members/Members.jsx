@@ -16,6 +16,8 @@ import showToast from '../../helpers/showToast';
 import { setCurrentUser } from '../../redux/reducers/appReducer';
 import { showMemberPage, clearMemberPage } from '../../redux/reducers/memberPageReducer';
 import MemberPageContainer from '../MemberPage/MemberPageContainer';
+import DeleteConfirmation from '../common/DeleteConfirmation/DeleteConfirmation';
+import { setParameters, showDeleteConfirmation, setFunction } from '../../redux/reducers/deleteConfirmationReducer';
 
 const Members = ({
   members,
@@ -26,6 +28,10 @@ const Members = ({
   showMemberPage,
   message,
   clearMemberPage,
+  setParameters,
+  setFunction,
+  showDeleteConfirmation,
+  deleteConfirmationIsVisible,
 }) => {
   const isAdmin = role === 'admin';
   const isMentor = role === 'mentor';
@@ -41,6 +47,10 @@ const Members = ({
     showMemberPage(false);
   };
 
+  const hideDeleteConfirmation = () => {
+    showDeleteConfirmation(false);
+  };
+
   const deleteUser = (e) => {
     e.persist();
     const {
@@ -48,10 +58,11 @@ const Members = ({
         dataset: { id: userId },
       },
     } = e;
-    firebaseApi.deleteUser(userId).then((result) => {
-      showToast(result);
-    });
+    setParameters(userId);
+    setFunction(firebaseApi.deleteUser);
+    showDeleteConfirmation(true);
   };
+
   const memberRows = members
     ? members.map((member, index) => {
         const { firstName, lastName, birthDate, directionId, education, startDate, userId } = member;
@@ -97,9 +108,16 @@ const Members = ({
   return (
     <>
       <ToastContainer />
-      <Modal isOpen={memberPageIsVisible} toggle={hideMemberPage}>
+      <Modal id={styles.modalDialog} isOpen={memberPageIsVisible} toggle={hideMemberPage} centered>
         <MemberPageContainer hideMemberPage={hideMemberPage} />
       </Modal>
+
+      <Modal isOpen={deleteConfirmationIsVisible} toggle={hideDeleteConfirmation} centered>
+        <DeleteConfirmation hideDeleteConfirmation={hideDeleteConfirmation}>
+          Are you sure to delete this user?
+        </DeleteConfirmation>
+      </Modal>
+
       <h1 className={styles.title}>Members Manage Grid</h1>
       <div className={styles.tableWrapper}>
         {isAdmin && (
@@ -122,17 +140,32 @@ const mapStateToProps = (state) => {
   const { currentUserId } = state.app;
   const { role } = state.auth;
   const { memberPageIsVisible } = state.memberPage;
-  return { members, directions, memberPageIsVisible, currentUserId, role, message };
+  const { deleteConfirmationIsVisible, params, func } = state.deleteConfirmation;
+  return {
+    members,
+    directions,
+    memberPageIsVisible,
+    currentUserId,
+    role,
+    message,
+    deleteConfirmationIsVisible,
+    params,
+    func,
+  };
 };
 
 Members.propTypes = {
   members: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   memberPageIsVisible: PropTypes.bool.isRequired,
+  deleteConfirmationIsVisible: PropTypes.bool.isRequired,
   directions: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   role: PropTypes.string,
   setCurrentUser: PropTypes.func.isRequired,
   showMemberPage: PropTypes.func.isRequired,
   clearMemberPage: PropTypes.func.isRequired,
+  setParameters: PropTypes.func.isRequired,
+  setFunction: PropTypes.func.isRequired,
+  showDeleteConfirmation: PropTypes.func.isRequired,
   message: PropTypes.string,
 };
 
@@ -143,4 +176,11 @@ Members.defaultProps = {
   message: '',
 };
 
-export default connect(mapStateToProps, { setCurrentUser, showMemberPage, clearMemberPage })(Members);
+export default connect(mapStateToProps, {
+  setCurrentUser,
+  showMemberPage,
+  clearMemberPage,
+  showDeleteConfirmation,
+  setParameters,
+  setFunction,
+})(Members);

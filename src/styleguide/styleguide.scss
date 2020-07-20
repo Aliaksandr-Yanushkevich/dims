@@ -131,3 +131,19 @@ textarea {
 legend {
   font-size: 1rem;
 }
+
+#tooltip-top > .tooltip-inner {
+  // black arrow in tip.need fix
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #062e56;
+}
+
+#tooltip-top > .tooltip-arrow {
+  // black arrow in tip.need fix
+  border-top: 5px solid #062e56;
+}
+
+#modalDialog {
+  max-width: 80%;
+}
