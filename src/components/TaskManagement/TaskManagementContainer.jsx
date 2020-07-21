@@ -39,8 +39,8 @@ class TaskManagementContainer extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { role } = state.auth;
+const mapStateToProps = ({ auth }) => {
+  const { role } = auth;
   return { role };
 };
 

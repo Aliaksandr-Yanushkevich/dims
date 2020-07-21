@@ -17,8 +17,8 @@ class TaskTrackContainer extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { currentTaskTrackId } = state.taskTrackManagement;
+const mapStateToProps = ({ taskTrackManagement }) => {
+  const { currentTaskTrackId } = taskTrackManagement;
   return { currentTaskTrackId };
 };
 

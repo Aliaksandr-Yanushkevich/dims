@@ -16,8 +16,8 @@ class TaskPageContainer extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { taskId } = state.taskPage;
+const mapStateToProps = ({ taskPage }) => {
+  const { taskId } = taskPage;
   return { taskId };
 };
 

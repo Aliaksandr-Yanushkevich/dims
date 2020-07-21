@@ -64,9 +64,9 @@ App.defaultProps = {
   role: '',
 };
 
-const mapStateToProps = (state) => {
-  const { currentTaskId, currentUserId, accountPageIsVisible } = state.app;
-  const { isAuth, role, userId, firstName, lastName } = state.auth;
+const mapStateToProps = ({ app, auth }) => {
+  const { currentTaskId, currentUserId, accountPageIsVisible } = app;
+  const { isAuth, role, userId, firstName, lastName } = auth;
   return { currentTaskId, currentUserId, isAuth, role, userId, firstName, lastName, accountPageIsVisible };
 };
 

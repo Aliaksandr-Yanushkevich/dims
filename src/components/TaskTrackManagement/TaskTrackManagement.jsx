@@ -110,12 +110,12 @@ const TaskTrackManagement = ({
   );
 };
 
-const mapStateToProps = (state) => {
-  const { currentTaskTrackId, trackData, userTaskId, message } = state.taskTrackManagement;
-  const { role } = state.auth;
-  const { currentTaskName } = state.memberTasks;
-  const { taskTrackPageIsVisible } = state.taskTrackPage;
-  const { isFetching } = state.app;
+const mapStateToProps = ({ taskTrackManagement, auth, memberTasks, taskTrackPage, app }) => {
+  const { currentTaskTrackId, trackData, userTaskId, message } = taskTrackManagement;
+  const { role } = auth;
+  const { currentTaskName } = memberTasks;
+  const { taskTrackPageIsVisible } = taskTrackPage;
+  const { isFetching } = app;
   return {
     role,
     currentTaskTrackId,

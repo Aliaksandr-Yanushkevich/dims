@@ -137,6 +137,7 @@ const Members = ({
 };
 
 const mapStateToProps = (state) => {
+  // destructure can not be used here because naming conflict between members reducer and members field
   const { members, directions, message } = state.members;
   const { currentUserId } = state.app;
   const { role } = state.auth;

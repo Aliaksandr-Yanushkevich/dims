@@ -105,12 +105,12 @@ const MemberTasks = ({
   );
 };
 
-const mapStateToProps = (state) => {
-  const { currentUserId, currentUserFirstName, currentUserLastName, userTasks, message, isFetching } = state.app;
-  const { role } = state.auth;
-  const { taskTrackPageIsVisible } = state.taskTrackPage;
-  const { currentTaskName } = state.memberTasks;
-  const { userTaskId } = state.taskTrackManagement;
+const mapStateToProps = ({ app, auth, taskTrackPage, memberTasks, taskTrackManagement }) => {
+  const { currentUserId, currentUserFirstName, currentUserLastName, userTasks, message, isFetching } = app;
+  const { role } = auth;
+  const { taskTrackPageIsVisible } = taskTrackPage;
+  const { currentTaskName } = memberTasks;
+  const { userTaskId } = taskTrackManagement;
 
   return {
     currentUserId,

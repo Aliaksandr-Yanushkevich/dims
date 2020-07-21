@@ -30,8 +30,8 @@ const DeleteConfirmation = ({ children, func, params, hideDeleteConfirmation }) 
   );
 };
 
-const mapStateToProps = (state) => {
-  const { func, params } = state.deleteConfirmation;
+const mapStateToProps = ({ deleteConfirmation }) => {
+  const { func, params } = deleteConfirmation;
   return { func, params };
 };
 

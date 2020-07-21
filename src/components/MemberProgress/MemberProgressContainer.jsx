@@ -22,9 +22,9 @@ class MemberProgresContainer extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { currentUserId } = state.app;
-  const { role } = state.auth;
+const mapStateToProps = ({ app, auth }) => {
+  const { currentUserId } = app;
+  const { role } = auth;
   return {
     currentUserId,
     role,

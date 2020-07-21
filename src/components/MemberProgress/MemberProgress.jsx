@@ -84,7 +84,7 @@ const MemberProgres = ({
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({ app, auth, taskPage }) => {
   const {
     currentUserId,
     isFetching,
@@ -93,9 +93,9 @@ const mapStateToProps = (state) => {
     currentUserLastName,
     userTasks,
     message,
-  } = state.app;
-  const { role } = state.auth;
-  const { taskPageIsVisible } = state.taskPage;
+  } = app;
+  const { role } = auth;
+  const { taskPageIsVisible } = taskPage;
 
   return {
     currentUserId,

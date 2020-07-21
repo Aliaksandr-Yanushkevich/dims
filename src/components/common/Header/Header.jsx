@@ -63,9 +63,9 @@ const Header = ({ role, showAccountPage, accountPageIsVisible }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  const { accountPageIsVisible } = state.app;
-  const { firstName, lastName, role } = state.auth;
+const mapStateToProps = ({ app, auth }) => {
+  const { accountPageIsVisible } = app;
+  const { firstName, lastName, role } = auth;
   return { firstName, lastName, role, accountPageIsVisible };
 };
 

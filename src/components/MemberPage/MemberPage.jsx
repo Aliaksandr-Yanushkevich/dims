@@ -154,7 +154,7 @@ const MemberPage = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({ memberPage, members, app }) => {
   const {
     userId,
     firstName,
@@ -170,10 +170,10 @@ const mapStateToProps = (state) => {
     education,
     mathScore,
     universityAverageScore,
-  } = state.memberPage;
+  } = memberPage;
 
-  const { directions } = state.members;
-  const { currentUserId, isFetching } = state.app;
+  const { directions } = members;
+  const { currentUserId, isFetching } = app;
 
   return {
     userId,

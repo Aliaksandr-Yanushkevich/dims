@@ -18,8 +18,8 @@ class MemberPageContainer extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { currentUserId } = state.app;
+const mapStateToProps = ({ app }) => {
+  const { currentUserId } = app;
   return { currentUserId };
 };
 

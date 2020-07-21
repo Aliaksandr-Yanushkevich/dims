@@ -104,8 +104,8 @@ const Login = ({ isAuth, role, login, setRole, setCurrentUser, userId }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  const { userId, isAuth, firstName, lastName, role, email } = state.auth;
+const mapStateToProps = ({ auth }) => {
+  const { userId, isAuth, firstName, lastName, role, email } = auth;
   return { userId, isAuth, firstName, lastName, role, email };
 };
 

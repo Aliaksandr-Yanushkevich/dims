@@ -114,11 +114,11 @@ const TaskManagement = ({
   );
 };
 
-const mapStateToProps = (state) => {
-  const { taskList, message } = state.taskManagement;
-  const { taskPageIsVisible } = state.taskPage;
-  const { role } = state.auth;
-  const { deleteConfirmationIsVisible, params, func } = state.deleteConfirmation;
+const mapStateToProps = ({ taskManagement, taskPage, auth, deleteConfirmation }) => {
+  const { taskList, message } = taskManagement;
+  const { taskPageIsVisible } = taskPage;
+  const { role } = auth;
+  const { deleteConfirmationIsVisible, params, func } = deleteConfirmation;
   return { taskList, taskPageIsVisible, role, message, deleteConfirmationIsVisible, params, func };
 };
 

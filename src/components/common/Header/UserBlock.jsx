@@ -28,8 +28,8 @@ const UserBlock = ({ firstName, lastName, logout, showAccountPage }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  const { firstName, lastName } = state.auth;
+const mapStateToProps = ({ auth }) => {
+  const { firstName, lastName } = auth;
   return { firstName, lastName };
 };
 

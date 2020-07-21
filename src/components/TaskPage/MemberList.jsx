@@ -57,6 +57,7 @@ const MemberList = ({
 };
 
 const mapStateToProps = (state) => {
+  // destructure can not be used here because naming conflict between members reducer and members field
   const { userTasks, usersWithTaskFromDB, taskId, usersWithTaskLocal } = state.taskPage;
   const { members } = state.members;
   return { userTasks, usersWithTaskFromDB, taskId, members, usersWithTaskLocal };

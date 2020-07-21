@@ -80,8 +80,8 @@ const Account = ({ firstName, lastName, role, hideAccountPage, email }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  const { firstName, lastName, role, email } = state.auth;
+const mapStateToProps = ({ auth }) => {
+  const { firstName, lastName, role, email } = auth;
   return { firstName, lastName, role, email };
 };
 

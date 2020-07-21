@@ -101,10 +101,10 @@ const TaskTrackPage = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  const { currentTaskName } = state.memberTasks;
-  const { userTaskId, currentTaskTrackId } = state.taskTrackManagement;
-  const { trackNote, trackDate, message } = state.taskTrackPage;
+const mapStateToProps = ({ memberTasks, taskTrackManagement, taskTrackPage }) => {
+  const { currentTaskName } = memberTasks;
+  const { userTaskId, currentTaskTrackId } = taskTrackManagement;
+  const { trackNote, trackDate, message } = taskTrackPage;
   return { currentTaskName, userTaskId, currentTaskTrackId, trackNote, trackDate, message };
 };
 

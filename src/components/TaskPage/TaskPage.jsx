@@ -107,7 +107,7 @@ const TaskPage = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({ taskPage }) => {
   const {
     taskId,
     name,
@@ -119,7 +119,7 @@ const mapStateToProps = (state) => {
     userTasks,
     currentTaskData,
     message,
-  } = state.taskPage;
+  } = taskPage;
 
   return {
     description,

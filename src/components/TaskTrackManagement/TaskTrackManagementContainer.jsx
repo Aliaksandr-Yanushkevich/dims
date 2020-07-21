@@ -40,9 +40,9 @@ class TaskTrackManagementContainer extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { role } = state.auth;
-  const { currentUserId } = state.app;
+const mapStateToProps = ({ auth, app }) => {
+  const { role } = auth;
+  const { currentUserId } = app;
   return { role, currentUserId };
 };
 
