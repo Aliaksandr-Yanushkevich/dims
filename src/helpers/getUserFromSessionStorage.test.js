@@ -9,4 +9,10 @@ describe('func gets userData from sessionStorage', () => {
     const expected = getUserFromSessionStorage();
     expect(actual).toMatchObject(expected);
   });
+  test('should returm undefined when sessionstorage does not contain user', () => {
+    sessionStorage.removeItem('user');
+    const actual = getUserFromSessionStorage();
+    const expected = null;
+    expect(actual).toBe(expected);
+  });
 });
