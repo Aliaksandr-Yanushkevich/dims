@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styles from './DateField.module.scss';
 import FormMessage from '../FormMessage/FormMessage';
 
-const DateFieldForHOC = (props) => {
+const PureDateField = (props) => {
   const { id, name, label, value, onChange, disabled, onFocus, checkField, state } = props;
   const { touched, message } = state;
 
@@ -29,7 +29,7 @@ const DateFieldForHOC = (props) => {
   );
 };
 
-DateFieldForHOC.propTypes = {
+PureDateField.propTypes = {
   id: PropTypes.string,
   label: PropTypes.string.isRequired,
   onChange: PropTypes.func,
@@ -41,7 +41,7 @@ DateFieldForHOC.propTypes = {
   state: PropTypes.shape({ subProp: PropTypes.string }).isRequired,
 };
 
-DateFieldForHOC.defaultProps = {
+PureDateField.defaultProps = {
   id: '',
   name: '',
   value: '',
@@ -49,4 +49,4 @@ DateFieldForHOC.defaultProps = {
   disabled: false,
 };
 
-export default DateFieldForHOC;
+export default PureDateField;
