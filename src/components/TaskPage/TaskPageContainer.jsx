@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import TaskPage from './TaskPage';
-import { getTask, getUsersWithTask, clearTaskPage } from '../../redux/reducers/taskPageReducer';
+import { getTask, getUsersWithTask, clearTaskPage } from '../../redux/reducers/taskPageIndex';
 
 class TaskPageContainer extends React.Component {
   componentDidMount() {

@@ -7,8 +7,8 @@ import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
 import MemberProgressData from './MemberProgressData';
 import { memberProgressTitle } from '../../constants';
-import { setCurrentTask } from '../../redux/reducers/appReducer';
-import { showTaskPage } from '../../redux/reducers/taskPageReducer';
+import { setCurrentTask } from '../../redux/reducers/appIndex';
+import { showTaskPage } from '../../redux/reducers/taskPageIndex';
 import TaskPageContainer from '../TaskPage/TaskPageContainer';
 import showToast from '../../helpers/showToast';
 

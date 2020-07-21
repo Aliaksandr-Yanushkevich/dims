@@ -5,8 +5,8 @@ import { Tooltip } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import styles from './Header.module.scss';
-import { showAccountPage } from '../../../redux/reducers/appReducer';
-import { logout } from '../../../redux/reducers/authReducer';
+import { showAccountPage } from '../../../redux/reducers/appIndex';
+import { logout } from '../../../redux/reducers/authIndex';
 
 const UserBlock = ({ firstName, lastName, logout, showAccountPage }) => {
   const [tooltipOpen, setTooltipOpen] = useState(false);

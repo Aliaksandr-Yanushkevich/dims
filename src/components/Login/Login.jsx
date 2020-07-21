@@ -7,12 +7,12 @@ import AvGroup from 'availity-reactstrap-validation/lib/AvGroup';
 import AvField from 'availity-reactstrap-validation/lib/AvField';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { login, setRole } from '../../redux/reducers/authReducer';
+import { login, setRole } from '../../redux/reducers/authIndex';
 import styles from './Login.module.scss';
 import getUserFromSessionStorage from '../../helpers/getUserFromSessionStorage';
 import fields from './loginField';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
-import { setCurrentUser } from '../../redux/reducers/appReducer';
+import { setCurrentUser } from '../../redux/reducers/appIndex';
 import createPattern from '../../helpers/createPattern';
 
 const Login = ({ isAuth, role, login, setRole, setCurrentUser, userId }) => {

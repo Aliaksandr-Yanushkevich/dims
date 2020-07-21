@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MemberPage from './MemberPage';
-import { getUserInfo } from '../../redux/reducers/memberPageReducer';
+import { getUserInfo } from '../../redux/reducers/memberPageIndex';
 
 class MemberPageContainer extends React.Component {
   componentDidMount() {

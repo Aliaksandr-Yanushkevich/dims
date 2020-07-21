@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Members from './Members';
-import { getDirections, setMembers, setError } from '../../redux/reducers/membersReducer';
+import { getDirections, setMembers, setError } from '../../redux/reducers/membersIndex';
 import { firestore } from '../../api/firebaseApi';
 import prepareMembers from '../../helpers/prepareMembers';
 

@@ -32,27 +32,6 @@ const initialState = {
   message: null,
 };
 
-export const getUserInfo = (currentUserId) => (dispatch) => {
-  dispatch(toggleIsFetching(true));
-  return firebaseApi.getUserInfo(currentUserId).then((result) => {
-    if (result.message) {
-      dispatch(setError(result));
-    } else {
-      const { firstName, lastName } = result;
-      dispatch(setUserInfo(firstName, lastName));
-    }
-  });
-};
-
-export const getUserTasksList = (currentUserId) => (dispatch) => {
-  return firebaseApi.getUserTaskList(currentUserId).then((result) => {
-    if (result.message) {
-      return showToast(result);
-    }
-    dispatch(setUserTasks(result));
-  });
-};
-
 const appReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_CURRENT_USER:
@@ -76,6 +55,27 @@ const appReducer = (state = initialState, action) => {
     default:
       return state;
   }
+};
+
+export const getUserInfo = (currentUserId) => (dispatch) => {
+  dispatch(toggleIsFetching(true));
+  return firebaseApi.getUserInfo(currentUserId).then((result) => {
+    if (result.message) {
+      dispatch(setError(result));
+    } else {
+      const { firstName, lastName } = result;
+      dispatch(setUserInfo(firstName, lastName));
+    }
+  });
+};
+
+export const getUserTasksList = (currentUserId) => (dispatch) => {
+  return firebaseApi.getUserTaskList(currentUserId).then((result) => {
+    if (result.message) {
+      return showToast(result);
+    }
+    dispatch(setUserTasks(result));
+  });
 };
 
 export default appReducer;

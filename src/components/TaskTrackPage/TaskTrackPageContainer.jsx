@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import TaskTrackPage from './TaskTrackPage';
-import { getTaskTrack } from '../../redux/reducers/taskTrackPageReducer';
+import { getTaskTrack } from '../../redux/reducers/taskTrackPageIndex';
 
 class TaskTrackContainer extends React.Component {
   componentDidMount() {

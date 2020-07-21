@@ -1,7 +1,7 @@
 import firebaseApi from '../../api/firebaseApi';
 import dateToStringForInput from '../../helpers/dateToStringForInput';
 import showToast from '../../helpers/showToast';
-import { setCurrentUser } from './appReducer';
+import { setCurrentUser } from './appIndex';
 
 const SET_USER_INFO = 'SET_USER_INFO';
 const ON_CHANGE = 'ON_CHANGE';
@@ -30,16 +30,6 @@ const initialState = {
   memberPageIsVisible: false,
 };
 
-export const getUserInfo = (currentUserId) => (dispatch) => {
-  firebaseApi.getUserInfo(currentUserId).then((result) => {
-    if (result.message) {
-      return showToast(result);
-    }
-    dispatch(setUserInfo(result));
-    dispatch(setCurrentUser(result.userId));
-  });
-};
-
 const membersReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_USER_INFO:
@@ -63,6 +53,16 @@ const membersReducer = (state = initialState, action) => {
     default:
       return state;
   }
+};
+
+export const getUserInfo = (currentUserId) => (dispatch) => {
+  firebaseApi.getUserInfo(currentUserId).then((result) => {
+    if (result.message) {
+      return showToast(result);
+    }
+    dispatch(setUserInfo(result));
+    dispatch(setCurrentUser(result.userId));
+  });
 };
 
 export default membersReducer;

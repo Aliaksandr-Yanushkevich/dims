@@ -14,16 +14,6 @@ const initialState = {
   message: null,
 };
 
-export const getDirections = () => (dispatch) => {
-  firebaseApi.getDirections().then((result) => {
-    if (result.message) {
-      dispatch(setError(result.message));
-    } else {
-      dispatch(setDirections(result));
-    }
-  });
-};
-
 const membersReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_MEMBERS:
@@ -35,6 +25,16 @@ const membersReducer = (state = initialState, action) => {
     default:
       return state;
   }
+};
+
+export const getDirections = () => (dispatch) => {
+  firebaseApi.getDirections().then((result) => {
+    if (result.message) {
+      dispatch(setError(result.message));
+    } else {
+      dispatch(setDirections(result));
+    }
+  });
 };
 
 export default membersReducer;

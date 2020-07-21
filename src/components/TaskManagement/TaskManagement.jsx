@@ -12,12 +12,12 @@ import TaskData from './TaskData';
 import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
 import dateToString from '../../helpers/dateToString';
-import { showTaskPage, clearTaskPage } from '../../redux/reducers/taskPageReducer';
-import { setCurrentTask } from '../../redux/reducers/appReducer';
+import { showTaskPage, clearTaskPage } from '../../redux/reducers/taskPageIndex';
+import { setCurrentTask } from '../../redux/reducers/appIndex';
 import TaskPageContainer from '../TaskPage/TaskPageContainer';
 import showToast from '../../helpers/showToast';
 import DeleteConfirmation from '../common/DeleteConfirmation/DeleteConfirmation';
-import { showDeleteConfirmation, setParameters, setFunction } from '../../redux/reducers/deleteConfirmationReducer';
+import { showDeleteConfirmation, setParameters, setFunction } from '../../redux/reducers/deleteConfirmationIndex';
 
 const TaskManagement = ({
   setCurrentTask,

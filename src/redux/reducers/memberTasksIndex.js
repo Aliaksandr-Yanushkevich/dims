@@ -5,7 +5,6 @@ export const setCurrentTaskName = (currentTaskName) => ({ type: SET_CURRENT_TASK
 
 const initialState = {
   currentTaskName: null,
-  // currentUserTaskId: null,
   taskData: [],
   firstName: null,
   lastName: null,

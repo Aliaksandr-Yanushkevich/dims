@@ -13,7 +13,7 @@ import generateID from '../../helpers/generateID';
 import taskTrackFields from './taskTrackFields';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
-import { onChangeValue } from '../../redux/reducers/taskTrackPageReducer';
+import { onChangeValue } from '../../redux/reducers/taskTrackPageIndex';
 import createPattern from '../../helpers/createPattern';
 
 const TaskTrackPage = (props) => {

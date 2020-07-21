@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MemberTasks from './MembersTasks';
-import { getUserInfo, getUserTasksList, setError, toggleIsFetching } from '../../redux/reducers/appReducer';
+import { getUserInfo, getUserTasksList, setError, toggleIsFetching } from '../../redux/reducers/appIndex';
 import { firestore } from '../../api/firebaseApi';
 
 class MemberTasksContainer extends Component {

@@ -13,11 +13,11 @@ import { membersTitle } from '../../constants';
 import styles from './Members.module.scss';
 import firebaseApi from '../../api/firebaseApi';
 import showToast from '../../helpers/showToast';
-import { setCurrentUser } from '../../redux/reducers/appReducer';
-import { showMemberPage, clearMemberPage } from '../../redux/reducers/memberPageReducer';
+import { setCurrentUser } from '../../redux/reducers/appIndex';
+import { showMemberPage, clearMemberPage } from '../../redux/reducers/memberPageIndex';
 import MemberPageContainer from '../MemberPage/MemberPageContainer';
 import DeleteConfirmation from '../common/DeleteConfirmation/DeleteConfirmation';
-import { setParameters, showDeleteConfirmation, setFunction } from '../../redux/reducers/deleteConfirmationReducer';
+import { setParameters, showDeleteConfirmation, setFunction } from '../../redux/reducers/deleteConfirmationIndex';
 
 const Members = ({
   members,

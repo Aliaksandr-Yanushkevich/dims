@@ -10,9 +10,9 @@ import Preloader from '../common/Preloader/Preloader';
 import MemberCurrentTasks from './MemberCurrentTasks';
 import { membersTasksTitle, membersTasksTitleForMembers } from '../../constants';
 import TaskTrackPageContainer from '../TaskTrackPage/TaskTrackPageContainer';
-import { setCurrentTaskName } from '../../redux/reducers/memberTasksReducer';
-import { setUserTaskId } from '../../redux/reducers/taskTrackManagementReducer';
-import { showTaskTrackPage, clearTaskTrackPage } from '../../redux/reducers/taskTrackPageReducer';
+import { setCurrentTaskName } from '../../redux/reducers/memberTasksIndex';
+import { setUserTaskId } from '../../redux/reducers/taskTrackManagementIndex';
+import { showTaskTrackPage, clearTaskTrackPage } from '../../redux/reducers/taskTrackPageIndex';
 import showToast from '../../helpers/showToast';
 
 const MemberTasks = ({

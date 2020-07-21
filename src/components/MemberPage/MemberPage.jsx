@@ -13,7 +13,7 @@ import Button from '../common/Button/Button';
 import { genders } from '../../constants';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
-import { onChangeValue } from '../../redux/reducers/memberPageReducer';
+import { onChangeValue } from '../../redux/reducers/memberPageIndex';
 import createPattern from '../../helpers/createPattern';
 
 const MemberPage = (props) => {

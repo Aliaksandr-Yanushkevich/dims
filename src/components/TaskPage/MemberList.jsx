@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import generateID from '../../helpers/generateID';
 import styles from './TaskPage.module.scss';
-import { setUsersWithTask, setUserTasks } from '../../redux/reducers/taskPageReducer';
+import { setUsersWithTask, setUserTasks } from '../../redux/reducers/taskPageIndex';
 
 const MemberList = ({
   members,

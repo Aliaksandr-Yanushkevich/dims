@@ -16,6 +16,21 @@ const initialState = {
   email: null,
 };
 
+const authReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case LOGOUT:
+      return { ...state, isAuth: false, role: null, userId: null, firstName: null, lastName: null, email: null };
+    case SET_ROLE:
+      return {
+        ...state,
+        isAuth: true,
+        ...action.userData,
+      };
+    default:
+      return state;
+  }
+};
+
 export const login = (event, errors, values) => (dispatch) => {
   const { email, password, remember } = values;
   if (!errors.length) {
@@ -38,21 +53,6 @@ export const logout = () => (dispatch) => {
     .catch((result) => {
       return showToast(result);
     });
-};
-
-const authReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case LOGOUT:
-      return { ...state, isAuth: false, role: null, userId: null, firstName: null, lastName: null, email: null };
-    case SET_ROLE:
-      return {
-        ...state,
-        isAuth: true,
-        ...action.userData,
-      };
-    default:
-      return state;
-  }
 };
 
 export default authReducer;

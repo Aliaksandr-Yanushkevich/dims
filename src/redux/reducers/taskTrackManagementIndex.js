@@ -1,6 +1,6 @@
 import firebaseApi from '../../api/firebaseApi';
 import showToast from '../../helpers/showToast';
-import { toggleIsFetching } from './appReducer';
+import { toggleIsFetching } from './appIndex';
 
 const SET_TRACK_DATA = 'SET_TRACK_DATA';
 const SET_CURRENT_TASK_TRACK_ID = 'SET_CURRENT_TASK_TRACK_ID';
@@ -21,21 +21,6 @@ const initialState = {
   message: null,
 };
 
-export const getTrackData = (currentUserId) => (dispatch) => {
-  dispatch(toggleIsFetching(true));
-  firebaseApi
-    .getTrackDataArray(currentUserId)
-    .then((result) => {
-      if (result.message) {
-        return showToast(result);
-      }
-      dispatch(setTrackData(result));
-    })
-    .then(() => {
-      dispatch(toggleIsFetching(false));
-    });
-};
-
 const taskTrackManagementReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_TRACK_DATA:
@@ -52,6 +37,21 @@ const taskTrackManagementReducer = (state = initialState, action) => {
     default:
       return state;
   }
+};
+
+export const getTrackData = (currentUserId) => (dispatch) => {
+  dispatch(toggleIsFetching(true));
+  firebaseApi
+    .getTrackDataArray(currentUserId)
+    .then((result) => {
+      if (result.message) {
+        return showToast(result);
+      }
+      dispatch(setTrackData(result));
+    })
+    .then(() => {
+      dispatch(toggleIsFetching(false));
+    });
 };
 
 export default taskTrackManagementReducer;

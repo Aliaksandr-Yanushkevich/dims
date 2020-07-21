@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import TaskTrackManagement from './TaskTrackManagement';
-import { getTrackData, setError } from '../../redux/reducers/taskTrackManagementReducer';
+import { getTrackData, setError } from '../../redux/reducers/taskTrackManagementIndex';
 import { firestore } from '../../api/firebaseApi';
-import { toggleIsFetching } from '../../redux/reducers/appReducer';
+import { toggleIsFetching } from '../../redux/reducers/appIndex';
 
 class TaskTrackManagementContainer extends React.Component {
   componentDidMount() {

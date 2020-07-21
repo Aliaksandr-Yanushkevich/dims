@@ -8,7 +8,7 @@ import styles from './Header.module.scss';
 import logo from '../logo.svg';
 import UserBlock from './UserBlock';
 import Account from '../../Account/Account';
-import { showAccountPage } from '../../../redux/reducers/appReducer';
+import { showAccountPage } from '../../../redux/reducers/appIndex';
 
 const Header = ({ role, showAccountPage, accountPageIsVisible }) => {
   const [activeTab, setActiveTab] = useState('1');

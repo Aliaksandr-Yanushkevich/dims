@@ -11,7 +11,7 @@ import firebaseApi from '../../api/firebaseApi';
 import taskPageFields from './taskPageFields';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
-import { onChangeValue } from '../../redux/reducers/taskPageReducer';
+import { onChangeValue } from '../../redux/reducers/taskPageIndex';
 import createPattern from '../../helpers/createPattern';
 
 const TaskPage = (props) => {

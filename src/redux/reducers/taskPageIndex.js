@@ -41,31 +41,6 @@ const initialState = {
   message: null,
 };
 
-export const getTask = (currentTaskId) => (dispatch) => {
-  if (currentTaskId && currentTaskId !== 'newTask') {
-    setCurrentTask(currentTaskId);
-    firebaseApi.getTask(currentTaskId).then((result) => {
-      if (result.message) {
-        dispatch(setError(result.message));
-      } else {
-        dispatch(setTaskData(result));
-      }
-    });
-  } else {
-    setCurrentTask(generateID());
-  }
-};
-
-export const getUsersWithTask = (currentTaskId) => (dispatch) => {
-  firebaseApi.getUsersWithTask(currentTaskId).then((result) => {
-    if (result.message) {
-      dispatch(setError(result));
-    } else {
-      dispatch(setUsersWithTaskFromDB(result));
-    }
-  });
-};
-
 const taskPageReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_CURRENT_TASK:
@@ -102,6 +77,31 @@ const taskPageReducer = (state = initialState, action) => {
     default:
       return state;
   }
+};
+
+export const getTask = (currentTaskId) => (dispatch) => {
+  if (currentTaskId && currentTaskId !== 'newTask') {
+    setCurrentTask(currentTaskId);
+    firebaseApi.getTask(currentTaskId).then((result) => {
+      if (result.message) {
+        dispatch(setError(result.message));
+      } else {
+        dispatch(setTaskData(result));
+      }
+    });
+  } else {
+    setCurrentTask(generateID());
+  }
+};
+
+export const getUsersWithTask = (currentTaskId) => (dispatch) => {
+  firebaseApi.getUsersWithTask(currentTaskId).then((result) => {
+    if (result.message) {
+      dispatch(setError(result));
+    } else {
+      dispatch(setUsersWithTaskFromDB(result));
+    }
+  });
 };
 
 export default taskPageReducer;

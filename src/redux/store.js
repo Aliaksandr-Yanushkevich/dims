@@ -1,16 +1,16 @@
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunkMiddleWare from 'redux-thunk';
 import logger from 'redux-logger';
-import membersReducer from './reducers/membersReducer';
-import authReducer from './reducers/authReducer';
-import appReducer from './reducers/appReducer';
-import taskPageReducer from './reducers/taskPageReducer';
-import memberPageReducer from './reducers/memberPageReducer';
-import membersTasksReducer from './reducers/memberTasksReducer';
-import taskManagementReducer from './reducers/taskManagementReducer';
-import taskTrackManagementReducer from './reducers/taskTrackManagementReducer';
-import taskTrackPageReducer from './reducers/taskTrackPageReducer';
-import deleteConfirmationReducer from './reducers/deleteConfirmationReducer';
+import membersReducer from './reducers/membersIndex';
+import authReducer from './reducers/authIndex';
+import appReducer from './reducers/appIndex';
+import taskPageReducer from './reducers/taskPageIndex';
+import memberPageReducer from './reducers/memberPageIndex';
+import membersTasksReducer from './reducers/memberTasksIndex';
+import taskManagementReducer from './reducers/taskManagementIndex';
+import taskTrackManagementReducer from './reducers/taskTrackManagementIndex';
+import taskTrackPageReducer from './reducers/taskTrackPageIndex';
+import deleteConfirmationReducer from './reducers/deleteConfirmationIndex';
 
 const reducers = combineReducers({
   app: appReducer,

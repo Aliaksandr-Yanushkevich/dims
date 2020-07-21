@@ -13,13 +13,9 @@ import TaskTrackPageContainer from '../TaskTrackPage/TaskTrackPageContainer';
 import firebaseApi from '../../api/firebaseApi';
 import dateToString from '../../helpers/dateToString';
 import showToast from '../../helpers/showToast';
-import {
-  setCurrentTaskTrackId,
-  setUserTaskId,
-  clearTaskTrackId,
-} from '../../redux/reducers/taskTrackManagementReducer';
-import { setCurrentTaskName } from '../../redux/reducers/memberTasksReducer';
-import { showTaskTrackPage, clearTaskTrackPage } from '../../redux/reducers/taskTrackPageReducer';
+import { setCurrentTaskTrackId, setUserTaskId, clearTaskTrackId } from '../../redux/reducers/taskTrackManagementIndex';
+import { setCurrentTaskName } from '../../redux/reducers/memberTasksIndex';
+import { showTaskTrackPage, clearTaskTrackPage } from '../../redux/reducers/taskTrackPageIndex';
 
 const TaskTrackManagement = ({
   role,

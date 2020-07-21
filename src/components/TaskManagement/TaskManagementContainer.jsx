@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import TaskManagement from './TaskManagement';
-import { setTaskList, setError } from '../../redux/reducers/taskManagementReducer';
+import { setTaskList, setError } from '../../redux/reducers/taskManagementIndex';
 import { firestore } from '../../api/firebaseApi';
 import prepareTasks from '../../helpers/prepareTasks';
 

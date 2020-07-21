@@ -1,6 +1,3 @@
-import firebaseApi from '../../api/firebaseApi';
-import showToast from '../../helpers/showToast';
-
 const SET_FUNCTION = 'SET_FUNCTION';
 const SET_PARAMETERS = 'SET_PARAMETERS';
 const SHOW_DELETE_CONFIRMATION = 'SHOW_DELETE_CONFIRMATION';
