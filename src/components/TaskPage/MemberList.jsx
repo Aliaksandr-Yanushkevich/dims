@@ -26,7 +26,7 @@ const MemberList = ({
       setUsersWithTask([...usersWithTaskLocal, id]);
     } else {
       memberTasks = memberTasks.filter((member) => member.id !== id);
-      setUsersWithTask([...usersWithTaskLocal.filter((memberId) => memberId !== id)]);
+      setUsersWithTask(usersWithTaskLocal.filter((memberId) => memberId !== id));
     }
     setUserTasks(memberTasks);
   };
