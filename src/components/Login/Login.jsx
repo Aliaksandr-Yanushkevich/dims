@@ -13,6 +13,7 @@ import getUserFromSessionStorage from '../../helpers/getUserFromSessionStorage';
 import fields from './loginField';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import { setCurrentUser } from '../../redux/reducers/appReducer';
+import createPattern from '../../helpers/createPattern';
 
 const Login = ({ isAuth, role, login, setRole, setCurrentUser, userId }) => {
   const isAdmin = role === 'admin';
@@ -45,10 +46,7 @@ const Login = ({ isAuth, role, login, setRole, setCurrentUser, userId }) => {
         placeholder={placeholder}
         validate={{
           required: { value: required, errorMessage: 'Field is required' },
-          pattern: {
-            value: `${regexp}`,
-            errorMessage,
-          },
+          pattern: createPattern(regexp, errorMessage),
         }}
       />
     );

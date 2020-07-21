@@ -12,6 +12,7 @@ import taskPageFields from './taskPageFields';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
 import { onChangeValue } from '../../redux/reducers/taskPageReducer';
+import createPattern from '../../helpers/createPattern';
 
 const TaskPage = (props) => {
   const { userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal, hideMemberPage, onChangeValue, message } = props;
@@ -49,10 +50,7 @@ const TaskPage = (props) => {
         rows={rows}
         validate={{
           required: { value: true, errorMessage: 'Field is required' },
-          pattern: {
-            value: `${regexp}`,
-            errorMessage,
-          },
+          pattern: createPattern(regexp, errorMessage),
         }}
       />
     );

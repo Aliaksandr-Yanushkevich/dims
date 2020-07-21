@@ -14,6 +14,7 @@ import { genders } from '../../constants';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
 import { onChangeValue } from '../../redux/reducers/memberPageReducer';
+import createPattern from '../../helpers/createPattern';
 
 const MemberPage = (props) => {
   const createUser = (event, errors) => {
@@ -123,10 +124,7 @@ const MemberPage = (props) => {
         disabled={disableChangingEmail(name)}
         validate={{
           required: { value: true, errorMessage: 'Field is required' },
-          pattern: {
-            value: `${regexp}`,
-            errorMessage,
-          },
+          pattern: createPattern(regexp, errorMessage),
         }}
       />
     );

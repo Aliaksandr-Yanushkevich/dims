@@ -10,6 +10,7 @@ import Button from '../common/Button/Button';
 import fields from './accountFields';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
+import createPattern from '../../helpers/createPattern';
 
 const Account = ({ firstName, lastName, role, hideAccountPage, email }) => {
   const updatePassword = (event, errors, values) => {
@@ -48,10 +49,7 @@ const Account = ({ firstName, lastName, role, hideAccountPage, email }) => {
         placeholder={placeholder}
         validate={{
           required: { value: true, errorMessage: 'Field is required' },
-          pattern: {
-            value: `${regexp}`,
-            errorMessage,
-          },
+          pattern: createPattern(regexp, errorMessage),
         }}
       />
     );

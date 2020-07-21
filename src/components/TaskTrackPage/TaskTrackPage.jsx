@@ -14,6 +14,7 @@ import taskTrackFields from './taskTrackFields';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
 import { onChangeValue } from '../../redux/reducers/taskTrackPageReducer';
+import createPattern from '../../helpers/createPattern';
 
 const TaskTrackPage = (props) => {
   const { hideTaskTrackPage, currentTaskName, message } = props;
@@ -62,10 +63,7 @@ const TaskTrackPage = (props) => {
           placeholder={placeholder}
           validate={{
             required: { value: true, errorMessage: 'Field is required' },
-            pattern: {
-              value: `${regexp}`,
-              errorMessage,
-            },
+            pattern: createPattern(regexp, errorMessage),
           }}
         />
       );
