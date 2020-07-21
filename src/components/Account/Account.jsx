@@ -100,4 +100,4 @@ Account.defaultProps = {
   email: '',
 };
 
-export default connect(mapStateToProps, {})(Account);
+export default connect(mapStateToProps)(Account);

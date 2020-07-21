@@ -70,4 +70,4 @@ const mapStateToProps = ({ app, auth }) => {
   return { currentTaskId, currentUserId, isAuth, role, userId, firstName, lastName, accountPageIsVisible };
 };
 
-export default connect(mapStateToProps, {})(App);
+export default connect(mapStateToProps)(App);
