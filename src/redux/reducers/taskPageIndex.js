@@ -12,8 +12,10 @@ const SET_USERS_WITH_TASK_FROM_DB = 'SET_USERS_WITH_TASK_FROM_DB';
 const SET_USER_TASK = 'SET_USER_TASK';
 const CLEAR_TASK_PAGE = 'CLEAR_TASK_PAGE';
 const SET_ERROR_MESSAGE = 'SET_ERROR_MESSAGE';
+const SHOW_TASK_CARD = 'SHOW_TASK_CARD';
 
 export const showTaskPage = (taskPageIsVisible) => ({ type: SHOW_TASK_PAGE, taskPageIsVisible });
+export const showTaskCard = (taskCardIsVisible) => ({ type: SHOW_TASK_CARD, taskCardIsVisible });
 export const setTaskData = (currentTaskData) => ({
   type: SET_TASK_DATA,
   currentTaskData,
@@ -38,6 +40,7 @@ const initialState = {
   usersWithTaskLocal: [],
   userTasks: [],
   taskPageIsVisible: false,
+  taskCardIsVisible: false,
   message: null,
 };
 
@@ -74,6 +77,8 @@ const taskPageReducer = (state = initialState, action) => {
       return initialState;
     case SET_ERROR_MESSAGE:
       return { ...state, message: action.message };
+    case SHOW_TASK_CARD:
+      return { ...state, taskCardIsVisible: action.taskCardIsVisible };
     default:
       return state;
   }

@@ -1,0 +1,40 @@
+@import '../../styleguide/styleguide.scss';
+
+.wrapper {
+  width: 100%;
+  // max-width: 500px;
+  border: 1px solid $primaryColor;
+  margin: 0 auto;
+  padding: 1.5rem;
+  overflow: auto;
+  background-color: $secondaryColor;
+}
+
+.form {
+  display: grid;
+  grid-template-rows: 6rem 6rem 6rem 3rem;
+}
+
+.wrapper form {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 7.5rem 7.5rem 7.5rem;
+}
+
+.buttonWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.buttonWrapper button {
+  width: 100%;
+  margin-left: auto;
+}
+
+.customMessage {
+  display: flex;
+  margin: 0;
+  align-items: center;
+  height: 4rem;
+}

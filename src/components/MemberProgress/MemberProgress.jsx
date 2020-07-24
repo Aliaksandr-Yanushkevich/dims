@@ -8,29 +8,29 @@ import Preloader from '../common/Preloader/Preloader';
 import MemberProgressData from './MemberProgressData';
 import { memberProgressTitle } from '../../constants';
 import { setCurrentTask } from '../../redux/reducers/appIndex';
-import { showTaskPage } from '../../redux/reducers/taskPageIndex';
-import TaskPageContainer from '../TaskPage/TaskPageContainer';
+import { showTaskCard } from '../../redux/reducers/taskPageIndex';
 import showToast from '../../helpers/showToast';
+import TaskCardContainer from '../TaskCard/TaskCardContainer';
 
 const MemberProgres = ({
   role,
   currentUserFirstName,
   currentUserLastName,
-  taskPageIsVisible,
+  taskCardIsVisible,
   userTasks,
   isFetching,
   setCurrentTask,
-  showTaskPage,
+  showTaskCard,
   message,
 }) => {
-  const createTask = (e) => {
+  const showTask = (e) => {
     const { taskid } = e.target.dataset;
     setCurrentTask(taskid);
-    showTaskPage(true);
+    showTaskCard(true);
   };
 
-  const hideMemberPage = () => {
-    showTaskPage(false);
+  const hideTaskCard = () => {
+    showTaskCard(false);
   };
 
   const isAdmin = role === 'admin';
@@ -60,7 +60,7 @@ const MemberProgres = ({
           taskName={task.name}
           trackNote={task.trackNote}
           trackDate={task.trackDate}
-          createTask={createTask}
+          showTask={showTask}
         />
       ))
     : null;
@@ -70,8 +70,8 @@ const MemberProgres = ({
   }
   return (
     <>
-      <Modal isOpen={taskPageIsVisible} toggle={hideMemberPage}>
-        <TaskPageContainer hideMemberPage={hideMemberPage} />
+      <Modal isOpen={taskCardIsVisible} toggle={hideTaskCard} centered>
+        <TaskCardContainer hideTaskCard={hideTaskCard} />
       </Modal>
 
       <h1 className={styles.title}>Member Progress Grid</h1>
@@ -95,7 +95,7 @@ const mapStateToProps = ({ app, auth, taskPage }) => {
     message,
   } = app;
   const { role } = auth;
-  const { taskPageIsVisible } = taskPage;
+  const { taskCardIsVisible } = taskPage;
 
   return {
     currentUserId,
@@ -104,7 +104,7 @@ const mapStateToProps = ({ app, auth, taskPage }) => {
     role,
     currentUserFirstName,
     currentUserLastName,
-    taskPageIsVisible,
+    taskCardIsVisible,
     userTasks,
     message,
   };
@@ -115,10 +115,10 @@ MemberProgres.propTypes = {
   setCurrentTask: PropTypes.func.isRequired,
   currentUserFirstName: PropTypes.string,
   currentUserLastName: PropTypes.string,
-  taskPageIsVisible: PropTypes.bool,
+  taskCardIsVisible: PropTypes.bool.isRequired,
   userTasks: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   isFetching: PropTypes.bool.isRequired,
-  showTaskPage: PropTypes.func.isRequired,
+  showTaskCard: PropTypes.func.isRequired,
   message: PropTypes.node,
 };
 
@@ -127,8 +127,7 @@ MemberProgres.defaultProps = {
   currentUserFirstName: '',
   currentUserLastName: '',
   userTasks: null,
-  taskPageIsVisible: false,
   message: null,
 };
 
-export default connect(mapStateToProps, { setCurrentTask, showTaskPage })(MemberProgres);
+export default connect(mapStateToProps, { setCurrentTask, showTaskCard })(MemberProgres);
