@@ -19,7 +19,7 @@ export const setTaskData = (currentTaskData) => ({
   currentTaskData,
 });
 export const setError = (message) => ({ type: SET_ERROR_MESSAGE, message });
-export const setMembers = (members) => ({ type: SET_MEMBERS, members });
+// export const setMembers = (members) => ({ type: SET_MEMBERS, members });
 export const setUsersWithTaskFromDB = (usersWithTask) => ({ type: SET_USERS_WITH_TASK_FROM_DB, usersWithTask });
 export const setUsersWithTask = (usersWithTask) => ({ type: SET_USERS_WITH_TASK, usersWithTask });
 export const setCurrentTask = (taskId) => ({ type: SET_CURRENT_TASK, taskId });
@@ -34,8 +34,8 @@ const initialState = {
   description: null,
   startDate: dateToStringForInput(new Date()),
   deadlineDate: dateToStringForInput(new Date(Date.now() + 604800000)), // number is the number of milliseconds in a week
-  usersWithTaskFromDB: null,
-  usersWithTaskLocal: null,
+  usersWithTaskFromDB: [],
+  usersWithTaskLocal: [],
   userTasks: [],
   taskPageIsVisible: false,
   message: null,
@@ -81,21 +81,21 @@ const taskPageReducer = (state = initialState, action) => {
 
 export const getTask = (currentTaskId) => (dispatch) => {
   if (currentTaskId && currentTaskId !== 'newTask') {
-    setCurrentTask(currentTaskId);
-    firebaseApi.getTask(currentTaskId).then((result) => {
+    dispatch(setCurrentTask(currentTaskId));
+    return firebaseApi.getTask(currentTaskId).then((result) => {
       if (result.message) {
         dispatch(setError(result.message));
       } else {
         dispatch(setTaskData(result));
       }
     });
-  } else {
-    setCurrentTask(generateID());
   }
+  dispatch(setCurrentTask(generateID()));
+  return Promise.resolve();
 };
 
 export const getUsersWithTask = (currentTaskId) => (dispatch) => {
-  firebaseApi.getUsersWithTask(currentTaskId).then((result) => {
+  return firebaseApi.getUsersWithTask(currentTaskId).then((result) => {
     if (result.message) {
       dispatch(setError(result));
     } else {

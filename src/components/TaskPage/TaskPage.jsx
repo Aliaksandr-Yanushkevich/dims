@@ -13,9 +13,20 @@ import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
 import { onChangeValue } from '../../redux/reducers/taskPageIndex';
 import createPattern from '../../helpers/createPattern';
+import generateID from '../../helpers/generateID';
+import Preloader from '../common/Preloader/Preloader';
 
 const TaskPage = (props) => {
-  const { userTasks, taskId, usersWithTaskFromDB, usersWithTaskLocal, hideMemberPage, onChangeValue, message } = props;
+  const {
+    userTasks,
+    taskId,
+    usersWithTaskFromDB,
+    usersWithTaskLocal,
+    hideMemberPage,
+    onChangeValue,
+    message,
+    isFetching,
+  } = props;
   const onChange = (e) => {
     const { name, value } = e.target;
     onChangeValue(name, value);
@@ -61,7 +72,7 @@ const TaskPage = (props) => {
       const { name, description, startDate, deadlineDate } = values;
 
       const taskInfo = {
-        taskId,
+        taskId: taskId === 'newTask' ? generateID() : taskId,
         name: name.trim(),
         description: description.trim(),
         startDate: new Date(startDate),
@@ -78,6 +89,10 @@ const TaskPage = (props) => {
 
   if (message) {
     showToast(message);
+  }
+
+  if (isFetching) {
+    return <Preloader />;
   }
 
   return (
@@ -107,7 +122,7 @@ const TaskPage = (props) => {
   );
 };
 
-const mapStateToProps = ({ taskPage }) => {
+const mapStateToProps = ({ taskPage, app }) => {
   const {
     taskId,
     name,
@@ -121,6 +136,8 @@ const mapStateToProps = ({ taskPage }) => {
     message,
   } = taskPage;
 
+  const { isFetching } = app;
+
   return {
     description,
     startDate,
@@ -132,6 +149,7 @@ const mapStateToProps = ({ taskPage }) => {
     taskId,
     name,
     message,
+    isFetching,
   };
 };
 
@@ -143,6 +161,7 @@ TaskPage.propTypes = {
   usersWithTaskLocal: PropTypes.arrayOf(PropTypes.string),
   onChangeValue: PropTypes.func.isRequired,
   message: PropTypes.node,
+  isFetching: PropTypes.bool.isRequired,
 };
 
 TaskPage.defaultProps = {
