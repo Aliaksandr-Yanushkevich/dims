@@ -12,12 +12,13 @@ import TaskData from './TaskData';
 import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
 import dateToString from '../../helpers/dateToString';
-import { showTaskPage, clearTaskPage } from '../../redux/reducers/taskPageIndex';
+import { showTaskPage, clearTaskPage, showTaskCard } from '../../redux/reducers/taskPageIndex';
 import { setCurrentTask } from '../../redux/reducers/appIndex';
 import TaskPageContainer from '../TaskPage/TaskPageContainer';
 import showToast from '../../helpers/showToast';
 import DeleteConfirmation from '../common/DeleteConfirmation/DeleteConfirmation';
 import { showDeleteConfirmation, setParameters, setFunction } from '../../redux/reducers/deleteConfirmationIndex';
+import TaskCardContainer from '../TaskCard/TaskCardContainer';
 
 const TaskManagement = ({
   setCurrentTask,
@@ -28,9 +29,11 @@ const TaskManagement = ({
   clearTaskPage,
   message,
   deleteConfirmationIsVisible,
+  taskCardIsVisible,
   showDeleteConfirmation,
   setParameters,
   setFunction,
+  showTaskCard,
 }) => {
   const newTask = (e) => {
     const taskId = e.target.dataset.taskid;
@@ -54,6 +57,16 @@ const TaskManagement = ({
     showTaskPage(false);
   };
 
+  const showTask = (e) => {
+    const { taskid } = e.target.dataset;
+    setCurrentTask(taskid);
+    showTaskCard(true);
+  };
+
+  const hideTaskCard = () => {
+    showTaskCard(false);
+  };
+
   const isAdmin = role === 'admin';
   const isMentor = role === 'mentor';
   const taskRows = taskList
@@ -71,6 +84,7 @@ const TaskManagement = ({
             taskId={taskId}
             newTask={newTask}
             deleteTask={deleteTask}
+            showTask={showTask}
           />
         );
       })
@@ -90,18 +104,19 @@ const TaskManagement = ({
   return (
     <>
       <ToastContainer />
+      <Modal isOpen={taskCardIsVisible} toggle={hideTaskCard} centered>
+        <TaskCardContainer hideTaskCard={hideTaskCard} />
+      </Modal>
+      <Modal isOpen={deleteConfirmationIsVisible} toggle={hideDeleteConfirmation} centered>
+        <DeleteConfirmation hideDeleteConfirmation={hideDeleteConfirmation}>
+          Are you sure to delete this task?
+        </DeleteConfirmation>
+      </Modal>
+      <Modal id={styles.modalTaskPage} isOpen={taskPageIsVisible} toggle={hideMemberPage} centered>
+        <TaskPageContainer hideMemberPage={hideMemberPage} />
+      </Modal>
       <h1 className={styles.title}>Task management</h1>
       <div className={styles.tableWrapper}>
-        <Modal id={styles.modalTaskPage} isOpen={taskPageIsVisible} toggle={hideMemberPage} centered>
-          <TaskPageContainer hideMemberPage={hideMemberPage} />
-        </Modal>
-
-        <Modal isOpen={deleteConfirmationIsVisible} toggle={hideDeleteConfirmation} centered>
-          <DeleteConfirmation hideDeleteConfirmation={hideDeleteConfirmation}>
-            Are you sure to delete this task?
-          </DeleteConfirmation>
-        </Modal>
-
         <Button className={`${styles.defaultButton} ${styles.createTask}`} taskId='newTask' onClick={newTask}>
           Create task
         </Button>
@@ -116,10 +131,10 @@ const TaskManagement = ({
 
 const mapStateToProps = ({ taskManagement, taskPage, auth, deleteConfirmation }) => {
   const { taskList, message } = taskManagement;
-  const { taskPageIsVisible } = taskPage;
+  const { taskPageIsVisible, taskCardIsVisible } = taskPage;
   const { role } = auth;
   const { deleteConfirmationIsVisible, params, func } = deleteConfirmation;
-  return { taskList, taskPageIsVisible, role, message, deleteConfirmationIsVisible, params, func };
+  return { taskList, taskPageIsVisible, role, message, deleteConfirmationIsVisible, params, func, taskCardIsVisible };
 };
 
 TaskManagement.propTypes = {
@@ -134,6 +149,8 @@ TaskManagement.propTypes = {
   setFunction: PropTypes.func.isRequired,
   deleteConfirmationIsVisible: PropTypes.bool.isRequired,
   message: PropTypes.string,
+  taskCardIsVisible: PropTypes.bool.isRequired,
+  showTaskCard: PropTypes.func.isRequired,
 };
 
 TaskManagement.defaultProps = {
@@ -149,4 +166,5 @@ export default connect(mapStateToProps, {
   showDeleteConfirmation,
   setParameters,
   setFunction,
+  showTaskCard,
 })(TaskManagement);

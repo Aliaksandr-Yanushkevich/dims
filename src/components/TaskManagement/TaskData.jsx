@@ -1,17 +1,16 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Button from '../common/Button/Button';
 import styles from './TaskManagement.module.scss';
 import TableData from '../common/TableData/TableData';
 
-const TaskData = ({ index, taskName, startDate, deadline, taskId, newTask, deleteTask }) => (
+const TaskData = ({ index, taskName, startDate, deadline, taskId, newTask, deleteTask, showTask }) => (
   <tr key={`${index}${taskName}`}>
     <TableData>{index + 1}</TableData>
     <TableData>
-      <NavLink className={styles.link} to='/task_management' data-taskid={taskId} onClick={newTask}>
+      <p className={styles.link} data-taskid={taskId} onClick={showTask}>
         {taskName}
-      </NavLink>
+      </p>
     </TableData>
     <TableData>{startDate}</TableData>
     <TableData>{deadline}</TableData>
@@ -37,6 +36,7 @@ TaskData.propTypes = {
   startDate: PropTypes.string,
   deleteTask: PropTypes.func.isRequired,
   newTask: PropTypes.func.isRequired,
+  showTask: PropTypes.func.isRequired,
 };
 
 TaskData.defaultProps = {
