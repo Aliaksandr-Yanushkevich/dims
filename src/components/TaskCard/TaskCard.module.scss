@@ -22,13 +22,11 @@
 }
 
 .buttonWrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .buttonWrapper button {
-  width: 100%;
   margin-left: auto;
 }
 

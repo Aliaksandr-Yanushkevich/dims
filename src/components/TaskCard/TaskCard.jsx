@@ -19,17 +19,19 @@ const TaskCard = ({ name, description, startDate, deadlineDate, message, isFetch
       <ToastContainer />
       <div className={styles.wrapper}>
         <h1 className={styles.title}>Task Info</h1>
-        <h3>Task Name</h3>
+        <h5 className={styles.cardTitle}>Task Name</h5>
         <p>{name}</p>
-        <h3>Task Description</h3>
+        <h5 className={styles.cardTitle}>Task Description</h5>
         <p>{description}</p>
-        <h3>Start Date</h3>
+        <h5 className={styles.cardTitle}>Start Date</h5>
         <p>{startDate}</p>
-        <h3>Deadline Date</h3>
+        <h5 className={styles.cardTitle}>Deadline Date</h5>
         <p>{deadlineDate}</p>
-        <Button className={styles.defaultButton} id='backToGrid' onClick={hideTaskCard}>
-          Back to grid
-        </Button>
+        <div className={styles.buttonWrapper}>
+          <Button className={styles.defaultButton} id='backToGrid' onClick={hideTaskCard}>
+            Back to grid
+          </Button>
+        </div>
       </div>
     </>
   );

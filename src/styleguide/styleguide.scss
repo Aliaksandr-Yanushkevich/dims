@@ -11,6 +11,11 @@ $dangerousColor: #d04b31;
   color: $primaryColor;
 }
 
+.cardTitle {
+  font-family: $font;
+  color: $primaryColor;
+}
+
 .defaultButton {
   font-weight: 600;
   color: $primaryColor;
@@ -112,6 +117,8 @@ tbody tr:nth-child(even) {
 
 .link {
   text-decoration: none;
+  cursor: pointer;
+  margin: 0;
   &:hover {
     color: #f0bb0c;
   }

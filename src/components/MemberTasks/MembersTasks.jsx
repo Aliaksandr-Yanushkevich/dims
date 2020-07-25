@@ -14,6 +14,9 @@ import { setCurrentTaskName } from '../../redux/reducers/memberTasksIndex';
 import { setUserTaskId } from '../../redux/reducers/taskTrackManagementIndex';
 import { showTaskTrackPage, clearTaskTrackPage } from '../../redux/reducers/taskTrackPageIndex';
 import showToast from '../../helpers/showToast';
+import TaskCardContainer from '../TaskCard/TaskCardContainer';
+import { showTaskCard } from '../../redux/reducers/taskPageIndex';
+import { setCurrentTask } from '../../redux/reducers/appIndex';
 
 const MemberTasks = ({
   role,
@@ -27,6 +30,9 @@ const MemberTasks = ({
   setUserTaskId,
   clearTaskTrackPage,
   message,
+  taskCardIsVisible,
+  setCurrentTask,
+  showTaskCard,
 }) => {
   const track = (e) => {
     e.persist();
@@ -39,6 +45,16 @@ const MemberTasks = ({
   const hideTaskTrackPage = () => {
     clearTaskTrackPage();
     showTaskTrackPage(false);
+  };
+
+  const showTask = (e) => {
+    const { taskid } = e.target.dataset;
+    setCurrentTask(taskid);
+    showTaskCard(true);
+  };
+
+  const hideTaskCard = () => {
+    showTaskCard(false);
   };
 
   const isAdmin = role === 'admin';
@@ -77,6 +93,8 @@ const MemberTasks = ({
             trackTask={track}
             stateId={task.stateId}
             role={role}
+            showTask={showTask}
+            taskId={task.taskId}
           />
         );
       })
@@ -87,6 +105,9 @@ const MemberTasks = ({
       <ToastContainer />
       <Modal isOpen={taskTrackPageIsVisible} toggle={hideTaskTrackPage}>
         <TaskTrackPageContainer hideTaskTrackPage={hideTaskTrackPage} />
+      </Modal>
+      <Modal isOpen={taskCardIsVisible} toggle={hideTaskCard} centered>
+        <TaskCardContainer hideTaskCard={hideTaskCard} />
       </Modal>
       <h1 className={styles.title}>Member&apos;s Task Manage Grid</h1>
       {isMember && (
@@ -105,11 +126,12 @@ const MemberTasks = ({
   );
 };
 
-const mapStateToProps = ({ app, auth, taskTrackPage, memberTasks, taskTrackManagement }) => {
+const mapStateToProps = ({ app, auth, taskTrackPage, memberTasks, taskTrackManagement, taskPage }) => {
   const { currentUserId, currentUserFirstName, currentUserLastName, userTasks, message, isFetching } = app;
   const { role } = auth;
   const { taskTrackPageIsVisible } = taskTrackPage;
   const { currentTaskName } = memberTasks;
+  const { taskCardIsVisible } = taskPage;
   const { userTaskId } = taskTrackManagement;
 
   return {
@@ -121,6 +143,7 @@ const mapStateToProps = ({ app, auth, taskTrackPage, memberTasks, taskTrackManag
     currentUserFirstName,
     currentUserLastName,
     taskTrackPageIsVisible,
+    taskCardIsVisible,
     message,
     isFetching,
   };
@@ -133,10 +156,13 @@ MemberTasks.propTypes = {
   currentUserFirstName: PropTypes.string,
   currentUserLastName: PropTypes.string,
   taskTrackPageIsVisible: PropTypes.bool.isRequired,
+  taskCardIsVisible: PropTypes.bool.isRequired,
   setCurrentTaskName: PropTypes.func.isRequired,
   showTaskTrackPage: PropTypes.func.isRequired,
   setUserTaskId: PropTypes.func.isRequired,
   clearTaskTrackPage: PropTypes.func.isRequired,
+  setCurrentTask: PropTypes.func.isRequired,
+  showTaskCard: PropTypes.func.isRequired,
   message: PropTypes.string,
 };
 
@@ -148,6 +174,11 @@ MemberTasks.defaultProps = {
   message: null,
 };
 
-export default connect(mapStateToProps, { setCurrentTaskName, showTaskTrackPage, setUserTaskId, clearTaskTrackPage })(
-  MemberTasks,
-);
+export default connect(mapStateToProps, {
+  setCurrentTaskName,
+  showTaskTrackPage,
+  setUserTaskId,
+  clearTaskTrackPage,
+  setCurrentTask,
+  showTaskCard,
+})(MemberTasks);

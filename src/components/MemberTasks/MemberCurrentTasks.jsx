@@ -10,6 +10,7 @@ import showToast from '../../helpers/showToast';
 
 const MemberCurrentTasks = ({
   index,
+  taskId,
   userTaskId,
   taskName,
   startDate,
@@ -18,6 +19,7 @@ const MemberCurrentTasks = ({
   trackTask,
   stateId,
   role,
+  showTask,
 }) => {
   const isAdmin = role === 'admin';
   const isMentor = role === 'mentor';
@@ -42,7 +44,11 @@ const MemberCurrentTasks = ({
       <ToastContainer />
       <tr key={userTaskId}>
         <TableData>{index + 1}</TableData>
-        <TableData>{taskName}</TableData>
+        <TableData>
+          <p className={styles.link} data-taskid={taskId} onClick={showTask}>
+            {taskName}
+          </p>
+        </TableData>
         <TableData>{dateToString(startDate)}</TableData>
         <TableData>{dateToString(deadlineDate)}</TableData>
         <TableData>{stateName}</TableData>
@@ -72,6 +78,7 @@ const MemberCurrentTasks = ({
 };
 
 MemberCurrentTasks.propTypes = {
+  taskId: PropTypes.string.isRequired,
   stateName: PropTypes.string.isRequired,
   trackTask: PropTypes.func.isRequired,
   stateId: PropTypes.string.isRequired,
@@ -81,6 +88,7 @@ MemberCurrentTasks.propTypes = {
   startDate: PropTypes.instanceOf(Date).isRequired,
   deadlineDate: PropTypes.instanceOf(Date).isRequired,
   role: PropTypes.string,
+  showTask: PropTypes.func.isRequired,
 };
 
 MemberCurrentTasks.defaultProps = {
