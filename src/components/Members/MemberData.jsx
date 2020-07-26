@@ -1,5 +1,4 @@
 import React, { useRef } from 'react';
-import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Button from '../common/Button/Button';
 import dateToString from '../../helpers/dateToString';
@@ -21,6 +20,7 @@ const MemberData = ({
   setCurrentUser,
   deleteUser,
   createUser,
+  showMember,
   role,
 }) => {
   const isAdmin = role === 'admin';
@@ -50,9 +50,9 @@ const MemberData = ({
     <tr key={userId}>
       <TableData>{index}</TableData>
       <TableData>
-        <NavLink className={styles.link} to='/members' data-id={userId} onClick={createUser}>
+        <p className={styles.link} data-id={userId} onClick={showMember}>
           {`${firstName} ${lastName}`}
-        </NavLink>
+        </p>
       </TableData>
       <TableData>{direction}</TableData>
       <TableData>{education}</TableData>
@@ -108,6 +108,7 @@ MemberData.propTypes = {
   setCurrentUser: PropTypes.func.isRequired,
   deleteUser: PropTypes.func.isRequired,
   createUser: PropTypes.func.isRequired,
+  showMember: PropTypes.func.isRequired,
   role: PropTypes.string.isRequired,
   directions: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
 };

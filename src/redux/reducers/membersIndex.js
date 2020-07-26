@@ -3,15 +3,18 @@ import firebaseApi from '../../api/firebaseApi';
 const SET_MEMBERS = 'SET_MEMBERS';
 const SET_DIRECTIONS = 'SET_DIRECTIONS';
 const SET_ERROR_MESSAGE = 'SET_ERROR_MESSAGE';
+const SHOW_MEMBER_CARD = 'SHOW_MEMBER_CARD';
 
 export const setMembers = (members) => ({ type: SET_MEMBERS, members });
 export const setDirections = (directions) => ({ type: SET_DIRECTIONS, directions });
+export const showMemberCard = (memberCardIsVisible) => ({ type: SHOW_MEMBER_CARD, memberCardIsVisible });
 export const setError = (message) => ({ type: SET_ERROR_MESSAGE, message });
 
 const initialState = {
   members: null,
   directions: null,
   message: null,
+  memberCardIsVisible: false,
 };
 
 const membersReducer = (state = initialState, action) => {
@@ -22,6 +25,8 @@ const membersReducer = (state = initialState, action) => {
       return { ...state, directions: action.directions };
     case SET_ERROR_MESSAGE:
       return { ...state, message: action.message };
+    case SHOW_MEMBER_CARD:
+      return { ...state, memberCardIsVisible: action.memberCardIsVisible };
     default:
       return state;
   }

@@ -15,9 +15,11 @@ import firebaseApi from '../../api/firebaseApi';
 import showToast from '../../helpers/showToast';
 import { setCurrentUser } from '../../redux/reducers/appIndex';
 import { showMemberPage, clearMemberPage } from '../../redux/reducers/memberPageIndex';
+import { showMemberCard } from '../../redux/reducers/membersIndex';
 import MemberPageContainer from '../MemberPage/MemberPageContainer';
 import DeleteConfirmation from '../common/DeleteConfirmation/DeleteConfirmation';
 import { setParameters, showDeleteConfirmation, setFunction } from '../../redux/reducers/deleteConfirmationIndex';
+import MemberCardContainer from '../MemberCard/MemberCardContainer';
 
 const Members = ({
   members,
@@ -32,6 +34,8 @@ const Members = ({
   setFunction,
   showDeleteConfirmation,
   deleteConfirmationIsVisible,
+  memberCardIsVisible,
+  showMemberCard,
 }) => {
   const isAdmin = role === 'admin';
   const isMentor = role === 'mentor';
@@ -50,6 +54,17 @@ const Members = ({
 
   const hideDeleteConfirmation = () => {
     showDeleteConfirmation(false);
+  };
+
+  const showMember = (e) => {
+    e.persist();
+    const { id } = e.target.dataset;
+    setCurrentUser(id);
+    showMemberCard(true);
+  };
+
+  const hideMemberCard = () => {
+    showMemberCard(false);
   };
 
   const deleteUser = (e) => {
@@ -83,6 +98,7 @@ const Members = ({
             setCurrentUser={setCurrentUser}
             deleteUser={deleteUser}
             createUser={createUser}
+            showMember={showMember}
           />
         );
       })
@@ -113,6 +129,10 @@ const Members = ({
         <MemberPageContainer hideMemberPage={hideMemberPage} />
       </Modal>
 
+      <Modal isOpen={memberCardIsVisible} toggle={hideMemberCard} centered>
+        <MemberCardContainer hideMemberCard={hideMemberCard} />
+      </Modal>
+
       <Modal isOpen={deleteConfirmationIsVisible} toggle={hideDeleteConfirmation} centered>
         <DeleteConfirmation hideDeleteConfirmation={hideDeleteConfirmation}>
           Are you sure to delete this user?
@@ -138,7 +158,7 @@ const Members = ({
 
 const mapStateToProps = (state) => {
   // destructure can not be used here because naming conflict between members reducer and members field
-  const { members, directions, message } = state.members;
+  const { members, directions, message, memberCardIsVisible } = state.members;
   const { currentUserId } = state.app;
   const { role } = state.auth;
   const { memberPageIsVisible } = state.memberPage;
@@ -151,6 +171,7 @@ const mapStateToProps = (state) => {
     role,
     message,
     deleteConfirmationIsVisible,
+    memberCardIsVisible,
     params,
     func,
   };
@@ -160,6 +181,7 @@ Members.propTypes = {
   members: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   memberPageIsVisible: PropTypes.bool.isRequired,
   deleteConfirmationIsVisible: PropTypes.bool.isRequired,
+  memberCardIsVisible: PropTypes.bool.isRequired,
   directions: PropTypes.arrayOf(PropTypes.shape({ subProp: PropTypes.string })),
   role: PropTypes.string,
   setCurrentUser: PropTypes.func.isRequired,
@@ -167,6 +189,7 @@ Members.propTypes = {
   clearMemberPage: PropTypes.func.isRequired,
   setParameters: PropTypes.func.isRequired,
   setFunction: PropTypes.func.isRequired,
+  showMemberCard: PropTypes.func.isRequired,
   showDeleteConfirmation: PropTypes.func.isRequired,
   message: PropTypes.string,
 };
@@ -185,4 +208,5 @@ export default connect(mapStateToProps, {
   showDeleteConfirmation,
   setParameters,
   setFunction,
+  showMemberCard,
 })(Members);
