@@ -2,10 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { ToastContainer } from 'react-toastify';
+import { faAddressCard, faInfoCircle, faLaptopCode, faMailBulk, faUniversity } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './MemberCard.module.scss';
 import Button from '../common/Button/Button';
 import showToast from '../../helpers/showToast';
 import Preloader from '../common/Preloader/Preloader';
+import MemberCardBlock from './MemberCardBlock';
+import MemberCardGroup from './MemberCardGroup';
 
 const MemberCard = ({
   firstName,
@@ -24,7 +28,16 @@ const MemberCard = ({
   hideMemberCard,
   message,
   isFetching,
+  directions,
 }) => {
+  const direction = directions
+    ? directions
+        .filter((courseDirection) => {
+          return courseDirection.directionId === Number(directionId);
+        })
+        .find((course) => course).name
+    : null;
+
   if (message) {
     showToast(message);
   }
@@ -35,75 +48,50 @@ const MemberCard = ({
     <>
       <ToastContainer />
       <div className={styles.wrapper}>
-        <h1 className={styles.title}>Member Info</h1>
+        <h1 className={styles.title}>
+          <FontAwesomeIcon icon={faAddressCard} className={styles.icon} />
+          Member Info
+        </h1>
+        <MemberCardGroup
+          title='General'
+          icon={<FontAwesomeIcon icon={faInfoCircle} className={styles.icon} />}
+          className={styles.general}
+        >
+          <MemberCardBlock title='First Name' data={firstName} />
+          <MemberCardBlock title='Last Name' data={lastName} />
+          <MemberCardBlock title='Sex' data={sex} />
+          <MemberCardBlock title='BirthDay' data={birthDate} />
+        </MemberCardGroup>
 
-        <h4>General</h4>
-        <div className={`${styles.general} ${styles.group}`}>
-          <div>
-            <h5 className={styles.cardTitle}>First Name</h5>
-            <p>{firstName}</p>
-          </div>
-          <div>
-            <h5 className={styles.cardTitle}>Last Name</h5>
-            <p>{lastName}</p>
-          </div>
-          <div>
-            <h5 className={styles.cardTitle}>Sex</h5>
-            <p>{sex}</p>
-          </div>
-          <div>
-            <h5 className={styles.cardTitle}>BirthDay</h5>
-            <p>{birthDate}</p>
-          </div>
-        </div>
+        <MemberCardGroup
+          title='Course Info'
+          icon={<FontAwesomeIcon icon={faLaptopCode} className={styles.icon} />}
+          className={styles.course}
+        >
+          <MemberCardBlock title='Course Direction' data={direction} />
+          <MemberCardBlock title='Start Date' data={startDate} />
+        </MemberCardGroup>
 
-        <h4>Course Info</h4>
-        <div className={`${styles.course} ${styles.group}`}>
-          <div>
-            <h5 className={styles.cardTitle}>Course Direction</h5>
-            <p>{directionId}</p>
-          </div>
-          <div>
-            <h5 className={styles.cardTitle}>Start Date</h5>
-            <p>{startDate}</p>
-          </div>
-        </div>
+        <MemberCardGroup
+          title='Contacts'
+          icon={<FontAwesomeIcon icon={faMailBulk} className={styles.icon} />}
+          className={styles.contacts}
+        >
+          <MemberCardBlock title='Phone Number' data={mobilePhone} />
+          <MemberCardBlock title='Email' data={email} />
+          <MemberCardBlock title='Skype' data={skype} />
+          <MemberCardBlock title='Address' data={address} />
+        </MemberCardGroup>
 
-        <h4>Contacts</h4>
-        <div className={`${styles.contacts} ${styles.group}`}>
-          <div>
-            <h5 className={styles.cardTitle}>Phone Number</h5>
-            <p>{mobilePhone}</p>
-          </div>
-          <div>
-            <h5 className={styles.cardTitle}>Email</h5>
-            <p>{email}</p>
-          </div>
-          <div>
-            <h5 className={styles.cardTitle}>Skype</h5>
-            <p>{skype}</p>
-          </div>
-          <div>
-            <h5 className={styles.cardTitle}>Address</h5>
-            <p>{address}</p>
-          </div>
-        </div>
-
-        <h4>Education</h4>
-        <div className={`${styles.education} ${styles.group}`}>
-          <div>
-            <h5 className={styles.cardTitle}>Education</h5>
-            <p>{education}</p>
-          </div>
-          <div>
-            <h5 className={styles.cardTitle}>Math Score</h5>
-            <p>{mathScore}</p>
-          </div>
-          <div>
-            <h5 className={styles.cardTitle}>University Average Score</h5>
-            <p>{universityAverageScore}</p>
-          </div>
-        </div>
+        <MemberCardGroup
+          title='Education'
+          icon={<FontAwesomeIcon icon={faUniversity} className={styles.icon} />}
+          className={styles.education}
+        >
+          <MemberCardBlock title='Education' data={education} />
+          <MemberCardBlock title='Math Score' data={mathScore} />
+          <MemberCardBlock title='University Average Score' data={universityAverageScore} />
+        </MemberCardGroup>
 
         <div className={styles.buttonWrapper}>
           <Button className={styles.defaultButton} id='backToGrid' onClick={hideMemberCard}>
@@ -115,7 +103,7 @@ const MemberCard = ({
   );
 };
 
-const mapStateToProps = ({ memberPage, app }) => {
+const mapStateToProps = ({ memberPage, app, members }) => {
   const {
     firstName,
     lastName,
@@ -133,6 +121,7 @@ const mapStateToProps = ({ memberPage, app }) => {
     message,
   } = memberPage;
   const { isFetching } = app;
+  const { directions } = members;
   return {
     firstName,
     lastName,
@@ -149,6 +138,7 @@ const mapStateToProps = ({ memberPage, app }) => {
     universityAverageScore,
     message,
     isFetching,
+    directions,
   };
 };
 
@@ -169,6 +159,12 @@ MemberCard.propTypes = {
   hideMemberCard: PropTypes.func.isRequired,
   message: PropTypes.string,
   isFetching: PropTypes.bool.isRequired,
+  directions: PropTypes.arrayOf(
+    PropTypes.shape({
+      directionId: PropTypes.string.isRequired,
+      name: PropTypes.number.isRequired,
+    }),
+  ),
 };
 
 MemberCard.defaultProps = {
@@ -186,6 +182,7 @@ MemberCard.defaultProps = {
   startDate: '',
   birthDate: '',
   message: '',
+  directions: null,
 };
 
 export default connect(mapStateToProps)(MemberCard);
