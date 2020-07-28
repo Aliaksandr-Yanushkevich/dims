@@ -158,3 +158,35 @@ textarea {
 #modalAccountPage {
   max-width: 30%;
 }
+
+.general,
+.course,
+.contacts,
+.education {
+  grid-column-gap: 3rem;
+}
+
+.general {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 6rem 6rem;
+}
+
+.course {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 6rem;
+}
+
+.contacts {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 6rem 6rem;
+}
+
+.education {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 6rem 6rem;
+}
+
+.icon {
+  margin-right: 2rem;
+  color: #f0bb0c;
+}

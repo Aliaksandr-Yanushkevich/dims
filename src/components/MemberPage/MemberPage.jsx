@@ -3,18 +3,21 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { AvForm, AvField, AvRadio, AvRadioGroup } from 'availity-reactstrap-validation';
 import { ToastContainer } from 'react-toastify';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle, faLaptopCode, faMailBulk, faUniversity } from '@fortawesome/free-solid-svg-icons';
 import 'react-toastify/dist/ReactToastify.css';
 import Preloader from '../common/Preloader/Preloader';
 import styles from './MemberPage.module.scss';
 import firebaseApi from '../../api/firebaseApi';
 import generateID from '../../helpers/generateID';
-import memberPageFields from './memberPageFields';
+import { contacts, course, educationInfo, general } from './memberPageFields';
 import Button from '../common/Button/Button';
 import { genders } from '../../constants';
 import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
 import { onChangeValue } from '../../redux/reducers/memberPageIndex';
 import createPattern from '../../helpers/createPattern';
+import MemberCardGroup from '../MemberCard/MemberCardGroup';
 
 const MemberPage = (props) => {
   const createUser = (event, errors) => {
@@ -94,8 +97,8 @@ const MemberPage = (props) => {
       })
     : null;
 
-  const fields = memberPageFields.map(({ id, name, type, label, placeholder, regexp, errorMessage, step }) => {
-    if (type === 'radio') {
+  const generalFields = general.map(({ id, name, type, label, placeholder, regexp, errorMessage, step }) => {
+    if (name === 'sex') {
       return (
         <AvRadioGroup
           key={id}
@@ -107,8 +110,7 @@ const MemberPage = (props) => {
           className={styles.radio}
           required
         >
-          {name === 'directionId' && preparedDirections}
-          {name === 'sex' && preparedGenders}
+          {preparedGenders}
         </AvRadioGroup>
       );
     }
@@ -139,6 +141,70 @@ const MemberPage = (props) => {
     );
   });
 
+  const courseInfoFields = course.map(({ id, name, type, label }) => {
+    if (type === 'date') {
+      return (
+        <AvField key={id} name={name} label={label} type={type} onChange={onChange} value={props[name]} required />
+      );
+    }
+
+    return (
+      <AvRadioGroup
+        key={id}
+        inline
+        id={id}
+        name={name}
+        value={props[name]}
+        label={label}
+        className={styles.radio}
+        required
+      >
+        {preparedDirections}
+      </AvRadioGroup>
+    );
+  });
+
+  const contactsFields = contacts.map(({ id, name, type, label, placeholder, regexp, errorMessage, step }) => {
+    return (
+      <AvField
+        key={id}
+        id={id}
+        value={props[name]}
+        name={name}
+        type={type}
+        step={step}
+        label={label}
+        placeholder={placeholder}
+        onChange={onChange}
+        disabled={disableChangingEmail(name)}
+        validate={{
+          required: { value: true, errorMessage: 'Field is required' },
+          pattern: createPattern(regexp, errorMessage),
+        }}
+      />
+    );
+  });
+  const educationFields = educationInfo.map(({ id, name, type, label, placeholder, regexp, errorMessage, step }) => {
+    return (
+      <AvField
+        key={id}
+        id={id}
+        value={props[name]}
+        name={name}
+        type={type}
+        step={step}
+        label={label}
+        placeholder={placeholder}
+        onChange={onChange}
+        disabled={disableChangingEmail(name)}
+        validate={{
+          required: { value: true, errorMessage: 'Field is required' },
+          pattern: createPattern(regexp, errorMessage),
+        }}
+      />
+    );
+  });
+
   if (isFetching) {
     return <Preloader />;
   }
@@ -149,8 +215,39 @@ const MemberPage = (props) => {
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{currentUserId === 'newMember' ? 'Register Member' : 'Edit Member'}</h1>
         <AvForm id='createMember' onSubmit={createUser}>
-          {fields}
+          <MemberCardGroup
+            title='General'
+            icon={<FontAwesomeIcon icon={faInfoCircle} className={styles.icon} />}
+            className={styles.general}
+          >
+            {generalFields}
+          </MemberCardGroup>
+
+          <MemberCardGroup
+            title='Course Info'
+            icon={<FontAwesomeIcon icon={faLaptopCode} className={styles.icon} />}
+            className={styles.course}
+          >
+            {courseInfoFields}
+          </MemberCardGroup>
+
+          <MemberCardGroup
+            title='Contacts'
+            icon={<FontAwesomeIcon icon={faMailBulk} className={styles.icon} />}
+            className={styles.contacts}
+          >
+            {contactsFields}
+          </MemberCardGroup>
+
+          <MemberCardGroup
+            title='Education'
+            icon={<FontAwesomeIcon icon={faUniversity} className={styles.icon} />}
+            className={styles.education}
+          >
+            {educationFields}
+          </MemberCardGroup>
         </AvForm>
+
         <div className={styles.buttonWrapper}>
           <SubmitButton className={`${styles.successButton} ${styles.leftButton}`} form='createMember'>
             {currentUserId !== 'newMember' ? 'Save' : 'Create'}

@@ -8,7 +8,7 @@ import {
   numberRange0To10Regexp,
 } from '../../constants';
 
-const memberPageFields = [
+export const general = [
   {
     id: 'firstName',
     name: 'firstName',
@@ -33,12 +33,20 @@ const memberPageFields = [
     type: 'radio',
     label: 'Sex:',
   },
+  { id: 'birthDate', name: 'birthDate', type: 'date', label: 'Birthday:' },
+];
+
+export const course = [
   {
     id: 'directionId',
     name: 'directionId',
     type: 'radio',
     label: 'Direction:',
   },
+  { id: 'startDate', name: 'startDate', type: 'date', label: 'Start Date:' },
+];
+
+export const contacts = [
   {
     id: 'mobilePhone',
     name: 'mobilePhone',
@@ -75,6 +83,18 @@ const memberPageFields = [
     regexp: textWithoutSpecialSymbolsRegexp,
     errorMessage: 'Characters & (% # $ ^) are not allowed',
   },
+];
+
+export const educationInfo = [
+  {
+    id: 'education',
+    name: 'education',
+    type: 'text',
+    label: 'Education:',
+    placeholder: 'University Name:',
+    regexp: textWithoutSpecialSymbolsRegexp,
+    errorMessage: 'Field must be composed only with latin letters',
+  },
   {
     id: 'mathScore',
     name: 'mathScore',
@@ -94,17 +114,4 @@ const memberPageFields = [
     regexp: numberRange0To10Regexp,
     errorMessage: 'Average score must be between 0 and 10',
   },
-  {
-    id: 'education',
-    name: 'education',
-    type: 'text',
-    label: 'Education:',
-    placeholder: 'University Name:',
-    regexp: textWithoutSpecialSymbolsRegexp,
-    errorMessage: 'Field must be composed only with latin letters',
-  },
-  { id: 'startDate', name: 'startDate', type: 'date', label: 'Start Date:' },
-  { id: 'birthDate', name: 'birthDate', type: 'date', label: 'Birthday:' },
 ];
-
-export default memberPageFields;

@@ -8,13 +8,6 @@
   background-color: $secondaryColor;
 }
 
-.wrapper form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 6rem 6rem 6rem 6rem 6rem 6rem 6rem;
-  grid-column-gap: 3rem;
-}
-
 .item {
   display: flex;
   justify-content: space-between;
