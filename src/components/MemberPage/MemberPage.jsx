@@ -97,7 +97,16 @@ const MemberPage = (props) => {
   const fields = memberPageFields.map(({ id, name, type, label, placeholder, regexp, errorMessage, step }) => {
     if (type === 'radio') {
       return (
-        <AvRadioGroup key={id} inline id={id} name={name} value={props[name]} label={label} required>
+        <AvRadioGroup
+          key={id}
+          inline
+          id={id}
+          name={name}
+          value={props[name]}
+          label={label}
+          className={styles.radio}
+          required
+        >
           {name === 'directionId' && preparedDirections}
           {name === 'sex' && preparedGenders}
         </AvRadioGroup>
@@ -143,11 +152,13 @@ const MemberPage = (props) => {
           {fields}
         </AvForm>
         <div className={styles.buttonWrapper}>
-          <SubmitButton className={styles.successButton} form='createMember'>
+          <SubmitButton className={`${styles.successButton} ${styles.leftButton}`} form='createMember'>
             {currentUserId !== 'newMember' ? 'Save' : 'Create'}
           </SubmitButton>
 
-          <Button onClick={hideMemberPage}>Back to grid</Button>
+          <Button className={styles.defaultButton} onClick={hideMemberPage}>
+            Back
+          </Button>
         </div>
       </div>
     </>
