@@ -166,6 +166,15 @@ textarea {
 #modalMemberPage,
 #modalTaskPage {
   max-width: 60%;
+  @media (max-width: 830px) {
+    max-width: 80%;
+  }
+  @media (max-width: 670px) {
+    max-width: 90%;
+  }
+  @media (max-width: 580px) {
+    max-width: 100%;
+  }
 }
 
 #modalAccountPage {
@@ -197,6 +206,15 @@ textarea {
 .education {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 6rem 6rem;
+}
+
+.general,
+.course,
+.contacts,
+.education {
+  @media (max-width: 520px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .icon {
