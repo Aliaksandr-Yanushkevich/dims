@@ -1,1 +1,54 @@
 @import '../../../styleguide/styleguide.scss';
+
+.memberIndexHeader,
+.memberNameHeader,
+.memberDirectionHeader,
+.memberEducationHeader,
+.memberStartDateHeader,
+.memberAgeHeader,
+.memberButtonsHeader {
+  color: #fff;
+  background-color: $primaryColor;
+  padding: 8px;
+  text-align: center;
+  border: 1px solid #9bc2e6;
+  width: fit-content;
+  text-transform: capitalize;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  word-wrap: break-word;
+}
+
+.memberAgeHeader {
+  @media (max-width: 910px) {
+    display: none;
+  }
+}
+
+.memberEducationHeader {
+  @media (max-width: 860px) {
+    display: none;
+  }
+}
+
+.memberStartDateHeader {
+  @media (max-width: 770px) {
+    display: none;
+  }
+}
+
+.tableHeaderText {
+  margin: 0;
+  @media (max-width: 580px) {
+    display: none;
+  }
+}
+
+.tableHeaderIcon {
+  display: none;
+  margin: 0 auto;
+  @media (max-width: 580px) {
+    display: block;
+  }
+}

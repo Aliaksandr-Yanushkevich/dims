@@ -1,11 +1,14 @@
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChartLine, faTasks, faUserEdit, faUserTimes } from '@fortawesome/free-solid-svg-icons';
 import Button from '../common/Button/Button';
 import dateToString from '../../helpers/dateToString';
 import styles from './Members.module.scss';
 import TableData from '../common/TableData/TableData';
 import getAge from '../../helpers/getAge';
 import NavButton from '../common/NavButton/NavButton';
+import getDirectionIcon from '../../helpers/getDirectionIcon';
 
 const MemberData = ({
   index,
@@ -40,25 +43,31 @@ const MemberData = ({
     const { id } = e.target.dataset;
     setCurrentUser(id);
   };
-  const direction = directions
-    ? directions.find((courseDirection) => {
-        return courseDirection.directionId === directionId;
-      }).name
-    : null;
+  const direction =
+    directions && directionId !== undefined
+      ? directions.find((courseDirection) => {
+          return courseDirection.directionId === directionId;
+        }).name
+      : null;
+  const directionIcon = getDirectionIcon(direction);
 
   return (
     <tr key={userId}>
-      <TableData>{index}</TableData>
-      <TableData>
-        <p className={styles.link} data-id={userId} onClick={showMember}>
-          {`${firstName} ${lastName}`}
-        </p>
+      <TableData className={styles.memberIndex}>{index}</TableData>
+      <TableData className={styles.memberName}>
+        <div className={styles.link} data-id={userId} onClick={showMember}>
+          <p>{firstName}</p>
+          <p>{lastName}</p>
+        </div>
       </TableData>
-      <TableData>{direction}</TableData>
-      <TableData>{education}</TableData>
-      <TableData>{dateToString(startDate)}</TableData>
-      <TableData>{age}</TableData>
-      <TableData>
+      <TableData className={styles.memberDirection}>
+        <p className={styles.directionText}>{direction}</p>
+        <div className={styles.directionIcon}>{directionIcon}</div>
+      </TableData>
+      <TableData className={styles.memberEducation}>{education}</TableData>
+      <TableData className={styles.memberStartDate}>{dateToString(startDate)}</TableData>
+      <TableData className={styles.memberAge}>{age}</TableData>
+      <TableData className={styles.memberButtons}>
         <div className={styles.buttonWrapper} ref={buttonWrapper}>
           <NavButton
             className={styles.link}
@@ -67,7 +76,8 @@ const MemberData = ({
             dataId={userId}
             onClick={setUser}
           >
-            Progress
+            <p className={styles.membersButtonText}>Progress</p>
+            <FontAwesomeIcon icon={faChartLine} className={styles.membersButtonIcon} />
           </NavButton>
 
           <NavButton
@@ -77,16 +87,19 @@ const MemberData = ({
             dataId={userId}
             onClick={setUser}
           >
-            Tasks
+            <p className={styles.membersButtonText}>Tasks</p>
+            <FontAwesomeIcon icon={faTasks} className={styles.membersButtonIcon} />
           </NavButton>
           {isAdmin && (
             <>
               <Button className={styles.defaultButton} dataId={userId} onClick={createUser}>
-                Edit
+                <p className={styles.membersButtonText}>Edit</p>
+                <FontAwesomeIcon icon={faUserEdit} className={styles.membersButtonIcon} />
               </Button>
 
               <Button className={styles.dangerousButton} dataId={userId} onClick={deleteUser}>
-                Delete
+                <p className={styles.membersButtonText}>Delete</p>
+                <FontAwesomeIcon icon={faUserTimes} className={styles.membersButtonIcon} />
               </Button>
             </>
           )}

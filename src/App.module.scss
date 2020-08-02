@@ -22,6 +22,8 @@ body {
 .contentWrapper {
   padding: 1.5rem;
   background-color: $secondaryColor;
-
   grid-area: c;
+  @media (max-width: 550px) {
+    padding: 0.5rem 0;
+  }
 }

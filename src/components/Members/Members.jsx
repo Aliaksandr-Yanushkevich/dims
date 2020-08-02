@@ -9,7 +9,6 @@ import Button from '../common/Button/Button';
 import TableHeader from '../common/TableHeader/TableHeader';
 import MemberData from './MemberData';
 import Preloader from '../common/Preloader/Preloader';
-import { membersTitle } from '../../constants';
 import styles from './Members.module.scss';
 import firebaseApi from '../../api/firebaseApi';
 import showToast from '../../helpers/showToast';
@@ -20,6 +19,7 @@ import MemberPageContainer from '../MemberPage/MemberPageContainer';
 import DeleteConfirmation from '../common/DeleteConfirmation/DeleteConfirmation';
 import { setParameters, showDeleteConfirmation, setFunction } from '../../redux/reducers/deleteConfirmationIndex';
 import MemberCardContainer from '../MemberCard/MemberCardContainer';
+import TableHeaderCell from '../common/TableHeaderCell/TableHeaderCell';
 
 const Members = ({
   members,
@@ -42,7 +42,7 @@ const Members = ({
 
   const createUser = (e) => {
     e.persist();
-    const { id } = e.target.dataset;
+    const { id } = e.target.closest('button').dataset;
     setCurrentUser(id);
     showMemberPage(true);
   };
@@ -58,7 +58,7 @@ const Members = ({
 
   const showMember = (e) => {
     e.persist();
-    const { id } = e.target.dataset;
+    const { id } = e.target.closest('div').dataset;
     setCurrentUser(id);
     showMemberCard(true);
   };
@@ -148,7 +148,16 @@ const Members = ({
         )}
 
         <table>
-          <TableHeader titleArray={membersTitle} />
+          <TableHeader>
+            <TableHeaderCell title='#' className={styles.memberIndexHeader} />
+            <TableHeaderCell title='full name' className={styles.memberNameHeader} />
+            <TableHeaderCell title='direction' className={styles.memberDirectionHeader} icon='faGraduationCap' />
+            <TableHeaderCell title='education' className={styles.memberEducationHeader} />
+            <TableHeaderCell title='start' className={styles.memberStartDateHeader} />
+            <TableHeaderCell title='age' className={styles.memberAgeHeader} />
+            <TableHeaderCell title='' className={styles.memberButtonsHeader} />
+          </TableHeader>
+
           <tbody>{memberRows}</tbody>
         </table>
       </div>

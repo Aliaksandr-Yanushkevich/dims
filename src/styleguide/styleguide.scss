@@ -3,12 +3,20 @@ $secondaryColor: #f2f2f2;
 $font: 'Roboto', Sans-serif;
 $textColor: #383436;
 $dangerousColor: #d04b31;
+$orangeColor: #f0bb0c;
 
 .title,
 .subtitle {
   font-family: $font;
   text-align: center;
   color: $primaryColor;
+}
+
+.title {
+  font-size: 2rem;
+  @media (max-width: 550px) {
+    font-size: 1.5rem;
+  }
 }
 
 .cardTitle {
@@ -23,6 +31,9 @@ $dangerousColor: #d04b31;
   border: 1px solid $primaryColor;
   background-color: $secondaryColor;
   height: 2rem;
+  p {
+    margin-bottom: 0;
+  }
   &:hover {
     color: $secondaryColor;
     background-color: $primaryColor;
@@ -31,6 +42,9 @@ $dangerousColor: #d04b31;
     border: 1px solid #9d9d9d;
     color: #9d9d9d;
     background-color: #fff;
+  }
+  @media (max-width: 670px) {
+    min-width: 0;
   }
 }
 
@@ -49,6 +63,9 @@ $dangerousColor: #d04b31;
     border: 1px solid #9d9d9d;
     color: #9d9d9d;
     background-color: #fff;
+  }
+  @media (max-width: 670px) {
+    min-width: 0;
   }
 }
 
@@ -86,28 +103,22 @@ tbody {
   border-color: inherit;
 }
 
-.tableHeader,
-.tableData {
+td {
   padding: 8px;
   text-align: center;
   border: 1px solid #9bc2e6;
-  max-width: 20rem;
+  width: fit-content;
   text-transform: capitalize;
-  text-overflow: ellipsis;
-  overflow: hidden;
   white-space: nowrap;
   word-wrap: break-word;
-}
-
-.tableHeader {
-  text-transform: capitalize;
-  color: #fff;
-  background-color: $primaryColor;
-}
-
-.tableData {
   display: table-cell;
   vertical-align: inherit;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  p {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 }
 
 tbody tr:nth-child(odd) {
@@ -123,12 +134,14 @@ tbody tr:nth-child(even) {
   cursor: pointer;
   margin: 0;
   &:hover {
-    color: #f0bb0c;
+    color: $orangeColor;
   }
 }
 
 td .link {
   color: #000000;
+  text-overflow: ellipsis;
+  overflow: hidden;
   &:hover {
     color: $primaryColor;
   }
@@ -188,5 +201,5 @@ textarea {
 
 .icon {
   margin-right: 2rem;
-  color: #f0bb0c;
+  color: $orangeColor;
 }
