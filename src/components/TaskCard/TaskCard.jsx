@@ -24,17 +24,17 @@ const TaskCard = ({ name, description, startDate, deadlineDate, message, isFetch
           <FontAwesomeIcon icon={faTasks} className={styles.icon} />
           Task Info
         </h1>
-        <h5 className={styles.cardTitle}>Task Name</h5>
+        <h6 className={styles.fieldTitle}>Task Name</h6>
         <p>{name}</p>
-        <h5 className={styles.cardTitle}>Task Description</h5>
+        <h6 className={styles.fieldTitle}>Task Description</h6>
         <p>{description}</p>
-        <h5 className={styles.cardTitle}>Start Date</h5>
+        <h6 className={styles.fieldTitle}>Start Date</h6>
         <p>{startDate}</p>
-        <h5 className={styles.cardTitle}>Deadline Date</h5>
+        <h6 className={styles.fieldTitle}>Deadline Date</h6>
         <p>{deadlineDate}</p>
         <div className={styles.buttonWrapper}>
           <Button className={styles.defaultButton} id='backToGrid' onClick={hideTaskCard}>
-            Back to grid
+            Back
           </Button>
         </div>
       </div>

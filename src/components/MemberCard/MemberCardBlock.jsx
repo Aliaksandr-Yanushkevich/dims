@@ -6,7 +6,7 @@ const MemberCardBlock = ({ title, data }) => {
   return (
     <>
       <div>
-        <h6 className={styles.cardTitle}>{title}</h6>
+        <h6 className={styles.fieldTitle}>{title}</h6>
         <p>{data}</p>
       </div>
     </>

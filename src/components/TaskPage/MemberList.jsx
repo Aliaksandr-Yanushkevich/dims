@@ -40,17 +40,14 @@ const MemberList = ({
             onChange={asignTask}
             checked={usersWithTaskLocal ? usersWithTaskLocal.includes(userId) : false}
           />
-          <label htmlFor={userId}>{`${firstName} ${lastName}`}</label>
+          <label className={styles.membersName} htmlFor={userId}>{`${firstName} ${lastName}`}</label>
         </li>
       ))
     : null;
   return (
     <>
-      <div className={styles.members}>
-        <div className={styles.membersTitle}>Members:</div>
-        <div className={styles.membersItems}>
-          <ul>{memberNames}</ul>
-        </div>
+      <div className={styles.membersItems}>
+        <ul>{memberNames}</ul>
       </div>
     </>
   );

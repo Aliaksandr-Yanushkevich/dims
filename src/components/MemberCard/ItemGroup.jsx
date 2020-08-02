@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './MemberCard.module.scss';
 
-const MemberCardGroup = ({ title, children, icon, className }) => {
+const ItemGroup = ({ title, children, icon, className }) => {
   return (
     <>
-      <h4 className={styles.cardTitle}>
+      <h4 className={styles.groupTitle}>
         {icon}
         {title}
       </h4>
@@ -14,11 +14,11 @@ const MemberCardGroup = ({ title, children, icon, className }) => {
   );
 };
 
-MemberCardGroup.propTypes = {
+ItemGroup.propTypes = {
   title: PropTypes.number.isRequired,
   children: PropTypes.node.isRequired,
   icon: PropTypes.node.isRequired,
   className: PropTypes.node.isRequired,
 };
 
-export default MemberCardGroup;
+export default ItemGroup;

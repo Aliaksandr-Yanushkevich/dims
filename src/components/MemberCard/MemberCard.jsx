@@ -9,7 +9,7 @@ import Button from '../common/Button/Button';
 import showToast from '../../helpers/showToast';
 import Preloader from '../common/Preloader/Preloader';
 import MemberCardBlock from './MemberCardBlock';
-import MemberCardGroup from './MemberCardGroup';
+import ItemGroup from './ItemGroup';
 
 const MemberCard = ({
   firstName,
@@ -52,7 +52,7 @@ const MemberCard = ({
           <FontAwesomeIcon icon={faAddressCard} className={styles.icon} />
           Member Info
         </h1>
-        <MemberCardGroup
+        <ItemGroup
           title='General'
           icon={<FontAwesomeIcon icon={faInfoCircle} className={styles.icon} />}
           className={styles.general}
@@ -61,18 +61,18 @@ const MemberCard = ({
           <MemberCardBlock title='Last Name' data={lastName} />
           <MemberCardBlock title='Sex' data={sex} />
           <MemberCardBlock title='BirthDay' data={birthDate} />
-        </MemberCardGroup>
+        </ItemGroup>
 
-        <MemberCardGroup
+        <ItemGroup
           title='Course Info'
           icon={<FontAwesomeIcon icon={faLaptopCode} className={styles.icon} />}
           className={styles.course}
         >
           <MemberCardBlock title='Course Direction' data={direction} />
           <MemberCardBlock title='Start Date' data={startDate} />
-        </MemberCardGroup>
+        </ItemGroup>
 
-        <MemberCardGroup
+        <ItemGroup
           title='Contacts'
           icon={<FontAwesomeIcon icon={faMailBulk} className={styles.icon} />}
           className={styles.contacts}
@@ -81,9 +81,9 @@ const MemberCard = ({
           <MemberCardBlock title='Email' data={email} />
           <MemberCardBlock title='Skype' data={skype} />
           <MemberCardBlock title='Address' data={address} />
-        </MemberCardGroup>
+        </ItemGroup>
 
-        <MemberCardGroup
+        <ItemGroup
           title='Education'
           icon={<FontAwesomeIcon icon={faUniversity} className={styles.icon} />}
           className={styles.education}
@@ -91,7 +91,7 @@ const MemberCard = ({
           <MemberCardBlock title='Education' data={education} />
           <MemberCardBlock title='Math Score' data={mathScore} />
           <MemberCardBlock title='University Average Score' data={universityAverageScore} />
-        </MemberCardGroup>
+        </ItemGroup>
 
         <div className={styles.buttonWrapper}>
           <Button className={styles.defaultButton} id='backToGrid' onClick={hideMemberCard}>

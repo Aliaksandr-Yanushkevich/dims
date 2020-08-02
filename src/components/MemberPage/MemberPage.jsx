@@ -17,7 +17,7 @@ import SubmitButton from '../common/SubmitButton/SubmitButton';
 import showToast from '../../helpers/showToast';
 import { onChangeValue } from '../../redux/reducers/memberPageIndex';
 import createPattern from '../../helpers/createPattern';
-import MemberCardGroup from '../MemberCard/MemberCardGroup';
+import ItemGroup from '../MemberCard/ItemGroup';
 
 const MemberPage = (props) => {
   const createUser = (event, errors) => {
@@ -73,10 +73,7 @@ const MemberPage = (props) => {
 
   const disableChangingEmail = (name) => {
     const { currentUserId } = props;
-    if (currentUserId !== 'newMember' && name === 'email') {
-      return true;
-    }
-    return false;
+    return currentUserId !== 'newMember' && name === 'email';
   };
 
   const onChange = (e) => {
@@ -215,37 +212,37 @@ const MemberPage = (props) => {
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{currentUserId === 'newMember' ? 'Register Member' : 'Edit Member'}</h1>
         <AvForm id='createMember' onSubmit={createUser}>
-          <MemberCardGroup
+          <ItemGroup
             title='General'
             icon={<FontAwesomeIcon icon={faInfoCircle} className={styles.icon} />}
             className={styles.general}
           >
             {generalFields}
-          </MemberCardGroup>
+          </ItemGroup>
 
-          <MemberCardGroup
+          <ItemGroup
             title='Course Info'
             icon={<FontAwesomeIcon icon={faLaptopCode} className={styles.icon} />}
             className={styles.course}
           >
             {courseInfoFields}
-          </MemberCardGroup>
+          </ItemGroup>
 
-          <MemberCardGroup
+          <ItemGroup
             title='Contacts'
             icon={<FontAwesomeIcon icon={faMailBulk} className={styles.icon} />}
             className={styles.contacts}
           >
             {contactsFields}
-          </MemberCardGroup>
+          </ItemGroup>
 
-          <MemberCardGroup
+          <ItemGroup
             title='Education'
             icon={<FontAwesomeIcon icon={faUniversity} className={styles.icon} />}
             className={styles.education}
           >
             {educationFields}
-          </MemberCardGroup>
+          </ItemGroup>
         </AvForm>
 
         <div className={styles.buttonWrapper}>
