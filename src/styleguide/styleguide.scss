@@ -19,13 +19,28 @@ $orangeColor: #f0bb0c;
   }
 }
 
-.cardTitle {
+.subtitle {
+  @media (max-width: 550px) {
+    font-size: 1.1rem;
+  }
+}
+
+.groupTitle {
+  font-family: $font;
+  color: $primaryColor;
+  @media (max-width: 550px) {
+    font-size: 1.1rem;
+  }
+}
+
+.fieldTitle {
   font-family: $font;
   color: $primaryColor;
 }
 
 .defaultButton {
   min-width: 5rem;
+  width: fit-content;
   font-weight: 600;
   color: $primaryColor;
   border: 1px solid $primaryColor;
@@ -50,6 +65,7 @@ $orangeColor: #f0bb0c;
 
 .dangerousButton {
   min-width: 5rem;
+  width: fit-content;
   font-weight: 600;
   color: $dangerousColor;
   border: 1px solid $dangerousColor;
@@ -71,6 +87,7 @@ $orangeColor: #f0bb0c;
 
 .successButton {
   min-width: 5rem;
+  width: fit-content;
   font-weight: 600;
   color: #227447;
   border: 1px solid #227447;
@@ -85,6 +102,16 @@ $orangeColor: #f0bb0c;
     color: #9d9d9d;
     background-color: #fff;
   }
+}
+
+.leftButton {
+  margin-right: 0.5rem;
+}
+
+.buttonWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 
 table {
@@ -151,20 +178,7 @@ textarea {
   overflow: auto;
 }
 
-#tooltip-top > .tooltip-inner {
-  // black arrow in tip. need fix
-  background-color: #fff;
-  color: #000;
-  border: 1px solid #062e56;
-}
-
-#tooltip-top > .tooltip-arrow {
-  // black arrow in tip. need fix
-  border-top: 5px solid #062e56;
-}
-
-#modalMemberPage,
-#modalTaskPage {
+#modalMemberPage {
   max-width: 60%;
   @media (max-width: 830px) {
     max-width: 80%;
@@ -173,6 +187,19 @@ textarea {
     max-width: 90%;
   }
   @media (max-width: 580px) {
+    max-width: 100%;
+  }
+}
+
+#modalTaskPage {
+  max-width: 60%;
+  @media (max-width: 1000px) {
+    max-width: 80%;
+  }
+  @media (max-width: 830px) {
+    max-width: 90%;
+  }
+  @media (max-width: 650px) {
     max-width: 100%;
   }
 }

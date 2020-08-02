@@ -4,6 +4,8 @@ import { AvForm, AvField } from 'availity-reactstrap-validation';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { connect } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faInfoCircle, faUsers } from '@fortawesome/free-solid-svg-icons';
 import Button from '../common/Button/Button';
 import styles from './TaskPage.module.scss';
 import MemberList from './MemberList';
@@ -99,23 +101,36 @@ const TaskPage = (props) => {
     <>
       <ToastContainer />
       <div className={styles.wrapper}>
-        <h1 className={styles.title}>{taskId === 'newTask' ? 'New task' : `Edit task`}</h1>
-        <div className={styles.left}>
-          <AvForm id='createTask' onSubmit={createTask}>
-            {formFields}
-          </AvForm>
-        </div>
-
-        <div className={styles.right}>
-          <MemberList />
-          <div className={styles.buttonWrapper}>
-            <SubmitButton className={styles.successButton} form='createTask'>
-              {taskId === 'newTask' ? 'Create' : 'Save'}
-            </SubmitButton>
-            <Button className={styles.defaultButton} onClick={hideMemberPage}>
-              Back to grid
-            </Button>
+        <h1 className={styles.title}>
+          <FontAwesomeIcon icon={faEdit} className={styles.icon} />
+          {taskId === 'newTask' ? 'New task' : `Edit task`}
+        </h1>
+        <div className={styles.taskPageContent}>
+          <div className={styles.left}>
+            <h4 className={styles.groupTitle}>
+              <FontAwesomeIcon icon={faInfoCircle} className={styles.icon} />
+              Task Info
+            </h4>
+            <AvForm id='createTask' onSubmit={createTask}>
+              {formFields}
+            </AvForm>
           </div>
+
+          <div className={styles.right}>
+            <h4 className={styles.groupTitle}>
+              <FontAwesomeIcon icon={faUsers} className={styles.icon} />
+              Members
+            </h4>
+            <MemberList />
+          </div>
+        </div>
+        <div className={styles.buttonWrapper}>
+          <SubmitButton className={`${styles.successButton} ${styles.leftButton}`} form='createTask'>
+            {taskId === 'newTask' ? 'Create' : 'Save'}
+          </SubmitButton>
+          <Button className={styles.defaultButton} onClick={hideMemberPage}>
+            Back
+          </Button>
         </div>
       </div>
     </>

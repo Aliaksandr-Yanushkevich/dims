@@ -6,13 +6,23 @@
   margin: 0 auto;
   padding: 1.5rem;
   background-color: $secondaryColor;
+}
+
+.taskPageContent {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 3rem 1fr;
-  grid-column-gap: 6rem;
-  grid-template-areas:
-    't t'
-    'l r';
+  grid-template-rows: 1fr;
+  grid-column-gap: 3rem;
+  @media (max-width: 830px) {
+    grid-column-gap: 2rem;
+  }
+  @media (max-width: 650px) {
+    grid-column-gap: 1rem;
+  }
+  @media (max-width: 550px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+  }
 }
 
 .left,
@@ -20,26 +30,15 @@
   width: 100%;
 }
 
-.left form {
-  grid-area: l;
-  display: grid;
-  grid-template-rows: 8rem 1fr 6rem 8rem;
-}
-
 .right {
-  grid-area: r;
   display: grid;
-  grid-template-rows: 1fr 2rem;
-}
-
-.title {
-  grid-area: t;
+  grid-template-rows: 2rem 1fr;
 }
 
 .wrapper form {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 5.5rem 9rem 5rem 5rem;
+  grid-template-rows: 6rem 8rem 6rem 6rem;
 }
 
 textarea {
@@ -60,16 +59,21 @@ textarea {
 
 .membersItems {
   width: 100%;
-  height: 88.5%;
+  max-height: 26rem;
+  height: fit-content;
   margin: 0 auto;
   overflow: auto;
-  border: 1px solid #ced4da;
-  border-radius: 0.25rem;
-  padding: 1.5rem;
+  padding: 0 1.5rem;
+}
+
+.membersItems ul {
+  padding: 0;
 }
 
 .membersItems li {
   list-style-type: none;
+  display: flex;
+  align-items: center;
 }
 
 .membersItems input {
@@ -81,20 +85,19 @@ textarea {
   margin-bottom: 0.5rem;
 }
 
-.buttonWrapper {
-  display: grid;
-  grid-template-rows: 1fr;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.buttonWrapper button {
-  width: 100%;
-}
-
 .customMessage {
   display: flex;
   margin: 0;
   align-items: center;
   height: 4rem;
+}
+
+.membersName {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  word-wrap: break-word;
+  max-width: 20rem;
+  width: 100%;
+  margin: 0;
 }
