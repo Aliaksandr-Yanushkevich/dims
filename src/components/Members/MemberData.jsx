@@ -40,7 +40,7 @@ const MemberData = ({
   const age = getAge(birthDate);
   const setUser = (e) => {
     // need persist ???
-    const { id } = e.target.dataset;
+    const { id } = e.target.closest('button').dataset;
     setCurrentUser(id);
   };
   const direction =
