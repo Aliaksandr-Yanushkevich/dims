@@ -7,7 +7,7 @@ import getYear from './getYear';
 const NavBar = () => (
   <footer className={styles.footer}>
     <div className={styles.author}>
-      <p>Created by Aliaksandr Yanushkevich</p>
+      Aliaksandr Yanushkevich
       <a className={styles.link} href={process.env.REACT_APP_DEVELOPER_GITHUB}>
         <FontAwesomeIcon icon={faGithub} size='2x' className={styles.github} />
       </a>
