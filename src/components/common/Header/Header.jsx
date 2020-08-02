@@ -5,7 +5,8 @@ import { Modal } from 'reactstrap';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import styles from './Header.module.scss';
-import logo from '../logo.svg';
+import bigLogo from '../logo.svg';
+import smallLogo from '../logo-white-cropped.png';
 import UserBlock from './UserBlock';
 import Account from '../../Account/Account';
 import { showAccountPage } from '../../../redux/reducers/appIndex';
@@ -31,7 +32,8 @@ const Header = ({ role, showAccountPage, accountPageIsVisible }) => {
         <Account hideAccountPage={hideAccountPage} />
       </Modal>
       <NavLink className={styles.link} to='/members'>
-        <img src={logo} alt='logo' />
+        <img src={bigLogo} alt='logo' className={styles.bigLogo} />
+        <img src={smallLogo} alt='logo' className={styles.smallLogo} />
       </NavLink>
       {role && (
         <div className={styles.nav}>
