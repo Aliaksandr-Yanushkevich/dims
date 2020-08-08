@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Modal } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendarMinus } from '@fortawesome/free-solid-svg-icons';
 import styles from './MembersProgress.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
@@ -11,6 +13,7 @@ import { setCurrentTask } from '../../redux/reducers/appIndex';
 import { showTaskCard } from '../../redux/reducers/taskPageIndex';
 import showToast from '../../helpers/showToast';
 import TaskCardContainer from '../TaskCard/TaskCardContainer';
+import Message from '../common/Message/Message';
 
 const MemberProgres = ({
   role,
@@ -49,7 +52,12 @@ const MemberProgres = ({
   }
 
   if (userTasks && !userTasks.length && !isFetching) {
-    return <p>{`${currentUserFirstName} ${currentUserLastName} hasn't tracked tasks.`}</p>;
+    return (
+      <Message
+        text={`${currentUserFirstName} ${currentUserLastName} hasn't tracked tasks.`}
+        icon={<FontAwesomeIcon icon={faCalendarMinus} />}
+      />
+    );
   }
   const tasksArray = userTasks
     ? userTasks.map((task, index) => (

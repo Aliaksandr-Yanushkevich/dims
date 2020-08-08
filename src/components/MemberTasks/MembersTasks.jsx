@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendarMinus } from '@fortawesome/free-solid-svg-icons';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './MembersTasks.module.scss';
@@ -17,6 +19,7 @@ import showToast from '../../helpers/showToast';
 import TaskCardContainer from '../TaskCard/TaskCardContainer';
 import { showTaskCard } from '../../redux/reducers/taskPageIndex';
 import { setCurrentTask } from '../../redux/reducers/appIndex';
+import Message from '../common/Message/Message';
 
 const MemberTasks = ({
   role,
@@ -70,13 +73,12 @@ const MemberTasks = ({
   }
 
   if (userTasks && !userTasks.length) {
-    return (
-      <p>
-        {isMember && 'You '}
-        {(isAdmin || isMentor) && `${currentUserFirstName} ${currentUserLastName} `}
-        haven&apos;t tasks
-      </p>
-    );
+    const text = isMember
+      ? `You haven't tasks`
+      : isAdmin || isMentor
+      ? `${currentUserFirstName} ${currentUserLastName} hasn't tasks`
+      : null;
+    return <Message text={text} icon={<FontAwesomeIcon icon={faCalendarMinus} />} />;
   }
 
   const tasksArr = userTasks
