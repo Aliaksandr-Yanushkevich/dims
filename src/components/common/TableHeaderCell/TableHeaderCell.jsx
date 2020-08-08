@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGraduationCap, faUser } from '@fortawesome/free-solid-svg-icons';
-import styles from '../TableHeader/TableHeader.module.scss';
+import styles from '../../Members/Members.module.scss';
 
 const TableHeaderCell = ({ title, className }) => {
   if (title === 'direction') {

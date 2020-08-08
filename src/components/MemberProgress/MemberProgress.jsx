@@ -8,12 +8,12 @@ import styles from './MembersProgress.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
 import MemberProgressData from './MemberProgressData';
-import { memberProgressTitle } from '../../constants';
 import { setCurrentTask } from '../../redux/reducers/appIndex';
 import { showTaskCard } from '../../redux/reducers/taskPageIndex';
 import showToast from '../../helpers/showToast';
 import TaskCardContainer from '../TaskCard/TaskCardContainer';
 import Message from '../common/Message/Message';
+import TableHeaderCell from '../common/TableHeaderCell/TableHeaderCell';
 
 const MemberProgres = ({
   role,
@@ -85,7 +85,12 @@ const MemberProgres = ({
       <h1 className={styles.title}>Member Progress Grid</h1>
       <h2 className={styles.subtitle}>{`${currentUserFirstName} ${currentUserLastName} progress:`}</h2>
       <table>
-        <TableHeader titleArray={memberProgressTitle} />
+        <TableHeader>
+          <TableHeaderCell title='#' className={styles.taskIndexHeader} />
+          <TableHeaderCell title='task' className={styles.taskNameHeader} />
+          <TableHeaderCell title='note' className={styles.taskNoteHeader} icon='faGraduationCap' />
+          <TableHeaderCell title='date' className={styles.taskNoteDateHeader} />
+        </TableHeader>
         <tbody>{tasksArray}</tbody>
       </table>
     </>

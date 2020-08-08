@@ -6,14 +6,14 @@ import dateToString from '../../helpers/dateToString';
 
 const MemberProgressData = ({ index, taskId, taskName, trackNote, trackDate, showTask }) => (
   <tr key={`${taskId}${taskName}`}>
-    <TableData>{index + 1}</TableData>
+    <TableData className={styles.taskIndex}>{index + 1}</TableData>
     <TableData>
       <p className={styles.link} data-taskid={taskId} onClick={showTask}>
         {taskName}
       </p>
     </TableData>
     <TableData>{trackNote}</TableData>
-    <TableData>{trackDate !== '-' ? dateToString(trackDate) : trackDate}</TableData>
+    <TableData className={styles.taskNoteDate}>{trackDate !== '-' ? dateToString(trackDate) : trackDate}</TableData>
   </tr>
 );
 
