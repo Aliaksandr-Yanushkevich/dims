@@ -81,6 +81,7 @@
   display: none;
   @media (max-width: 690px) {
     display: block;
+    margin: 0 auto;
   }
 }
 
@@ -149,8 +150,14 @@
   @media (max-width: 500px) {
     width: 45%;
   }
-  @media (max-width: 350px) {
+  @media (max-width: 440px) {
     width: 40%;
+  }
+  @media (max-width: 380px) {
+    width: 35%;
+  }
+  @media (max-width: 350px) {
+    width: 30%;
   }
 }
 

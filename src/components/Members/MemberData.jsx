@@ -77,7 +77,7 @@ const MemberData = ({
             onClick={setUser}
           >
             <p className={styles.membersButtonText}>Progress</p>
-            <FontAwesomeIcon icon={faChartLine} className={styles.membersButtonIcon} />
+            <FontAwesomeIcon icon={faChartLine} className={styles.membersButtonIcon} size='lg' />
           </NavButton>
 
           <NavButton
@@ -88,18 +88,18 @@ const MemberData = ({
             onClick={setUser}
           >
             <p className={styles.membersButtonText}>Tasks</p>
-            <FontAwesomeIcon icon={faTasks} className={styles.membersButtonIcon} />
+            <FontAwesomeIcon icon={faTasks} className={styles.membersButtonIcon} size='lg' />
           </NavButton>
           {isAdmin && (
             <>
               <Button className={styles.defaultButton} dataId={userId} onClick={createUser}>
                 <p className={styles.membersButtonText}>Edit</p>
-                <FontAwesomeIcon icon={faUserEdit} className={styles.membersButtonIcon} />
+                <FontAwesomeIcon icon={faUserEdit} className={styles.membersButtonIcon} size='lg' />
               </Button>
 
               <Button className={styles.dangerousButton} dataId={userId} onClick={deleteUser}>
                 <p className={styles.membersButtonText}>Delete</p>
-                <FontAwesomeIcon icon={faUserTimes} className={styles.membersButtonIcon} />
+                <FontAwesomeIcon icon={faUserTimes} className={styles.membersButtonIcon} size='lg' />
               </Button>
             </>
           )}
