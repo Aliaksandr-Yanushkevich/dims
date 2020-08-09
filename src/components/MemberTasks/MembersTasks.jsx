@@ -10,7 +10,6 @@ import styles from './MembersTasks.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
 import Preloader from '../common/Preloader/Preloader';
 import MemberCurrentTasks from './MemberCurrentTasks';
-import { membersTasksTitle, membersTasksTitleForMembers } from '../../constants';
 import TaskTrackPageContainer from '../TaskTrackPage/TaskTrackPageContainer';
 import { setCurrentTaskName } from '../../redux/reducers/memberTasksIndex';
 import { setUserTaskId } from '../../redux/reducers/taskTrackManagementIndex';
@@ -20,6 +19,7 @@ import TaskCardContainer from '../TaskCard/TaskCardContainer';
 import { showTaskCard } from '../../redux/reducers/taskPageIndex';
 import { setCurrentTask } from '../../redux/reducers/appIndex';
 import Message from '../common/Message/Message';
+import TableHeaderCell from '../common/TableHeaderCell/TableHeaderCell';
 
 const MemberTasks = ({
   role,
@@ -111,17 +111,23 @@ const MemberTasks = ({
       <Modal isOpen={taskCardIsVisible} toggle={hideTaskCard} centered>
         <TaskCardContainer hideTaskCard={hideTaskCard} />
       </Modal>
-      <h1 className={styles.title}>Member&apos;s Task Manage Grid</h1>
       {isMember && (
-        <h2 className={styles.subtitle}>
+        <h1 className={styles.title}>
           {`Hi, dear ${currentUserFirstName} ${currentUserLastName}! This is your current tasks:`}
-        </h2>
+        </h1>
       )}
       {(isAdmin || isMentor) && (
-        <h2 className={styles.subtitle}>{`Сurrent tasks of ${currentUserFirstName} ${currentUserLastName}:`}</h2>
+        <h1 className={styles.title}>{`Сurrent tasks of ${currentUserFirstName} ${currentUserLastName}:`}</h1>
       )}
       <table>
-        <TableHeader titleArray={isAdmin || isMentor ? membersTasksTitle : membersTasksTitleForMembers} />
+        <TableHeader>
+          <TableHeaderCell title='#' className={styles.memberTaskIndexHeader} />
+          <TableHeaderCell title='name' className={styles.memberTaskNameHeader} />
+          <TableHeaderCell title='start' className={styles.memberTaskStartHeader} />
+          <TableHeaderCell title='deadline' className={styles.memberTaskDeadlineHeader} />
+          <TableHeaderCell title='status' className={styles.memberTaskStatusHeader} />
+          {!isMember && <TableHeaderCell title='mark task' className={styles.memberTaskMarkTaskHeader} />}
+        </TableHeader>
         <tbody>{tasksArr}</tbody>
       </table>
     </>

@@ -10,7 +10,13 @@
 .taskIndexHeader,
 .taskNameHeader,
 .taskNoteHeader,
-.taskNoteDateHeader {
+.taskNoteDateHeader,
+.memberTaskIndexHeader,
+.memberTaskNameHeader,
+.memberTaskStartHeader,
+.memberTaskDeadlineHeader,
+.memberTaskStatusHeader,
+.memberTaskMarkTaskHeader {
   color: #fff;
   background-color: $primaryColor;
   padding: 8px;
