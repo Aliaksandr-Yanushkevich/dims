@@ -7,7 +7,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import Button from '../common/Button/Button';
 import styles from './TaskManagement.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
-import { taskManagementTitle } from '../../constants';
 import TaskData from './TaskData';
 import firebaseApi from '../../api/firebaseApi';
 import Preloader from '../common/Preloader/Preloader';
@@ -19,6 +18,7 @@ import showToast from '../../helpers/showToast';
 import DeleteConfirmation from '../common/DeleteConfirmation/DeleteConfirmation';
 import { showDeleteConfirmation, setParameters, setFunction } from '../../redux/reducers/deleteConfirmationIndex';
 import TaskCardContainer from '../TaskCard/TaskCardContainer';
+import TableHeaderCell from '../common/TableHeaderCell/TableHeaderCell';
 
 const TaskManagement = ({
   setCurrentTask,
@@ -121,7 +121,13 @@ const TaskManagement = ({
           Create task
         </Button>
         <table>
-          <TableHeader titleArray={taskManagementTitle} />
+          <TableHeader>
+            <TableHeaderCell title='#' className={styles.taskManagementIndexHeader} />
+            <TableHeaderCell title='task name' className={styles.taskManagementTaskNameHeader} />
+            <TableHeaderCell title='start' className={styles.taskManagementStartDateHeader} />
+            <TableHeaderCell title='deadline' className={styles.taskManagementDeadlineHeader} />
+            <TableHeaderCell title='' className={styles.taskManagementPanelHeader} />
+          </TableHeader>
           <tbody>{taskRows}</tbody>
         </table>
       </div>

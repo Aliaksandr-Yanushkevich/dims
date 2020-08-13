@@ -16,7 +16,12 @@
 .memberTaskStartHeader,
 .memberTaskDeadlineHeader,
 .memberTaskStatusHeader,
-.memberTaskMarkTaskHeader {
+.memberTaskMarkTaskHeader,
+.taskManagementIndexHeader,
+.taskManagementTaskNameHeader,
+.taskManagementStartDateHeader,
+.taskManagementDeadlineHeader,
+.taskManagementPanelHeader {
   color: #fff;
   background-color: $primaryColor;
   padding: 8px;

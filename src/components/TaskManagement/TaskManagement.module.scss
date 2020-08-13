@@ -1,14 +1,27 @@
 @import '../../styleguide/styleguide.scss';
+@import '../../components/common/TableHeader/TableHeader.module.scss';
 
 .buttonWrapper {
   display: grid;
   grid-template-rows: 1fr;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+  @media (max-width: 400px) {
+    gap: 5px;
+  }
+  .defaultButton,
+  .dangerousButton {
+    @media (max-width: 800px) {
+      padding: 0;
+      width: fit-content;
+      min-width: 2rem;
+    }
+  }
 }
 
 .buttonWrapper button {
   width: 100%;
+  margin: 0 auto;
 }
 
 .tableWrapper {
@@ -18,4 +31,98 @@
 
 .createTask {
   margin-bottom: 1rem;
+}
+
+.taskManagementIndexHeader,
+.taskManagementIndex {
+  max-width: 7rem;
+  min-width: 5rem;
+  width: 5%;
+  @media (max-width: 400px) {
+    display: none;
+  }
+}
+
+.taskManagementTaskNameHeader,
+.taskManagementTaskName {
+  max-width: 7rem;
+  min-width: 5rem;
+  width: 50%;
+  @media (max-width: 1000px) {
+    width: 45%;
+  }
+  @media (max-width: 950px) {
+    width: 40%;
+  }
+  @media (max-width: 900px) {
+    width: 35%;
+  }
+  @media (max-width: 850px) {
+    width: 30%;
+  }
+  @media (max-width: 800px) {
+    width: 25%;
+  }
+  @media (max-width: 770px) {
+    width: 20%;
+  }
+  @media (max-width: 700px) {
+    width: 15%;
+  }
+  @media (max-width: 350px) {
+    width: 10%;
+  }
+}
+
+.taskManagementStartDateHeader,
+.taskManagementDeadlineHeader,
+.taskManagementStartDate,
+.taskManagementDeadline {
+  max-width: 10rem;
+  min-width: 7rem;
+  width: 10%;
+  @media (max-width: 800px) {
+    width: 7%;
+  }
+}
+
+.taskManagementStartDateHeader,
+.taskManagementStartDate {
+  @media (max-width: 625px) {
+    display: none;
+  }
+}
+
+.taskManagementDeadlineHeader,
+.taskManagementDeadline {
+  @media (max-width: 480px) {
+    display: none;
+  }
+}
+
+.taskManagementPanelHeader,
+.taskManagementPanel {
+  max-width: 10rem;
+  min-width: 7rem;
+  width: 20%;
+  @media (max-width: 800px) {
+    width: 7%;
+  }
+  @media (max-width: 400px) {
+    width: 5%;
+  }
+}
+
+.taskManagementButtonIcon {
+  display: none;
+  @media (max-width: 800px) {
+    display: block;
+    margin: 0 auto;
+  }
+}
+
+.taskManagementButtonText {
+  @media (max-width: 800px) {
+    display: none;
+  }
 }
