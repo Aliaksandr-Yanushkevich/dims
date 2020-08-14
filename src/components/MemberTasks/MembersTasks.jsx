@@ -126,6 +126,7 @@ const MemberTasks = ({
           <TableHeaderCell title='start' className={styles.memberTaskStartHeader} />
           <TableHeaderCell title='deadline' className={styles.memberTaskDeadlineHeader} />
           <TableHeaderCell title='status' className={styles.memberTaskStatusHeader} />
+          {isMember && <TableHeaderCell className={styles.memberTaskTrackHeader} />}
           {!isMember && <TableHeaderCell title='mark task' className={styles.memberTaskMarkTaskHeader} />}
         </TableHeader>
         <tbody>{tasksArr}</tbody>

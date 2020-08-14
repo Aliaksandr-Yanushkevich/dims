@@ -117,6 +117,21 @@
   }
 }
 
+.memberTaskTrack,
+.memberTaskTrackHeader {
+  max-width: 10rem;
+  min-width: 7rem;
+  width: 3%;
+  .defaultButton {
+    @media (max-width: 690px) {
+      min-width: 2rem;
+    }
+  }
+  @media (max-width: 690px) {
+    width: 1%;
+  }
+}
+
 .memberTaskManage {
   @media (max-width: 370px) {
     padding: 0;

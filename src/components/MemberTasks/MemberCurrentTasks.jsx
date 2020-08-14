@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ToastContainer } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faCheckCircle, faTimes, faWindowClose } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faCheckCircle, faStickyNote, faTimes, faWindowClose } from '@fortawesome/free-solid-svg-icons';
 import Button from '../common/Button/Button';
 import dateToString from '../../helpers/dateToString';
 import styles from './MembersTasks.module.scss';
@@ -68,9 +68,10 @@ const MemberCurrentTasks = ({
           )}
         </TableData>
         {isMember && (
-          <TableData>
+          <TableData className={styles.memberTaskTrack}>
             <Button className={styles.defaultButton} taskId={userTaskId} dataId={taskName} onClick={trackTask}>
-              Track
+              <p className={styles.memberTaskButtonText}>Track</p>
+              <FontAwesomeIcon icon={faStickyNote} className={styles.memberTaskButtonIcon} size='lg' />
             </Button>
           </TableData>
         )}
