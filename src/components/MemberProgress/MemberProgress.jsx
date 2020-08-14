@@ -82,8 +82,7 @@ const MemberProgres = ({
         <TaskCardContainer hideTaskCard={hideTaskCard} />
       </Modal>
 
-      <h1 className={styles.title}>Member Progress Grid</h1>
-      <h2 className={styles.subtitle}>{`${currentUserFirstName} ${currentUserLastName} progress:`}</h2>
+      <h1 className={styles.title}>{`${currentUserFirstName} ${currentUserLastName} progress:`}</h1>
       <table>
         <TableHeader>
           <TableHeaderCell title='#' className={styles.taskIndexHeader} />

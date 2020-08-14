@@ -53,12 +53,13 @@ const TableHeaderCell = ({ title, className }) => {
 };
 
 TableHeaderCell.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   className: PropTypes.string,
 };
 
 TableHeaderCell.defaultProps = {
   className: '',
+  title: '',
 };
 
 export default TableHeaderCell;
