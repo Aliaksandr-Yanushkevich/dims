@@ -1,4 +1,5 @@
 @import '../../styleguide/styleguide.scss';
+@import '../common/TableHeader/TableHeader.module.scss';
 
 .buttonWrapper {
   display: grid;
@@ -9,4 +10,50 @@
 
 .buttonWrapper button {
   width: 100%;
+}
+
+.taskTrackManagementIndex,
+.taskTrackManagementIndexHeader {
+  max-width: 10rem;
+  min-width: 7rem;
+  width: 5%;
+}
+
+.taskTrackManagementName,
+.taskTrackManagementNameHeader,
+.taskTrackManagementNoteHeader,
+.taskTrackManagementNote {
+  max-width: 10rem;
+  min-width: 7rem;
+  width: 25%;
+  @media (max-width: 890px) {
+    width: 20%;
+  }
+}
+
+.taskTrackManagementDateHeader,
+.taskTrackManagementDate {
+  max-width: 10rem;
+  min-width: 7rem;
+  width: 10%;
+}
+
+.taskTrackManagementPanelHeader,
+taskTrackManagementPanel {
+  max-width: 10rem;
+  min-width: 7rem;
+  width: 20%;
+}
+
+.taskTrackManagementButtonText {
+  @media (max-width: 800px) {
+    display: none;
+  }
+}
+
+.taskTrackManagementButtonIcon {
+  display: none;
+  @media (max-width: 800px) {
+    display: block;
+  }
 }

@@ -22,7 +22,12 @@
 .taskManagementStartDateHeader,
 .taskManagementDeadlineHeader,
 .taskManagementPanelHeader,
-.memberTaskTrackHeader {
+.memberTaskTrackHeader,
+.taskTrackManagementIndexHeader,
+.taskTrackManagementNameHeader,
+.taskTrackManagementNoteHeader,
+.taskTrackManagementDateHeader,
+.taskTrackManagementPanelHeader {
   color: #fff;
   background-color: $primaryColor;
   padding: 8px;

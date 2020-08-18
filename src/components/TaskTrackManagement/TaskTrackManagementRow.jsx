@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import Button from '../common/Button/Button';
 import styles from './TaskTrackManagement.module.scss';
 import TableData from '../common/TableData/TableData';
@@ -16,15 +18,15 @@ const TasksTracksManagementRow = ({
   deleteNote,
 }) => (
   <tr key={taskTrackId}>
-    <TableData>{index}</TableData>
-    <TableData>
+    <TableData className={styles.taskTrackManagementIndex}>{index}</TableData>
+    <TableData className={styles.taskTrackManagementName}>
       <NavLink className={styles.link} to='/task_track_management' data-taskid={taskTrackId} onClick={editTask}>
         {taskName}
       </NavLink>
     </TableData>
-    <TableData>{trackNote}</TableData>
-    <TableData>{trackDate}</TableData>
-    <TableData>
+    <TableData className={styles.taskTrackManagementNote}>{trackNote}</TableData>
+    <TableData className={styles.taskTrackManagementDate}>{trackDate}</TableData>
+    <TableData className={styles.taskTrackManagementPanel}>
       <div className={styles.buttonWrapper}>
         <Button
           className={styles.defaultButton}
@@ -33,11 +35,13 @@ const TasksTracksManagementRow = ({
           dataId={userTaskId}
           onClick={editTask}
         >
-          Edit
+          <p className={styles.taskTrackManagementButtonText}>Edit</p>
+          <FontAwesomeIcon icon={faEdit} className={styles.taskTrackManagementButtonIcon} size='lg' />
         </Button>
 
         <Button className={styles.dangerousButton} taskId={taskTrackId} onClick={deleteNote}>
-          Delete
+          <p className={styles.taskTrackManagementButtonText}>Delete</p>
+          <FontAwesomeIcon icon={faTrashAlt} className={styles.taskTrackManagementButtonIcon} size='lg' />
         </Button>
       </div>
     </TableData>

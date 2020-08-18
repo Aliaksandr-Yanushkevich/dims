@@ -6,7 +6,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './TaskTrackManagement.module.scss';
 import TableHeader from '../common/TableHeader/TableHeader';
-import { tasksTrackTitle } from '../../constants';
 import Preloader from '../common/Preloader/Preloader';
 import TasksTracksManagementRow from './TaskTrackManagementRow';
 import TaskTrackPageContainer from '../TaskTrackPage/TaskTrackPageContainer';
@@ -16,6 +15,7 @@ import showToast from '../../helpers/showToast';
 import { setCurrentTaskTrackId, setUserTaskId, clearTaskTrackId } from '../../redux/reducers/taskTrackManagementIndex';
 import { setCurrentTaskName } from '../../redux/reducers/memberTasksIndex';
 import { showTaskTrackPage, clearTaskTrackPage } from '../../redux/reducers/taskTrackPageIndex';
+import TableHeaderCell from '../common/TableHeaderCell/TableHeaderCell';
 
 const TaskTrackManagement = ({
   role,
@@ -99,7 +99,13 @@ const TaskTrackManagement = ({
       </Modal>
       <h1 className={styles.title}>Task Track Management</h1>
       <table>
-        <TableHeader titleArray={tasksTrackTitle} />
+        <TableHeader>
+          <TableHeaderCell title='#' className={styles.taskTrackManagementIndexHeader} />
+          <TableHeaderCell title='task name' className={styles.taskTrackManagementNameHeader} />
+          <TableHeaderCell title='Note' className={styles.taskTrackManagementNoteHeader} />
+          <TableHeaderCell title='Date' className={styles.taskTrackManagementDateHeader} />
+          <TableHeaderCell title='' className={styles.taskTrackManagementPanelHeader} />
+        </TableHeader>
         <tbody>{tableRows}</tbody>
       </table>
     </>
