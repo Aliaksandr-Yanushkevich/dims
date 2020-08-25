@@ -10,6 +10,11 @@
 
 .buttonWrapper button {
   width: 100%;
+  @media (max-width: 800px) {
+    width: fit-content;
+    margin: 0 auto;
+    min-width: 0;
+  }
 }
 
 .taskTrackManagementIndex,
@@ -17,6 +22,9 @@
   max-width: 10rem;
   min-width: 7rem;
   width: 5%;
+  @media (max-width: 690px) {
+    display: none;
+  }
 }
 
 .taskTrackManagementName,
@@ -29,6 +37,18 @@
   @media (max-width: 890px) {
     width: 20%;
   }
+  @media (max-width: 640px) {
+    width: 18%;
+  }
+  @media (max-width: 600px) {
+    width: 16%;
+  }
+  @media (max-width: 560px) {
+    width: 14%;
+  }
+  @media (max-width: 370px) {
+    width: 12%;
+  }
 }
 
 .taskTrackManagementDateHeader,
@@ -36,13 +56,19 @@
   max-width: 10rem;
   min-width: 7rem;
   width: 10%;
+  @media (max-width: 470px) {
+    display: none;
+  }
 }
 
 .taskTrackManagementPanelHeader,
-taskTrackManagementPanel {
+.taskTrackManagementPanel {
   max-width: 10rem;
   min-width: 7rem;
   width: 20%;
+  @media (max-width: 800px) {
+    width: 10%;
+  }
 }
 
 .taskTrackManagementButtonText {
@@ -55,5 +81,6 @@ taskTrackManagementPanel {
   display: none;
   @media (max-width: 800px) {
     display: block;
+    margin: 0 auto;
   }
 }
